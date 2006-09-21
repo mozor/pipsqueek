@@ -16,11 +16,12 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Adds the user to the database" if( /public_addme/ );
-		}
+	return "Adds your username to the users database";
+}
+
+sub get_usage
+{
+	return "!addme [please]";
 }
 
 

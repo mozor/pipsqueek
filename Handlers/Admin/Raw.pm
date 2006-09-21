@@ -17,11 +17,12 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Send a raw server command on behalf of the bot" if( /admin_raw/ );
-		}
+	return "Send a raw server command on behalf of the bot";
+}
+
+sub get_usage
+{
+	return "raw <rawcode>";
 }
 
 

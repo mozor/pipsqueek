@@ -28,6 +28,17 @@ sub get_description
 }
 
 
+sub get_usage
+{
+	my $self = shift;
+	my $type = shift;
+	foreach ($type) {
+		return "kickban <username> [<message>]" if( /admin_kickban/ );
+		return "kick <username> [<message>]" if( /admin_kick/ );
+	}
+}
+
+
 sub admin_kick
 {
 	my $bot = shift;
@@ -41,6 +52,7 @@ sub admin_kick
 
 	unless( $msg )
 	{
+		srand(time());
 		my @reasons = (
 			qq(<crazyhorse> pwned!),
 			qq(Drink Milk.. foo),

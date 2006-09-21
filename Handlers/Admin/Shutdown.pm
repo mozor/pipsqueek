@@ -16,13 +16,13 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Shuts the bot down" if( /admin_shutdown/ );
-		}
+	return "Shuts the bot down";
 }
 
+sub get_usage
+{
+	return "shutdown";
+}
 
 sub admin_shutdown
 {

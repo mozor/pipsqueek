@@ -16,13 +16,13 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Returns the results of evaluating the math expression given" if( /public_math/ );
-	}
+	return "Returns the results of evaluating the math expression given";
 }
 
+sub get_usage
+{
+	return "!math <mathematical expression>";
+}
 
 sub math
 {
@@ -30,21 +30,30 @@ sub math
 	my $event = shift;
 
 	my $msg = $event->param('msg') || return;
+	$msg = "$msg";
+	$msg =~ tr/[]/()/; # only normal parens
+	$msg =~ s/\^/\*\*/g; # perl's exponent operator
+	$msg =~ s/\s*//g; # no need for spaces
 
-	if( $msg =~ /[^\+\-\*\/\^\%\(\)\[\]0123456789\. ]/ )
-	{
-		return $bot->chanmsg( "Invalid characters detected, only + - * / ^ % ( ) [ ] . and 0-9 are allowed." );
+	if( $msg =~ /[^\+\-\*\/\%\(\)0-9\.\ e]/ || $msg !~ /^[0-9\(\-]/ ) {
+		return $bot->chanmsg( "Invalid expression." );
 	}
-	
-	$msg =~ s/\^/\*\*/g;
-	$msg =~ s/\[/\(/g;
-	$msg =~ s/\]/\)/g;
 
 	my $x;
-	my $eval = '$x = ' . "$msg";
-	eval $eval || return $bot->chanmsg( "Error: $!" );
+	my $eval = '$x = ' . $msg;
 
-	$bot->chanmsg( "$msg = $x" );
+	local $^W=0;
+	eval $eval;
+
+	if( defined($x) ) {
+		if( $x =~ /[^\+\-\*\/\%\(\)0-9\.\ einf]/ ) {
+			return $bot->chanmsg( "Invalid expression." );
+		}
+		$bot->chanmsg( "$msg = $x" );
+	} else {
+		if( $@ ) { $bot->chanmsg( "Error: $@" ); }
+		else { $bot->chanmsg("Perl didn't like it, but I don't know why."); }
+	}
 }
 
 

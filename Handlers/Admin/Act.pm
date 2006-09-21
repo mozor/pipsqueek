@@ -17,13 +17,13 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Does a /me in the channel" if( /admin_act/ );
-	}
+	return "Does a /me in the channel";
 }
 
+sub get_usage 
+{
+	return "act <text>";
+}
 
 sub admin_act
 {

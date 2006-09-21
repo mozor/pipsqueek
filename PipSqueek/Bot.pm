@@ -124,7 +124,7 @@ sub connect_options
 sub version
 # returns a string containing version information for the bot
 {
-	return "PipSqueek v3.1 - http://pipsqueek.l8nite.net/";
+	return "PipSqueek v3.2.3 - http://pipsqueek.l8nite.net/";
 }
 
 
@@ -151,6 +151,14 @@ sub is_shutdown
 {
 	my $self = shift;
 	return $self->{'kernel'}->get_active_session()->get_heap()->{'shutdown'} || 0;
+}
+
+
+sub rehash
+# rehashs the bot!
+{
+	my $self = shift;
+	$self->{'kernel'}->yield( 'rehash' );
 }
 
 

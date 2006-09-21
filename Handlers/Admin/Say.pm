@@ -17,13 +17,13 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "The bot says whatever you tell it to in the channel" if( /admin_say/ );
-		}
+	return "The bot says whatever you tell it to in the channel";
 }
 
+sub get_usage
+{
+	return "say <message>";
+}
 
 sub admin_say
 {

@@ -46,7 +46,7 @@ sub load
 	{
 		$self->{'users'} = ();
 		$self->{'name2id'} = {};
-		warn "'" . $self->{'file'} . "' not found.";
+#		warn "'" . $self->{'file'} . "' not found.";
 	}
 
 	return 1;
@@ -58,11 +58,15 @@ sub save
 {
 	my $self = shift;
 	my $hash = {};
-	$hash->{'user'} = $self->{'users'};
-	# we construct the temporary hash here so that the XML output is more human-readable
-	XMLout( $hash, outputfile => $self->{'file'} ) 
-	or die "Could not save users to file '" . $self->{'file'} . "': $!\n";
-	# TODO: Some sort of file locking? #
+
+	if( defined( $self->{'users'}->[0] ) )
+	{
+		$hash->{'user'} = $self->{'users'};
+		# we construct the temporary hash here so that the XML output is more human-readable
+		XMLout( $hash, outputfile => $self->{'file'} ) 
+		or die "Could not save users to file '" . $self->{'file'} . "': $!\n";
+		# TODO: Some sort of file locking? #
+	}
 
 	return 1;
 }

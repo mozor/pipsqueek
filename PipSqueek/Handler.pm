@@ -10,6 +10,7 @@ sub new
 	my $class = ref($proto) || $proto;
 	
 	my $self = {};
+	$self->{'runpath'} = shift;
 
 	bless($self,$class);
 

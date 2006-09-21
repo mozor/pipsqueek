@@ -2,6 +2,35 @@
 * PipSqueek is mostly 'weekend code' until someone steps
 * up to write some really good documentation for it.
 
+[ 3.2.3 ]
+- added quotes database (uses DBD::SQLite)
+- cleaned up warning messages
+- added feature where if you run a public command in a privmsg
+  the bot will message you back instead of displaying it in the
+  channel (useful for when users like to check their score privately)
+- re-added !math (had removed it pending an exploit fix)
+- misc bugfixes, etc
+
+[ 3.2.1 ]
+- fixed error that occured when the bot was restarted but no
+  users were added to the user's database
+- updated handler loading, a single bot core can be installed now
+  and then run from multiple locations (assuming that a data directory
+  is valid in each place you run the bot from).
+  Custom handlers will also be loaded from the cwd you run pipsqueek 
+  in, and will override handlers already set by the core modules
+
+[ 3.2 ]
+- lots of bugfixes
+- fixed an error in the !rank script that wouldn't report
+  correct ranks
+- added !math module
+- added ability to rehash modules on the fly
+- added online help features
+- added !list to list the handlers available
+- improved/added usage and description information
+  for all public and admin commands
+
 [ 3.1 ]
 - complete rewrite of 3.0b code
 - kept same module style, but different API

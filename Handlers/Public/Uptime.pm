@@ -16,11 +16,12 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Reports how long the bot has been running" if( /public_uptime/ );
-		}
+	return "Reports how long the bot has been running";
+}
+
+sub get_usage
+{
+	return "!uptime";
 }
 
 

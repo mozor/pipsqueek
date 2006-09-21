@@ -21,6 +21,17 @@ sub get_description
 	my $type = shift;
 	foreach ($type) {
 		return "Returns the help for a command, or the list of commands available" if( /admin_help/ );
+		return "Returns the list of commands available" if ( /admin_list/ );
+	}
+}
+
+sub get_usage
+{
+	my $self = shift;
+	my $type = shift;
+	foreach ($type) {
+		return "help <command>" if( /admin_help/ );
+		return "list" if (/admin_list/);
 	}
 }
 

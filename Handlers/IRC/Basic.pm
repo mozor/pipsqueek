@@ -110,16 +110,16 @@ sub irc_kick
 	}
 	else
 	{
-		my $kickee_total_kicked = $umgr->param( $kickee, 'kicked' );
+		my $kickee_total_kicked = $umgr->param( $kickee, 'kicked' ) + 1;
 		$umgr->param( $kickee, { 
 			'active' => 0, 
-			'kicked' => $kickee_total_kicked++,
+			'kicked' => $kickee_total_kicked,
 			'seen' => time()
 		});
 		# update the number of times that person got kicked
 		
-		my $kicker_total_kicks = $umgr->param( $kicker, 'kicks' );
-		$umgr->param( $kicker, { 'kicks' => $kicker_total_kicks++ } );
+		my $kicker_total_kicks = $umgr->param( $kicker, 'kicks' ) + 1;
+		$umgr->param( $kicker, { 'kicks' => $kicker_total_kicks } );
 		# update the number of times the kicker has kicked someone
 	}
 }

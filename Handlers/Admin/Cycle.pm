@@ -16,13 +16,13 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "The bot will part and then rejoin a channel" if( /admin_cycle/ );
-		}
+	return "The bot will part and then rejoin a channel";
 }
 
+sub get_usage
+{
+	return "cycle";
+}
 
 sub admin_cycle
 {

@@ -49,9 +49,10 @@ sub irc_public
 		my $caps_minlength = $bot->param('capsstop_minlength');
 
 		my $msg = $event->param('msg');
-		my $len = length($msg);
+		my $len = length($msg); # divide by zero bug here
 		my $numcaps = ($msg =~ tr/A-Z/A-Z/);
-		my $percent = ($numcaps / $len) * 100;
+		my $percent = 0;
+		eval { $percent = ($numcaps / $len) * 100; };
 
 		if( $len > $caps_minlength && $percent > $caps_percent )
 		{
@@ -63,15 +64,24 @@ sub irc_public
 	my $user = $umgr->user($nick);
 	return unless $user;	# only real users are scored 
 
-	my $smiles = 0; 
+	my $smiles = 0;
 	my $msg = $event->param('msg');
 	$smiles++ while( $msg =~ s/[\:\;\=][\-o]?[\)\(\|\/\\\{\}\]\[XxFfPpOoDdCc\>]// );
-	$umgr->param( $nick, {
-		'lines'	=> $user->{'lines'} + 1,
-		'words'	=> $user->{'words'} + scalar(@{$event->param('message')}),
-		'chars' => $user->{'chars'} + length($event->param('msg')),
-		'smiles' => $user->{'smiles'} + $smiles
-	});
+
+	my $lines = $user->{'lines'} + 1;
+	my $words = $user->{'words'} + scalar(@message);
+	my $chars = $user->{'chars'} + length($event->param('msg'));
+	$smiles += $user->{'smiles'};
+
+	if( scalar(@message) == 1 && ( $message[0] =~ /^\s*\*/ || $message[0] =~ /\*\s*$/ ) )
+	{
+		# if they only said one line, and it was like  *foo, or foo*, then it's a correction of their
+		# previous line (spelling error fix), and we will ignore it 
+		$lines = $user->{'lines'};
+		$words = $user->{'words'};
+	}
+
+	$umgr->param( $nick, {'lines' => $lines, 'words' => $words, 'chars' => $chars, 'smiles' => $smiles } );
 }
 
 

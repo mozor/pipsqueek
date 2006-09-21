@@ -6,6 +6,7 @@ package Handlers::Public::Stats;
 use base 'PipSqueek::Handler';
 use strict;
 
+
 sub get_handlers 
 {
 	my $self = shift;
@@ -26,6 +27,17 @@ sub get_description
 		return "Returns a user's rank and score" if( /public_rank/ || /public_score/ );
 		return "Returns the 10 highest scoring users" if( /public_top10/ );
 		return "Returns personal user stats for the user" if( /public_stats/ );
+	}
+}
+
+sub get_usage
+{
+	my $self = shift;
+	my $type = shift;
+	foreach ($type) {
+		return "!rank <rank number, or username>" if ( /public_rank/ );
+		return "!score <rank number, or username>" if ( /public_score/ );
+		return "!stats <username>" if ( /public_stats/ );
 	}
 }
 
@@ -72,6 +84,7 @@ sub public_rank
 				$rank++;
 			}
 
+			$rank = 1;
 			foreach my $u (@list) {
 				if( lc($u->{'original'}) eq lc($requested) )
 				{
@@ -112,8 +125,11 @@ sub public_stats
 		my $kicks = $user->{'kicks'};
 		my $kicked = $user->{'kicked'};
 
+		my $wpl = ($lines ? $words / $lines : $lines);
+		$wpl =~ s/^([0-9]+\.?[0-9]{0,2}).*?$/$1/;
+
 		$bot->chanmsg( 
-			"$nick: $words words, $lines lines, $actions actions, $smiles smiles, " .
+			"$nick: $words words, $lines lines, $wpl wpl, $actions actions, $smiles smiles, " .
 			"kicked $kicks lusers, been kicked $kicked times, set $modes modes, changed the topic $topics times."
 		);
 	}
@@ -138,7 +154,7 @@ sub public_top10
 		my $nick = $user->{'original'};
 		my $x = "$nick ($score)";
 		push(@top10, $x) if $#top10 != 10;
-		last if $#top10 == 10;
+		last if scalar(@top10) == 10;
 	}
 	
 	if( scalar(@top10) == 0)

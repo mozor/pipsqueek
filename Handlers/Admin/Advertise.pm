@@ -16,13 +16,13 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Prints out some information about PipSqueek" if( /admin_advertise/ );
-		}
+	return "Prints out some information about PipSqueek";
 }
 
+sub get_usage
+{
+	return "advertise";
+}
 
 sub admin_advertise
 {

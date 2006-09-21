@@ -16,11 +16,12 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Tells us when the user was last seen" if( /public_seen/ );
-	}
+	"Tells you when the user was last seen";
+}
+
+sub get_usage
+{
+	"!seen <username>";
 }
 
 

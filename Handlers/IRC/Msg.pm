@@ -32,19 +32,28 @@ sub irc_msg
 	my $umgr = shift;
 
 	my $nick = $event->param('nick');
-	my ($msg0,$msg1) = @{$event->param('message')};
+	my @message = @{$event->param('message')};
+	my $cmdprefix = $bot->param('command_prefix');
 	my $pass = $bot->param('admin_password');
 
-	if( defined($msg0) && $msg0 eq $pass )
+#	if( defined($message[0]) && $message[0] =~ /^$cmdprefix/ )
+#	{ # starts with our command prefix but we're in a private message?  Run a public_foo handler
+#		$message[0] =~ s/^$cmdprefix//;
+#		$bot->{'kernel'}->yield( 'public_' . $message[0], @{$event->param('args')} );
+#		return;
+#	}
+#	elsif( defined($message[0]) && $message[0] eq $pass )
+
+	if( defined($message[0]) && $message[0] eq $pass )
 	{ # valid password? run an admin_foo handler
-		if( defined($msg1) ) {
-			$bot->{'kernel'}->yield( 'admin_' . $msg1, @{$event->param('args')} );
+		if( defined($message[1]) ) {
+			$bot->{'kernel'}->yield( 'admin_' . $message[1], @{$event->param('args')} );
 		}
 	}
 	else
 	{ # no valid password? run an private_foo handler
-		if( defined($msg0) ) {
-			$bot->{'kernel'}->yield( 'private_' . $msg0, @{$event->param('args')} );
+		if( defined($message[0]) ) {
+			$bot->{'kernel'}->yield( 'private_' . $message[0], @{$event->param('args')} );
 		}
 	}
 }

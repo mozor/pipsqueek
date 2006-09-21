@@ -16,13 +16,13 @@ sub get_handlers
 
 sub get_description 
 { 
-	my $self = shift;
-	my $type = shift;
-	foreach ($type) {
-		return "Change the topic in the channel" if( /admin_topic/ );
-		}
+	return "Change the topic in the channel";
 }
 
+sub get_usage
+{
+	return "topic <new topic>";
+}
 
 sub admin_topic
 {
