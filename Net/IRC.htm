@@ -1,0 +1,504 @@
+<HTML>
+<HEAD>
+<TITLE>Net::IRC - Perl interface to the Internet Relay Chat protocol</TITLE>
+<LINK REV="made" HREF="mailto:root@porky.devel.redhat.com">
+</HEAD>
+
+<BODY>
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#DESCRIPTION">DESCRIPTION</A>
+	<LI><A HREF="#GETTING_STARTED">GETTING STARTED</A>
+	<UL>
+
+		<LI><A HREF="#Initialization">Initialization</A>
+		<LI><A HREF="#Handlers">Handlers</A>
+		<LI><A HREF="#Getting_Connected">Getting Connected</A>
+	</UL>
+
+	<LI><A HREF="#METHOD_DESCRIPTIONS">METHOD DESCRIPTIONS</A>
+	<LI><A HREF="#AUTHORS">AUTHORS</A>
+	<LI><A HREF="#URL">URL</A>
+	<LI><A HREF="#SEE_ALSO">SEE ALSO</A>
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+Net::IRC - Perl interface to the Internet Relay Chat protocol
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<PRE>    use Net::IRC;
+</PRE>
+<P>
+<PRE>    $irc = new Net::IRC;
+    $conn = $irc-&gt;newconn(Nick    =&gt; 'some_nick',
+                          Server  =&gt; 'some.irc.server.com',
+                          Port    =&gt;  6667,
+                          Ircname =&gt; 'Some witty comment.');
+    $irc-&gt;start;
+</PRE>
+<P>
+<HR>
+<H1><A NAME="DESCRIPTION">DESCRIPTION</A></H1>
+<P>
+Welcome to Net::IRC, a work in progress. First intended to be a quick tool
+for writing an IRC script in Perl, Net::IRC has grown into a comprehensive
+Perl implementation of the IRC protocol (RFC 1459), supported and developed
+by several members of the EFnet IRC channel #perl.
+
+<P>
+There are 4 component modules which make up Net::IRC:
+
+<UL>
+<LI>
+<P>
+Net::IRC
+
+<P>
+The wrapper for everything else, containing methods to generate Connection
+objects (see below) and a connection manager which does an event loop on
+all available filehandles. Sockets or files which are readable (or
+writable, or whatever you want it to <CODE>select()</CODE> for) get passed
+to user-supplied handler subroutines in other packages or in user code.
+
+<LI>
+<P>
+Net::IRC::Connection
+
+<P>
+The big time sink on this project. Each Connection instance is a single
+connection to an IRC server. The module itself contains methods for every
+single IRC command available to users (Net::IRC isn't designed for writing
+servers, for obvious reasons), methods to set, retrieve, and call handler
+functions which the user can set (more on this later), and too many cute
+comments. Hey, what can I say, we were bored.
+
+<LI>
+<P>
+Net::IRC::Event
+
+<P>
+Kind of a struct-like object for storing info about things that the IRC
+server tells you (server responses, channel talk, joins and parts, et
+cetera). It records who initiated the event, who it affects, the event
+type, and any other arguments provided for that event. Incidentally, the
+only argument passed to a handler function.
+
+<LI>
+<P>
+Net::IRC::DCC
+
+<P>
+The analogous object to Connection.pm for connecting, sending and
+retrieving with the DCC protocol. Instances of DCC.pm are invoked from
+<CODE>Connection-&amp;gt;new_{send,get,chat}</CODE> in the same way that
+<CODE>IRC-&amp;gt;newconn</CODE> invokes <CODE>Connection-&amp;gt;new</CODE>. This will make more sense later, we promise.
+
+</UL>
+<P>
+The central concept that Net::IRC is built around is that of handlers (or
+hooks, or callbacks, or whatever the heck you feel like calling them). We
+tried to make it a completely event-driven model, a la Tk -- for every
+conceivable type of event that your client might see on IRC, you can give
+your program a custom subroutine to call. But wait, there's more! There are
+3 levels of handler precedence:
+
+<UL>
+<LI>
+<P>
+Default handlers
+
+<P>
+Considering that they're hardwired into Net::IRC, these won't do much more
+than the bare minimum needed to keep the client listening on the server,
+with an option to print (nicely formatted, of course) what it hears to
+whatever filehandles you specify (STDOUT by default). These get called only
+when the user hasn't defined any of his own handlers for this event.
+
+<LI>
+<P>
+User-definable global handlers
+
+<P>
+The user can set up his own subroutines to replace the default actions for <EM>every</EM> IRC connection managed by your program. These only get invoked if the user
+hasn't set up a per-connection handler for the same event.
+
+<LI>
+<P>
+User-definable per-connection handlers
+
+<P>
+Simple: this tells a single connection what to do if it gets an event of
+this type. Supersedes global handlers if any are defined for this event.
+
+</UL>
+<P>
+And even better, you can choose to call your custom handlers before or
+after the default handlers instead of replacing them, if you wish. In
+short, it's not perfect, but it's about as good as you can get and still be
+documentable, given the sometimes horrendous complexity of the IRC
+protocol.
+
+<P>
+<HR>
+<H1><A NAME="GETTING_STARTED">GETTING STARTED</A></H1>
+<P>
+<HR>
+<H2><A NAME="Initialization">Initialization</A></H2>
+<P>
+To start a Net::IRC script, you need two things: a Net::IRC object, and a
+Net::IRC::Connection object. The Connection object does the dirty work of
+connecting to the server; the IRC object handles the input and output for
+it. To that end, say something like this:
+
+<P>
+<PRE>    use Net::IRC;
+</PRE>
+<P>
+<PRE>    $irc = new Net::IRC;
+</PRE>
+<P>
+<PRE>    $conn = $irc-&gt;newconn(Nick    =&gt; 'some_nick',
+                          Server  =&gt; 'some.irc.server.com');
+</PRE>
+<P>
+...or something similar. Acceptable parameters to <CODE>newconn()</CODE>
+are:
+
+<UL>
+<LI>
+<P>
+Nick
+
+<P>
+The nickname you'll be known by on IRC, often limited to a maximum of 9
+letters. Acceptable characters for a nickname are <CODE>[\w{}[]\`^|-]</CODE>. If you don't specify a nick, it defaults to your username.
+
+<LI>
+<P>
+Server
+
+<P>
+The IRC server to connect to. There are dozens of them across several
+widely-used IRC networks, but the oldest and most popular is EFNet (Eris
+Free Net), home to #perl. See <A
+HREF="http://www.irchelp.org/">http://www.irchelp.org/</A> for lists of
+popular servers, or ask a friend.
+
+<LI>
+<P>
+Port
+
+<P>
+The port to connect to this server on. By custom, the default is 6667.
+
+<LI>
+<P>
+Username
+
+<P>
+On systems not running identd, you can set the username for your user@host
+to anything you wish. Note that some IRC servers won't allow connections
+from clients which don't run identd.
+
+<LI>
+<P>
+Ircname
+
+<P>
+A short (maybe 60 or so chars) piece of text, originally intended to
+display your real name, which people often use for pithy quotes and URLs.
+Defaults to the contents of your GECOS field.
+
+<LI>
+<P>
+Password
+
+<P>
+If the IRC server you're trying to write a bot for is password-protected,
+no problem. Just say ``<CODE>Password =</CODE> 'foo'&gt;'' and you're set. =back
+
+<H2><A NAME="Handlers">Handlers</A></H2>
+<P>
+Once that's over and done with, you need to set up some handlers if you
+want your bot to do anything more than sit on a connection and waste
+resources. Handlers are references to subroutines which get called when a
+specific event occurs. Here's a sample handler sub:
+
+<P>
+<PRE>    # What to do when the bot successfully connects.
+    sub on_connect {
+        my $self = shift;
+</PRE>
+<P>
+<PRE>        print &quot;Joining #IRC.pm...&quot;;
+        $self-&gt;join(&quot;#IRC.pm&quot;);
+        $self-&gt;privmsg(&quot;#IRC.pm&quot;, &quot;Hi there.&quot;);
+    }
+</PRE>
+<P>
+The arguments to a handler function are always the same:
+
+<DL>
+<DT><STRONG><A NAME="item__0_">$_[0]:</A></STRONG><DD>
+<P>
+The Connection object that's calling it.
+
+<DT><STRONG><A NAME="item__1_">$_[1]:</A></STRONG><DD>
+<P>
+An Event object (see below) that describes what the handler is responding
+to.
+
+</DL>
+<P>
+Got it? If not, see the examples in the irctest script that came with this
+distribution. Anyhow, once you've defined your handler subroutines, you
+need to add them to the list of handlers as either a global handler
+(affects all Connection objects) or a local handler (affects only a single
+Connection). To do so, say something along these lines:
+
+<P>
+<PRE>    $self-&gt;add_global_handler('376', \&amp;on_connect);     # global
+    $self-&gt;add_handler('msg', \&amp;on_msg);                # local
+</PRE>
+<P>
+376, incidentally, is the server number for ``end of MOTD'', which is an
+event that the server sends to you after you're connected. See Event.pm for
+a list of all possible numeric codes. The 'msg' event gets called whenever
+someone else on IRC sends your client a private message. For a big list of
+possible events, see the <STRONG>Event List</STRONG> section in the documentation for Net::IRC::Event.
+
+<H2><A NAME="Getting_Connected">Getting Connected</A></H2>
+<P>
+When you've set up all your handlers, the following command will put your
+program in an infinite loop, grabbing input from all open connections and
+passing it off to the proper handlers:
+
+<P>
+<PRE>    $irc-&gt;start;
+</PRE>
+<P>
+Note that new connections can be added and old ones dropped from within
+your handlers even after you call this. Just don't expect any code below
+the call to <CODE>start()</CODE> to ever get executed.
+
+<P>
+If you're tying Net::IRC into another event-based module, such as perl/Tk,
+there's a nifty <CODE>do_one_loop()</CODE> method provided for your convenience. Calling
+<CODE>$irc-&amp;gt;do_one_loop()</CODE> runs through the IRC.pm event loop once, hands all ready filehandles over
+to the appropriate handler subs, then returns control to your program.
+
+<H1><A NAME="METHOD_DESCRIPTIONS">METHOD DESCRIPTIONS</A></H1>
+<P>
+This section contains only the methods in IRC.pm itself. Lists of the
+methods in Net::IRC::Connection, Net::IRC::Event, or Net::IRC::DCC are in
+their respective modules' documentation; just <CODE>perldoc Net::IRC::Connection</CODE>
+(or Event or DCC or whatever) to read them. Functions take no arguments
+unless otherwise specified in their description.
+
+<P>
+By the way, expect Net::IRC to use AutoLoader sometime in the future, once
+it becomes a little more stable.
+
+<UL>
+<LI>
+<P>
+<CODE>addconn()</CODE>
+
+<P>
+Adds the specified object's socket to the select loop in <CODE>do_one_loop()</CODE>. This is mostly for the use of Connection and DCC objects (and for pre-0.5
+compatibility)... for most (read: all) purposes, you can just use <CODE>addfh()</CODE>, described below.
+
+<P>
+Takes at least 1 arg:
+
+<OL>
+<LI><STRONG><A NAME="item__">.</A></STRONG>
+<P>
+An object whose socket needs to be added to the select loop
+
+<LI><STRONG>.</STRONG>
+<P>
+<STRONG>Optional:</STRONG> A string consisting of one or more of the letters r, w, and e. Passed
+directly to <CODE>addfh()</CODE>... see the description below for more info.
+
+</OL>
+<LI>
+<P>
+<CODE>addfh()</CODE>
+
+<P>
+This sub takes a user's socket or filehandle and a sub to handle it with
+and merges it into <CODE>do_one_loop()</CODE>'s list of <CODE>select()able</CODE> filehandles. This makes integration
+with other event-based systems (Tk, for instance) a good deal easier than
+in previous releases.
+
+<P>
+Takes at least 2 args:
+
+<OL>
+<LI><STRONG>.</STRONG>
+<P>
+A socket or filehandle to monitor
+
+<LI><STRONG>.</STRONG>
+<P>
+A reference to a subroutine. When <CODE>select()</CODE> determines that the filehandle is ready, it passes the filehandle to this
+(presumably user-supplied) sub, where you can read from it, write to it,
+etc. as your script sees fit.
+
+<LI><STRONG>.</STRONG>
+<P>
+<STRONG>Optional:</STRONG> A string containing any combination of the letters r, w or e (standing for
+read, write, and error, respectively) which determines what conditions
+you're expecting on that filehandle. For example, this line
+<CODE>select()s</CODE> <CODE>$fh</CODE> (a filehandle, of course) for both
+reading and writing:
+
+<P>
+<PRE>    $irc-&gt;addfh( $fh, \&amp;callback, &quot;rw&quot; );
+</PRE>
+</OL>
+<LI>
+<P>
+<CODE>do_one_loop()</CODE>
+
+<P>
+<CODE>select()</CODE>s on all open filehandles and passes any ready ones to the appropriate
+handler subroutines. Also responsible for executing scheduled events from <CODE>Net::IRC::Connection-&amp;gt;schedule()</CODE> on time.
+
+<LI>
+<P>
+<CODE>new()</CODE>
+
+<P>
+A fairly vanilla constructor which creates and returns a new Net::IRC
+object.
+
+<LI>
+<P>
+<CODE>newconn()</CODE>
+
+<P>
+Creates and returns a new Connection object. All arguments are passed
+straight to <CODE>Net::IRC::Connection-&amp;gt;new()</CODE>; examples of common arguments can be found in the <STRONG>Synopsis</STRONG> or <STRONG>Getting Started</STRONG> sections.
+
+<LI>
+<P>
+<CODE>removeconn()</CODE>
+
+<P>
+Removes the specified object's socket from <CODE>do_one_loop()</CODE>'s list of <CODE>select()able</CODE> filehandles. This is mostly for the
+use of Connection and DCC objects (and for pre-0.5 compatibility)... for
+most (read: all) purposes, you can just use <CODE>removefh()</CODE>, described below.
+
+<P>
+Takes 1 arg:
+
+<OL>
+<LI><STRONG>.</STRONG>
+<P>
+An object whose socket or filehandle needs to be removed from the select
+loop
+
+</OL>
+<LI>
+<P>
+<CODE>removefh()</CODE>
+
+<P>
+This method removes a given filehandle from <CODE>do_one_loop()</CODE>'s list of selectable filehandles.
+
+<P>
+Takes 1 arg:
+
+<OL>
+<LI><STRONG>.</STRONG>
+<P>
+A socket or filehandle to remove
+
+</OL>
+<LI>
+<P>
+<CODE>start()</CODE>
+
+<P>
+Starts an infinite event loop which repeatedly calls <CODE>do_one_loop()</CODE> to read new events from all open connections and pass them off to any
+applicable handlers.
+
+<LI>
+<P>
+<CODE>timeout()</CODE>
+
+<P>
+Sets or returns the current <CODE>select()</CODE> timeout for the main event loop, in seconds (fractional amounts allowed).
+See the documentation for the
+<CODE>select()</CODE> function for more info.
+
+<P>
+Takes 1 optional arg:
+
+<OL>
+<LI><STRONG>.</STRONG>
+<P>
+<STRONG>Optional:</STRONG> A new value for the <CODE>select()</CODE> timeout for this IRC object.
+
+</OL>
+<H1><A NAME="AUTHORS">AUTHORS</A></H1>
+<UL>
+<LI>
+<P>
+Conceived and initially developed by Greg Bacon &lt;<A HREF="mailto:gbacon@adtran.com">gbacon@adtran.com</A>&gt;
+and Dennis Taylor &lt;<A HREF="mailto:corbeau@execpc.com">corbeau@execpc.com</A>&gt;.
+
+<LI>
+<P>
+Ideas and large amounts of code donated by Nat ``King'' Torkington
+&lt;<A HREF="mailto:gnat@frii.com">gnat@frii.com</A>&gt;.
+
+<LI>
+<P>
+Currently being hacked on, hacked up, and worked over by the members of the
+Net::IRC developers mailing list. For details, see <A
+HREF="http://www.execpc.com/~corbeau/irc/list.html">http://www.execpc.com/~corbeau/irc/list.html</A>
+.
+
+</UL>
+<H1><A NAME="URL">URL</A></H1>
+<P>
+Up-to-date source and information about the Net::IRC project can be found
+at <A HREF="http://netirc.betterbox.net/">http://netirc.betterbox.net/</A>
+.
+
+<H1><A NAME="SEE_ALSO">SEE ALSO</A></H1>
+<UL>
+<LI>
+<P>
+<CODE>perl(1).</CODE>
+
+<LI>
+<P>
+RFC 1459: The Internet Relay Chat Protocol
+
+<LI>
+<P>
+<A HREF="http://www.irchelp.org/,">http://www.irchelp.org/,</A> home of
+fine IRC resources.
+
+</UL>
+</DL>
+</DL>
+</BODY>
+
+</HTML>

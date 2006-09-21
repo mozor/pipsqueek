@@ -1,0 +1,26 @@
+l8nite:aspect:9:Avatar
+l8nite:slyfx:9:Level 9
+slyfx:slyfx:9:level 9
+smoke:aspect:-1:Wanderer
+Aleph:aspect:0:Neophyte
+DyaBlo:aspect:0:Neophyte
+LoXagOn:aspect:0:Neophyte
+think12:aspect:-1:Wanderer
+Caesum:aspect:0:Neophyte
+cyberplague:aspect:-1:Wanderer
+NetMatrix0:aspect:-1:Wanderer
+l8nite2:aspect:0:Neophyte
+Deimos:aspect:0:Neophyte
+Wolfjourn:aspect:0:Neophyte
+lucipher:aspect:0:Neophyte
+Erm:aspect:0:Neophyte
+avataru:aspect:0:Neophyte
+bbm:aspect:-1:Wanderer
+PDawgStylin:aspect:-1:Wanderer
+clean_the_dark:aspect:0:Neophyte
+Bastard:aspect:-1:Wanderer
+Macks:aspect:0:Neophyte
+w0lf:aspect:-1:Wanderer
+SoCiOpAtH:aspect:-1:Wanderer
+caesum:aspect:9:Avatar
+caesum:slyfx:9:Level 9

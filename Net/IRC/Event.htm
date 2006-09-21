@@ -1,0 +1,485 @@
+<HTML>
+<HEAD>
+<TITLE>Net::IRC::Event - A class for passing event data between subroutines</TITLE>
+<LINK REV="made" HREF="mailto:root@porky.devel.redhat.com">
+</HEAD>
+
+<BODY>
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#DESCRIPTION">DESCRIPTION</A>
+	<LI><A HREF="#METHOD_DESCRIPTIONS">METHOD DESCRIPTIONS</A>
+	<LI><A HREF="#LIST_OF_EVENTS">LIST OF EVENTS</A>
+	<UL>
+
+		<LI><A HREF="#Common_events">Common events</A>
+		<LI><A HREF="#CTCP_Requests">CTCP Requests</A>
+		<LI><A HREF="#CTCP_Responses">CTCP Responses</A>
+		<LI><A HREF="#DCC_Events">DCC Events</A>
+		<LI><A HREF="#Numeric_Events">Numeric Events</A>
+	</UL>
+
+	<LI><A HREF="#AUTHORS">AUTHORS</A>
+	<LI><A HREF="#URL">URL</A>
+	<LI><A HREF="#SEE_ALSO">SEE ALSO</A>
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+Net::IRC::Event - A class for passing event data between subroutines
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+None yet. These docs are under construction.
+
+<P>
+<HR>
+<H1><A NAME="DESCRIPTION">DESCRIPTION</A></H1>
+<P>
+This documentation is a subset of the main Net::IRC documentation. If you
+haven't already, please ``perldoc Net::IRC'' before continuing.
+
+<P>
+Net::IRC::Event defines a standard interface to the salient information for
+just about any event your client may witness on IRC. It's about as close as
+we can get in Perl to a struct, with a few extra nifty features thrown in.
+
+<P>
+<HR>
+<H1><A NAME="METHOD_DESCRIPTIONS">METHOD DESCRIPTIONS</A></H1>
+<P>
+This section is under construction, but hopefully will be finally written
+up by the next release. Please see the <CODE>irctest</CODE> script and the source for details about this module.
+
+<P>
+<HR>
+<H1><A NAME="LIST_OF_EVENTS">LIST OF EVENTS</A></H1>
+<P>
+Net::IRC is an entirely event-based system, which takes some getting used
+to at first. To interact with the IRC server, you tell Net::IRC's server
+connection to listen for certain events and activate your own subroutines
+when they occur. Problem is, this doesn't help you much if you don't know
+what to tell it to look for. Below is a list of the possible events you can
+pass to Net::IRC, along with brief descriptions of each... hope this helps.
+
+<P>
+<HR>
+<H2><A NAME="Common_events">Common events</A></H2>
+<UL>
+<LI>
+<P>
+nick
+
+<P>
+The ``nick'' event is triggered when the client receives a NICK message,
+meaning that someone on a channel with the client has changed eir nickname.
+
+<LI>
+<P>
+quit
+
+<P>
+The ``quit'' event is triggered upon receipt of a QUIT message, which means
+that someone on a channel with the client has disconnected.
+
+<LI>
+<P>
+join
+
+<P>
+The ``join'' event is triggered upon receipt of a JOIN message, which means
+that someone has entered a channel that the client is on.
+
+<LI>
+<P>
+part
+
+<P>
+The ``part'' event is triggered upon receipt of a PART message, which means
+that someone has left a channel that the client is on.
+
+<LI>
+<P>
+mode
+
+<P>
+The ``mode'' event is triggered upon receipt of a MODE message, which means
+that someone on a channel with the client has changed the channel's
+parameters.
+
+<LI>
+<P>
+topic
+
+<P>
+The ``topic'' event is triggered upon receipt of a TOPIC message, which
+means that someone on a channel with the client has changed the channel's
+topic.
+
+<LI>
+<P>
+kick
+
+<P>
+The ``kick'' event is triggered upon receipt of a KICK message, which means
+that someone on a channel with the client (or possibly the client itself!)
+has been forcibly ejected.
+
+<LI>
+<P>
+public
+
+<P>
+The ``public'' event is triggered upon receipt of a PRIVMSG message to an
+entire channel, which means that someone on a channel with the client has
+said something aloud.
+
+<LI>
+<P>
+msg
+
+<P>
+The ``msg'' event is triggered upon receipt of a PRIVMSG message which is
+addressed to one or more clients, which means that someone is sending the
+client a private message. (Duh. :-)
+
+<LI>
+<P>
+notice
+
+<P>
+The ``notice'' event is triggered upon receipt of a NOTICE message, which
+means that someone has sent the client a public or private notice. (Is that
+sufficiently vague?)
+
+<LI>
+<P>
+ping
+
+<P>
+The ``ping'' event is triggered upon receipt of a PING message, which means
+that the IRC server is querying the client to see if it's alive. Don't
+confuse this with CTCP PINGs, explained later.
+
+<LI>
+<P>
+other
+
+<P>
+The ``other'' event is triggered upon receipt of any number of
+unclassifiable miscellaneous messages, but you're not likely to see it
+often.
+
+<LI>
+<P>
+invite
+
+<P>
+The ``invite'' event is triggered upon receipt of an INVITE message, which
+means that someone is permitting the client's entry into a +i channel.
+
+<LI>
+<P>
+kill
+
+<P>
+The ``kill'' event is triggered upon receipt of a KILL message, which means
+that an IRC operator has just booted your sorry arse offline. Seeya!
+
+<LI>
+<P>
+disconnect
+
+<P>
+The ``disconnect'' event is triggered when the client loses its connection
+to the IRC server it's talking to. Don't confuse it with the ``leaving''
+event. (See below.)
+
+<LI>
+<P>
+leaving
+
+<P>
+The ``leaving'' event is triggered just before the client deliberately
+closes a connection to an IRC server, in case you want to do anything
+special before you sign off.
+
+<LI>
+<P>
+umode
+
+<P>
+The ``umode'' event is triggered when the client changes its personal mode
+flags.
+
+<LI>
+<P>
+error
+
+<P>
+The ``error'' event is triggered when the IRC server complains to you about
+anything. Sort of the evil twin to the ``other'' event, actually.
+
+</UL>
+<P>
+<HR>
+<H2><A NAME="CTCP_Requests">CTCP Requests</A></H2>
+<UL>
+<LI>
+<P>
+cping
+
+<P>
+The ``cping'' event is triggered when the client receives a CTCP PING
+request from another user. See the irctest script for an example of how to
+properly respond to this common request.
+
+<LI>
+<P>
+cversion
+
+<P>
+The ``cversion'' event is triggered when the client receives a CTCP VERSION
+request from another client, asking for version info about its IRC client
+program.
+
+<LI>
+<P>
+csource
+
+<P>
+The ``csource'' event is triggered when the client receives a CTCP SOURCE
+request from another client, asking where it can find the source to its IRC
+client program.
+
+<LI>
+<P>
+ctime
+
+<P>
+The ``ctime'' event is triggered when the client receives a CTCP TIME
+request from another client, asking for the local time at its end.
+
+<LI>
+<P>
+cdcc
+
+<P>
+The ``cdcc'' event is triggered when the client receives a DCC request of
+any sort from another client, attempting to establish a DCC connection.
+
+<LI>
+<P>
+cuserinfo
+
+<P>
+The ``cuserinfo'' event is triggered when the client receives a CTCP
+USERINFO request from another client, asking for personal information from
+the client's user.
+
+<LI>
+<P>
+cclientinfo
+
+<P>
+The ``cclientinfo'' event is triggered when the client receives a CTCP
+CLIENTINFO request from another client, asking for whatever the hell
+``clientinfo'' means.
+
+<LI>
+<P>
+cerrmsg
+
+<P>
+The ``cerrmsg'' event is triggered when the client receives a CTCP ERRMSG
+request from another client, notifying it of a protocol error in a
+preceding CTCP communication.
+
+<LI>
+<P>
+cfinger
+
+<P>
+The ``cfinger'' event is triggered when the client receives a CTCP FINGER
+request from another client. How to respond to this should best be left up
+to your own moral stance.
+
+<LI>
+<P>
+caction
+
+<P>
+The ``caction'' event is triggered when the client receives a CTCP ACTION
+message from another client. I should hope you're getting the hang of how
+Net::IRC handles CTCP requests by now...
+
+</UL>
+<P>
+<HR>
+<H2><A NAME="CTCP_Responses">CTCP Responses</A></H2>
+<UL>
+<LI>
+<P>
+crping
+
+<P>
+The ``crping'' event is triggered when the client receives a CTCP PING
+response from another user. See the irctest script for an example of how to
+properly respond to this common event.
+
+<LI>
+<P>
+crversion
+
+<P>
+The ``crversion'' event is triggered when the client receives a CTCP
+VERSION response from another client.
+
+<LI>
+<P>
+crsource
+
+<P>
+The ``crsource'' event is triggered when the client receives a CTCP SOURCE
+response from another client.
+
+<LI>
+<P>
+crtime
+
+<P>
+The ``crtime'' event is triggered when the client receives a CTCP TIME
+response from another client.
+
+<LI>
+<P>
+cruserinfo
+
+<P>
+The ``cruserinfo'' event is triggered when the client receives a CTCP
+USERINFO response from another client.
+
+<LI>
+<P>
+crclientinfo
+
+<P>
+The ``crclientinfo'' event is triggered when the client receives a CTCP
+CLIENTINFO response from another client.
+
+<LI>
+<P>
+crfinger
+
+<P>
+The ``crfinger'' event is triggered when the client receives a CTCP FINGER
+response from another client. I'm not even going to consider making a joke
+about this one.
+
+</UL>
+<P>
+<HR>
+<H2><A NAME="DCC_Events">DCC Events</A></H2>
+<UL>
+<LI>
+<P>
+dcc_open
+
+<P>
+The ``dcc_open'' event is triggered when a DCC connection is established
+between the client and another client.
+
+<LI>
+<P>
+dcc_update
+
+<P>
+The ``dcc_update'' event is triggered when any data flows over a DCC
+connection. Useful for doing things like monitoring file transfer progress,
+for instance.
+
+<LI>
+<P>
+dcc_close
+
+<P>
+The ``dcc_close'' event is triggered when a DCC connection closes, whether
+from an error or from natural causes.
+
+<LI>
+<P>
+chat
+
+<P>
+The ``chat'' event is triggered when the person on the other end of a DCC
+CHAT connection sends you a message. Think of it as the private equivalent
+of ``msg'', if you will.
+
+</UL>
+<P>
+<HR>
+<H2><A NAME="Numeric_Events">Numeric Events</A></H2>
+<UL>
+<LI>
+<P>
+There's a whole lot of them, and they're well-described elsewhere. Please
+see the IRC RFC (1495, at <A
+HREF="http://cs-ftp.bu.edu/pub/irc/support/IRC_RFC">http://cs-ftp.bu.edu/pub/irc/support/IRC_RFC</A>
+) for a detailed description, or the Net::IRC::Event.pm source code for a
+quick list.
+
+</UL>
+<P>
+<HR>
+<H1><A NAME="AUTHORS">AUTHORS</A></H1>
+<P>
+Conceived and initially developed by Greg Bacon &lt;<A HREF="mailto:gbacon@adtran.com">gbacon@adtran.com</A>&gt; and Dennis Taylor &lt;<A HREF="mailto:corbeau@execpc.com">corbeau@execpc.com</A>&gt;.
+
+<P>
+Ideas and large amounts of code donated by Nat ``King'' Torkington &lt;<A HREF="mailto:gnat@frii.com">gnat@frii.com</A>&gt;.
+
+<P>
+Currently being hacked on, hacked up, and worked over by the members of the
+Net::IRC developers mailing list. For details, see <A
+HREF="http://www.execpc.com/~corbeau/irc/list.html">http://www.execpc.com/~corbeau/irc/list.html</A>
+.
+
+<P>
+<HR>
+<H1><A NAME="URL">URL</A></H1>
+<P>
+Up-to-date source and information about the Net::IRC project can be found
+at <A HREF="http://netirc.betterbox.net/">http://netirc.betterbox.net/</A>
+.
+
+<P>
+<HR>
+<H1><A NAME="SEE_ALSO">SEE ALSO</A></H1>
+<UL>
+<LI>
+<P>
+<CODE>perl(1).</CODE>
+
+<LI>
+<P>
+RFC 1459: The Internet Relay Chat Protocol
+
+<LI>
+<P>
+<A HREF="http://www.irchelp.org/,">http://www.irchelp.org/,</A> home of
+fine IRC resources.
+
+</UL>
+</BODY>
+
+</HTML>
