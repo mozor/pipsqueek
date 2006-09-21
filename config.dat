@@ -1,0 +1,70 @@
+# config.dat
+
+$debug = 1;
+# set to 0 to have the bot not report it's status to stdout
+
+$workingdir = '/home/l8nite/';
+# edit this to point to the directory where all the data files and pips.pl is located
+
+$server = 'irc.observers.net';
+# the IRC server this bot should connect to
+
+$port = '6667';
+# the port this server listens on for IRC connections
+
+$control_password='<removed>';
+# enter an DES encrypted password, this will serve as your remote control into the 
+# bots commands.  Without this password you cannot control the bot
+
+$des_salt = '7e';
+# the salt used to encrypt your password
+
+$bot_nickname = 'PipSqueek';
+# what the bot's handle will be
+
+$bot_vhost_name = 'l8nite';
+# the vhost username for the bot
+
+$bot_channel_list = '#aspectfx #watchtower';
+# the channels that this bot will join, separated by spaces
+
+$stats_file = 'stats.dat';
+# this is where the bot keeps each person's score for chatting
+
+$seen_file = 'seen.dat';
+# how the bot keeps track of when you were last on the channel
+
+$swap_file = 'swap.dat';
+# this file is used by the bot to keep track of nickname changes, that way even if
+# someone changes their nickname it will still give them points to their credit.
+
+$quotes_file = 'quotes.txt';
+# just some random quotes for humor
+
+$kickmsg_file = 'kickmsg.txt';
+# random kick messages for some more humor =)
+
+$script_name = 'pips.pl';
+# the actual script name for our bot (so it can restart itself)
+
+$pid_log = 'pid.dat';
+# the Process ID log for our bot so it can kill old processes
+
+$command_prefix = '!';
+# What someone has to type as the first character for bot command
+
+$greet_msg = 'Hey there ::name::!';
+# Whenever someone joins the room, what do we say to them?
+
+$valid_commands = 'quote score top10';
+# useful if you want to disable a command for some reason
+
+$chars_per_point = 100;
+# how many chars a person has to say for a point
+
+$score_report_msg = '::name::\'s score is ::score:: point::plural::';
+# what the bot should say when it finds a users score
+
+$score_error_msg = '::name::\'s score is non-existent';
+# what the bot should say when it can't find a user's score
+
