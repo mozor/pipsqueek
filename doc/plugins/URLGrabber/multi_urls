@@ -1,6 +1,0 @@
-urls [number] [username]
-
-Displays the last 'number' URLS said in the channel by 'username'.
-If 'number' is omitted, returns the last 3 urls.
-If 'username' is omitted, returns urls said by anyone
-'number' may not be larger than 5 or less than 1

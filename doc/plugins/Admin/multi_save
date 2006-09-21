@@ -1,5 +1,0 @@
-save
-
-Issues a pipsqueek_save_userdata event to the POE kernel.
-This saves all the current user info to disk.
-

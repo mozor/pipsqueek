@@ -1,7 +1,5 @@
 roulette [stats [username]]
 
-Let's you play russian roulette in the channel.  The object is to not die.
-Add the parameter 'stats' to see general stats for the game in the channel.
-If you also include a username after the 'stats' command, you'll get specific
-stats for that user.
+Let's you play russian roulette in the channel.  The object is to not die.  
+Add the parameter 'stats' to see general stats for the game in the channel.  If you also include a username after the 'stats' command, you'll get specific stats for that user.
 

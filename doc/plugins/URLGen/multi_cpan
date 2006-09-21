@@ -1,4 +1,0 @@
-cpan <search string>
-
-Returns a valid search URL for 'search string' on search.cpan.org
-

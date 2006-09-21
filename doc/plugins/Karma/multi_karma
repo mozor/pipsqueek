@@ -1,5 +1,0 @@
-karma [item]
-
-Returns the karma for 'item'.
-If 'item' is omitted, returns the highest and lowest karma items.
-

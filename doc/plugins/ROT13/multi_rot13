@@ -1,4 +1,0 @@
-rot13 <input string>
-
-Returns the output of rotating 'input string' by 13 characters.
-

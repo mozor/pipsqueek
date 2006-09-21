@@ -1,4 +1,4 @@
-act <action>
+act [#channel] <action>
 
-The bot wll perform a /me 'action'
+The bot wll perform a /me 'action' in '#channel' or the default channel
 

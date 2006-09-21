@@ -1,5 +1,4 @@
 kick <user> [#channel] [<kick message>]
 
-Kicks 'user' from '#channel' with a kick message of 'kick message'.
-If #channel is omitted, uses the default channel.
-
+Kicks 'user' from '#channel' (or the default channel) with a kick message of 'kick message'.
+If the kick message is omitted, uses the setting from Admin.conf

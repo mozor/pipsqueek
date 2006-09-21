@@ -1,4 +1,4 @@
-say <string>
+say [#channel] <text>
 
-Makes the bot say 'string' in the channel
+Makes the bot say 'text' in '#channel' or the default channel.
 

@@ -14,7 +14,6 @@ PipSqueek Requirements
 	Assorted Perl Modules - latest versions available
 	(* denotes modules installed by default with perl 5.8.0)
 
-		Data::Dumper *
 		File::Find *
 		File::Spec::Functions *
 		FindBin *
@@ -22,12 +21,13 @@ PipSqueek Requirements
 		URI::URL *
 		Class::Accessor
 		DBI
-		DBD::SQLite
+		DBD::SQLite (Windows users, see install help)
 		Math::Units
 		Parse::RecDescent
 		POE
-		POE::Component::IRC
 		URI::Find
+		POE::Component::IRC (bundled with PipSqueek)
+		Date::Parse (bundled with PipSqueek)
 
 		See the section 'Installing Perl Modules' for instructions
 
@@ -59,9 +59,35 @@ Basic Configuration
 	Most configuration items are stored in the file etc/pipsqueek.conf
 	The few that you'll want to really tweak are in there.
 
+	Other plugin configuration options are stored in etc/plugins/*.conf
+	(You may want to edit the NickServ.conf plugin configuration, so that
+	the bot will register it's username when it connects)
+
 	The important options to set are 'server_address', 'server_channel',
-	'identity_nickname', and 'primary_admin'.  The rest are well
-	documented and you should be able to figure them out.
+	and 'identity_nickname'.  The rest are well documented and you should 
+	be able to figure them out.
+
+	Once you've got the configuration file sorted, the last thing to do is
+	run the bot through the installation of its databases and set the 
+	primary username so that you'll be able to command the bot via IRC.
+
+	1. You just have to run the bot and make sure it connects ok and
+	there are no errors.  This will also create and initalize the database
+	and all tables.
+
+	2. Next you have to run the included 'setlevel' script and pass it the 
+	location of your bot's pipsqueek.db file ('var/pipsqueek.db'). It will
+	prompt you for the username and command level you wish to give.
+	A level of 1000 is sufficient for every administrative command there is
+	(although you are able to configure them however you wish)
+
+	3. You're done configuring.  If you want to set another user as an 
+	administrator you can use the bot's !setlevel handler via IRC, or run
+	the setlevel script again.
+
+	4. (Optional), you may want the bot to register it's username with
+	nickserv automatically.  If so, check out the configuration file for
+	the NickServ plugin.  It's in your bot's etc/plugins/ directory.
 
 
 Installing Perl Modules
@@ -163,7 +189,7 @@ Windows:
 
 	Repeat the procedure for whichever modules you need from the list at
 	the top of this document.  So far, the only module which you will 
-	have a problem finding is DBD::SQLite (for the !quote interface).
+	have a problem finding is DBD::SQLite.
 	To install it you must add a new repository to PPM, by running:
 
 		ppm> repository add 
@@ -176,6 +202,6 @@ Windows:
 	If for some reason you are unable to install a module using ppm, 
 	please email pipsqueek@l8nite.net and report it.  I have tested the 
 	installation on Windows XP using ActiveState Perl 5.8.0, and I have 
-	found all the modules required except DBD::SQLite (as noted above).
+	found all the modules required except DBD::SQLite, and Date::Parse.
 
 

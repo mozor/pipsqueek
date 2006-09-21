@@ -1,6 +1,4 @@
 math <mathematical expression>
 
-Evaluates the input as a mathematical expression and returns the result.
-If the expression is valid, will also store the result in the special
-variable '_', which you can use in later expressions.
+Evaluates the input as a mathematical expression and returns the result.  If the expression is valid, will also store the result in the special variable '_', which you can use in later expressions or in various conversion handlers
 

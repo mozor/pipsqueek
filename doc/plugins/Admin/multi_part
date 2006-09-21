@@ -1,5 +1,4 @@
 part [#channel]
 
-Tells the bot to leave '#channel'.
-Leaves the default channel if '#channel' is omitted.
+Tells the bot to leave '#channel' (or the default channel).
 

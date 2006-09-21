@@ -1,4 +1,4 @@
 topic [#channel] <topic>
 
-Sets the topic in '#channel' (or our default channel), to 'topic'
+Sets the topic in '#channel' (or the default channel), to 'topic'
 
