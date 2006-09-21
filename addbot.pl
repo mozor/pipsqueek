@@ -1,6 +1,7 @@
 #
 # PipSqueek install script - Adds a new bot
 #
+push( @INC, "." );
 
 use l8nite::mysql;
 

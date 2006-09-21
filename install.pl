@@ -1,6 +1,7 @@
 #
 # Install script for PipSqueek
 #
+push( @INC, "." );
 
 use l8nite::mysql;
 
@@ -12,7 +13,7 @@ MAIN:
 	my ($root_sql_password);
 
 	print "------------------------------------\n";
-	print "   PipSqueek v1.2.0-mysql install   \n";
+	print "   PipSqueek v1.2.2-mysql install   \n";
 	print "------------------------------------\n";
 	print "\n";
 
