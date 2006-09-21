@@ -1,0 +1,4 @@
+freshmeat <search string>
+
+Returns a valid search URL for 'search string' on freshmeat.net
+

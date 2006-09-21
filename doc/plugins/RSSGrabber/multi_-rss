@@ -1,0 +1,3 @@
+-rss <tag>
+
+Remove the RSS feed associated with "tag"

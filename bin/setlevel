@@ -1,0 +1,102 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
+use DBI;
+
+use Pod::Usage;
+use Getopt::Long;
+
+sub main
+{
+	my $username = "";
+	my $level = 0;
+	my $help;
+
+	my $parser = Getopt::Long::Parser->new();
+	   $parser->configure( 'bundling' );
+	   $parser->getoptions(
+	   	'help|h|?'  => \$help,
+		'user|u=s'  => \$username,
+		'level|l=i' => \$level,
+	   ) or pod2usage(2);
+
+	pod2usage(1) if $help;
+
+	my $filename = $ARGV[0] || pod2usage(1);
+
+	unless( -e $filename )
+	{
+		warn "File '$filename' does not exist.\n";
+		return 3;
+	}
+
+	while( $username eq "" || $level eq "" || $level =~ /[^\d]/ || !$level)
+	{
+		if( $username eq "" )
+		{
+			print "Username? ";
+			$username = <STDIN>;
+			chomp($username);
+		}
+
+		if( $level eq "" || $level =~ /[^\d]/ || !$level )
+		{
+			print "Level? ";
+			$level = <STDIN>;
+			chomp($level);
+		}
+	}
+
+	my $dbh = DBI->connect( "DBI:SQLite:$filename", 
+				{ 'RaiseError' => 1, 'AutoCommit' => 1 } );
+
+        my $sql = 'SELECT id FROM users WHERE LOWER(username) = LOWER(?)';
+	my $sth = $dbh->prepare( $sql );
+	   $sth->execute( $username );
+
+	my $userid = ($sth->fetchrow_array())[0];
+
+	if( defined($userid) && $userid )
+	{
+		my $sql = 'UPDATE users SET cmd_level=? WHERE id=?';
+		my $sth = $dbh->prepare( $sql );
+		   $sth->execute( $level, $userid );
+
+		print "Record for $username updated.\n";
+	}
+	else
+	{
+		warn "User not found: '$username'\n";
+	}
+
+	return 0;
+}
+
+
+exit( &main(@ARGV) );
+
+
+__END__
+
+=head1 NAME
+setlevel - script to change command levels of users in the pipsqueek database
+
+=head1 SYNOPSIS
+
+setlevel -u <username> -l <level> /path/to/pipsqueek.db
+
+  Options:
+  --help -? -h      brief help message
+
+  --user -u         the username of the user we're changing 
+  --level -l        the new command level for the user
+
+=head1 DESCRIPTION
+
+B<PipSqueek> is a perl IRC bot with many features.  See http://pipsqueek.net/
+
+=cut
+

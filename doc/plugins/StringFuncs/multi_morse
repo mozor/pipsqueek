@@ -1,0 +1,4 @@
+morse [<text | %>]
+
+Returns the decoding or encoding of 'text' to or from morse code.  
+

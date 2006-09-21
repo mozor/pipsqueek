@@ -1,0 +1,4 @@
+multi_int2bin <input | _>
+
+Converts 'input' or the value stored in '_' from an integer to binary.
+

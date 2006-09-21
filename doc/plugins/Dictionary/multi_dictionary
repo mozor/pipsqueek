@@ -1,0 +1,4 @@
+dictionary <word>
+
+Will return the URL to lookup the definition of 'word'.  This trigger can also be called in-context if you append (sp?) to the end of any word you want to look up.
+

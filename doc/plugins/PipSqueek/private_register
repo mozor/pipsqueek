@@ -1,0 +1,4 @@
+register <password> <username>
+
+Tells the bot that you would like to register with password 'password'.  This is also your chance to set the 'username' that the bot recognizes you as.  *NOTE* Pay attention to the order of the arguments
+

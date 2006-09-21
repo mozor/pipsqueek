@@ -1,0 +1,3 @@
+weather <zip>
+
+Gives you the town, state, temperature and conditions in the area of the ZIP that you entered.

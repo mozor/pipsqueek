@@ -1,0 +1,4 @@
+multi_oct2int <input | _>
+
+Converts 'input' or the value stored in '_' from octal to an integer.
+

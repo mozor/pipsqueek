@@ -1,0 +1,4 @@
+exchange [amount] <code from> <code to>
+
+Converts 'amount' from one currency to another.  Amount defaults to '1', and you can also use the special variable '_' which is the last result of a previous math expression or conversion.  Use the !currency command to search for the proper code of a country.
+

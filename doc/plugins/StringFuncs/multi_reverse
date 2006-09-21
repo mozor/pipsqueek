@@ -1,0 +1,4 @@
+reverse [<text | %>]
+
+Returns 'text', or the value stored in the special string variable '%', or the last message longer than 3 characters in the channel after reversing it
+
