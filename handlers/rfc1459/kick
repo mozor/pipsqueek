@@ -1,0 +1,21 @@
+#------------------------------------------------------------------------------#
+# ~ irc_kick
+# ~ You get this whenever someone is kicked from a channel
+sub
+{
+	my ($kernel,$sender,$channel,$receiver,$message) = @_[KERNEL, ARG0 .. ARG3];
+	my $nick = (split /!/, $sender)[0];
+	if( $receiver eq $bot->{'info'}->{'nick'} )
+	{
+		# OMG (S)HE KICKED US ... Commie bastards
+		push( @{ $_[HEAP]->{'enemies'} }, $nick );
+		$kernel->post( 'pipsbot', 'join', $channel );
+	}
+	else
+	{
+		&user_set( $receiver, 'active', 0 );
+		&user_set( $nick, 'kicks', &user_get( $nick, 'kicks' ) + 1 );
+		&user_set( $receiver, 'kicked', &user_get( $receiver, 'kicked' ) + 1 );
+	}
+}
+#______________________________________________________________________________#

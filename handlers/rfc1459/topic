@@ -1,0 +1,15 @@
+#------------------------------------------------------------------------------#
+# ~ irc_topic
+# ~ Sent whenever someone changes the topic in a channel we're on
+sub
+{
+	my ($kernel,$sender,$recipient) = @_[KERNEL, ARG0, ARG1];
+	my $nick = (split /!/, $sender)[0];
+
+	unless( $nick eq $bot->{'info'}->{'nick'} )
+	{
+		my $topicc = &user_get( $nick, 'topics' );
+		&user_set( $nick, 'topics', $topicc + 1 );
+	}
+}
+#______________________________________________________________________________#

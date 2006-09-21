@@ -1,0 +1,10 @@
+#------------------------------------------------------------------------------#
+# ~ irc_connected
+# ~ The IRC component will send an irc_connected event as soon as it establishes
+sub
+{
+	my $server_name = $_[ARG0];
+	$_[HEAP]->{init_time} = time;
+	&debug(qq|Connected to $server_name.  Now logging in...|);
+}
+#______________________________________________________________________________#

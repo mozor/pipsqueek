@@ -1,0 +1,11 @@
+#------------------------------------------------------------------------------#
+# ~ irc_disconnected
+# ~ The counterpart to irc_connected, sent whenever a socket connection to an
+sub
+{
+	my ($kernel, $server_name) = @_[KERNEL, ARG0];
+	&debug(qq|Disconnected from $server_name|);
+	&debug(q|Attempting to reconnect|);
+	&connect_to_irc($kernel);
+}
+#______________________________________________________________________________#

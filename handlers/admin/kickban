@@ -1,0 +1,31 @@
+#------------------------------------------------------------------------------#
+# ~ /msg pipsqueek <pass> kickban #channel username <optional message>
+# ~ Bans and then kicks a user in the specified channel
+sub
+{
+	my ($kernel,$sender,$recipients,$msg) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split(/!/,$sender))[0];
+	my @message = split(/ /,$msg);
+	# remove the password and the word 'raw' from the arguments
+	shift @message;	# control password
+	shift @message; # 'action'
+	my $channel = shift @message;
+	my $user = shift @message;
+	if( $channel =~ /^#/ )
+	{
+		if( $user )
+		{
+			$kernel->post( 'pipsbot', 'mode', $channel, '+b', "*${user}!*@*" );
+			$kernel->post( 'pipsbot', 'kick', $channel, $user, join(' ',@message) );
+		}
+		else
+		{
+			$kernel->post( 'pipsbot', 'notice', $nick, 'You must specify a user' );
+		}
+	}
+	else
+	{
+		$kernel->post( 'pipsbot', 'notice', $nick, 'You must specify a channel.' );
+	}
+}
+#______________________________________________________________________________#

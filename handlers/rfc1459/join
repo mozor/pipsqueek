@@ -1,0 +1,28 @@
+#------------------------------------------------------------------------------#
+# ~ irc_join
+# ~ You get this whenever someone joins the channel
+sub
+{
+	my ($kernel,$sender,$channel,$message) = @_[KERNEL, ARG0, ARG1];
+	my $nick = (split /!/, $sender)[0];
+	&user_set( $nick, 'active', 1 );
+	if( $bot->{'channel'}->{$channel}->{'autogreet'} && $nick ne $bot->{'info'}->{'nick'} )
+	{
+		my $greeting = &user_get( $nick, 'greeting' ) || "Hello $nick!";
+		$greeting =~ s/::nick::/$nick/gi;
+		$kernel->post( 'pipsbot', 'privmsg', $channel, $greeting );
+	}
+	if( $bot->{'channel'}->{$channel}->{'revenge'} && $nick eq $bot->{'info'}->{'nick'} )
+	{
+		foreach my $enemy ( @{ $_[HEAP]->{'enemies'} } )
+		{
+			$kernel->post(	'pipsbot',
+					'kick',
+					$channel,
+					$enemy,
+					'j00 have been 0wned, sucka'
+			);
+		}
+	}
+}
+#______________________________________________________________________________#

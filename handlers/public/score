@@ -1,0 +1,26 @@
+#------------------------------------------------------------------------------#
+# ~ returns a user's score
+# ~ !score <optional name>
+sub
+{
+	my ($kernel,$sender,$channel,$msg) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split(/!/,$sender))[0];
+	my @message = split( / /, $msg );
+	shift @message; # get rid of the !score
+
+	my $user = &user_get( ($message[0] || $nick), 'nick' );
+
+	if( $user )
+	{
+		$kernel->post( 'pipsbot', 'privmsg', $channel, 
+			$user ."'s score is " . ( &user_get($user, 'chars') / 100) . " points"
+		);
+	}
+	else
+	{
+		$kernel->post( 'pipsbot', 'privmsg', $channel, 'User not found.' );
+	}
+
+	return;
+}
+#______________________________________________________________________________#

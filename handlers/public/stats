@@ -1,0 +1,37 @@
+#------------------------------------------------------------------------------#
+# ~ returns a user's stats
+# ~ !stats <optional name>
+sub
+{
+	my ($kernel,$sender,$channel,$msg) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split(/!/,$sender))[0];
+	my @message = split( / /, $msg );
+	shift @message; # get rid of the !score
+
+	my $user = &user_get( ($message[0] || $nick), 'nick' );
+
+	if( $user )
+	{
+		my $lines   = &user_get( $user, 'lines'   );
+		my $words   = &user_get( $user, 'words'   );
+		my $chars   = &user_get( $user, 'chars'   );
+		my $smiles  = &user_get( $user, 'smiles'  );
+		my $actions = &user_get( $user, 'actions' );
+		my $modes   = &user_get( $user, 'modes'   );
+		my $topics  = &user_get( $user, 'topics'  );
+		my $kicks   = &user_get( $user, 'kicks'   );
+		my $kicked  = &user_get( $user, 'kicked'  );
+		
+		$kernel->post( 'pipsbot', 'privmsg', $channel, 
+			"$user: $words words, $lines lines, $actions actions, $smiles smiles, ".
+			"kicked $kicks lusers, been kicked $kicked times, set $modes modes, changed the topic $topics times."
+		);
+	}
+	else
+	{
+		$kernel->post( 'pipsbot', 'privmsg', $channel, 'User not found.' );
+	}
+
+	return;
+}
+#______________________________________________________________________________#

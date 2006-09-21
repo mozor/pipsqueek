@@ -1,0 +1,10 @@
+#------------------------------------------------------------------------------#
+# ~ irc_ctcp_ping
+# ~ irc_ctcp_* events are generated upon receipt of CTCP messages
+sub
+{
+	my ($kernel,$sender,$recipients,$message) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split /!/, $sender)[0];
+	$kernel->post( 	'pipsbot', 'ctcpreply', $nick, "PING $message" );
+}
+#______________________________________________________________________________#

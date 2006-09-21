@@ -1,0 +1,65 @@
+#------------------------------------------------------------------------------#
+# ~ returns a user's rank (or the user with a specified rank)
+# ~ !rank <optional name or number>
+sub
+{
+	my ($kernel,$sender,$channel,$msg) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split(/!/,$sender))[0];
+	my @message = split( / /, $msg );
+	shift @message; # get rid of the !rank
+
+	my $user;
+	if( $message[0] && ($message[0] !~ /[^0-9]/) )
+	{
+		$user = 'GetRankByNumber';
+	}
+	else
+	{
+		$user = &user_get( ($message[0] || $nick), 'nick' );
+	}
+
+	&debug( "After the fray, nick: $nick  user: $user  message: " . $message[0] );
+	
+	my @list =	reverse sort
+				{
+				$users->{'user'}->{$a}->{'chars'} <=> $users->{'user'}->{$b}->{'chars'}
+				}
+			keys %{ $users->{'user'} };
+
+
+	if( $user eq 'GetRankByNumber' )
+	{
+		# request by number
+		if( $message[0] > ($#list+1) )
+		{
+			$kernel->post( 'pipsbot', 'privmsg', $channel, 'Rank not found.' );
+			return;
+		}
+		
+		$kernel->post( 'pipsbot', 'privmsg', $channel, 
+			"Rank $message[0]: " . $list[$message[0] - 1] . 
+			' (' . (($users->{'user'}->{ $list[$message[0] - 1] }->{'chars'}) / 100 ). ')'
+		);
+	}
+	elsif( $user ne "")
+	{
+		my $rank = 1;
+		foreach (@list)
+		{
+			if( $user eq $_ )
+			{
+				my $score = ( $users->{'user'}->{$user}->{'chars'} / 100 );
+				$kernel->post( 'pipsbot', 'privmsg', $channel, "Rank $rank: $user ($score)" );
+				last;
+			}
+			$rank++;
+		}
+	}
+	else
+	{
+		$kernel->post( 'pipsbot', 'privmsg', $channel, 'User not found.' );
+	}
+
+	return;
+}
+#______________________________________________________________________________#

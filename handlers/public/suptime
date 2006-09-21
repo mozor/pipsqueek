@@ -1,0 +1,15 @@
+#------------------------------------------------------------------------------#
+# ~ returns the output of `uptime` - utility function
+# ~ !suptime
+sub
+{
+	my ($kernel,$sender,$channel,$msg) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split(/!/,$sender))[0];
+
+	my $uptime = `uptime`;
+	$uptime =~ s/^\s+//;
+	$kernel->post( 'pipsbot', 'privmsg', $channel, $uptime );
+
+	return;
+}
+#______________________________________________________________________________#

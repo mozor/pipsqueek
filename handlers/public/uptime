@@ -1,0 +1,31 @@
+#------------------------------------------------------------------------------#
+# ~ returns how long the bot has been running
+# ~ !uptime
+sub
+{
+	my ($kernel,$sender,$channel,$msg) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split(/!/,$sender))[0];
+
+	my $uptime = time - $_[HEAP]->{init_time};
+	my $days = int($uptime / 86400);	$uptime = $uptime % 86400;
+	my $years = int( $days / 365 );		$days = $days % 355;
+	my $centur = int( $years / 100 );	$years = $years % 100;
+	my $millen = int( $centur / 10 );	$centur = $centur % 10;
+	my $hours = int($uptime / 3600);	$uptime = $uptime % 3600;
+	my $minutes = int($uptime / 60);	$uptime = $uptime % 60;
+	my $seconds = $uptime;
+
+	$kernel->post( 'pipsbot', 'privmsg', $channel,
+	"I have been active for " . 
+		($millen  ? $millen  . ' milleni'. ($millen  != 1 ? 'a ' : 'um '):'') .
+		($centur  ? $centur  . ' centur' . ($centur  != 1 ? 'ies ':'y '): '') .
+		($years   ? $years   . ' year'   . ($years   != 1 ? 's ' : ' ') : '') .
+		($days    ? $days    . ' day'    . ($days    != 1 ? 's ' : ' ') : '') .
+		($hours   ? $hours   . ' hour'   . ($hours   != 1 ? 's ' : ' ') : '') .
+		($minutes ? $minutes . ' minute' . ($minutes != 1 ? 's ' : ' ') : '') .
+		($seconds ? ($minutes ? 'and ' : '') . $seconds . ' second' . ($seconds != 1 ? 's'  : '' ) : '')
+	);
+	
+	return;
+}
+#______________________________________________________________________________#

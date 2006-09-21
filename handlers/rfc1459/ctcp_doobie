@@ -1,0 +1,9 @@
+#------------------------------------------------------------------------------#
+# ~ irc_ctcp_doobie
+# ~ irc_ctcp_* events are generated upon receipt of CTCP messages
+sub
+{
+	my ($kernel,$sender,$recipients,$message) = @_[KERNEL, ARG0 .. ARG2];
+	$kernel->post( 'pipsbot', 'ctcpreply', (split(/!/,$sender))[0], "Smokin' a phat one!" );
+}
+#______________________________________________________________________________#

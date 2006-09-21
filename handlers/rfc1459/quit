@@ -1,0 +1,13 @@
+#------------------------------------------------------------------------------#
+# ~ irc_quit
+# ~ You get this whenever someone leaves the server
+sub
+{
+	my ($kernel,$sender,$message) = @_[KERNEL, ARG0];
+	my $nick = (split /!/, $sender)[0];
+	# we don't care if it was us that left the channel
+	return if $nick eq $bot->{'info'}->{'nick'};
+	return if $nick eq $bot->{'info'}->{'alt'};
+	&user_set( $nick, 'active', 0 );
+}
+#______________________________________________________________________________#

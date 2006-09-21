@@ -1,0 +1,9 @@
+#------------------------------------------------------------------------------#
+# ~ irc_error
+# ~ You get this whenever the server sends you an ERROR message
+sub
+{
+	my $err = $_[ARG0];
+	&debug(qq|Error from server: $err|);
+}
+#______________________________________________________________________________#

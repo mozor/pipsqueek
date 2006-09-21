@@ -1,0 +1,12 @@
+#------------------------------------------------------------------------------#
+# ~ /msg pipsqueek <pass> shutdown
+# ~ Shuts down the bot
+sub
+{
+	my ($kernel,$sender,$recipients,$msg) = @_[KERNEL, ARG0 .. ARG2];
+	my $nick = (split(/!/,$sender))[0];
+	my @message = split(/ /,$msg);
+	$kernel->post( 'pipsbot', 'quit', 'PipSqueek v2.0  http://aspect2.l8nite.net' );
+	exit;
+}
+#______________________________________________________________________________#
