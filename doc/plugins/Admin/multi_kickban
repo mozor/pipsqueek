@@ -1,0 +1,7 @@
+kickban <user> [#channel] [ban_type] [<kick message>]
+
+Sets a ban according to 'ban_type' (see help for ban) and then kicks 'user'
+from '#channel' with a kick message of 'kick message'.
+If '#channel' is not supplied, uses the default channel.
+If 'ban_type' is omitted, takes the default from the configuration file.
+

@@ -1,0 +1,5 @@
+cycle [#channel]
+
+Instructs the bot to part and then join '#channel'.
+If '#channel' is omitted, uses the default channel
+

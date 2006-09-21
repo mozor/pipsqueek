@@ -1,0 +1,6 @@
+identify <password>
+
+Attempts to identify you as the registered owner of this account using
+'password'.  Some higher-level commands require you to be identified before
+you are able to use them.
+

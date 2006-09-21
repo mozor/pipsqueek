@@ -1,0 +1,159 @@
+# ChangeLog for PipSqueek
+# Copyright 2000-2003 Shaun Guth; Distributed under the GPL v2
+
+* pipsqueek-4.0.1
+
+	09 Jun 2003; Shaun Guth <l8nite@l8nite.net>
+	lib/PipSqueek/Plugins/Stats.pm, bin/pipsqueek.pl:
+	Fixed a bug in the cloaking feature whereby a user couldn't use the
+	!rank command to get their own stats.  Also, if a user requests the
+	stats for themselves by typing their username out, the 'sorry!' message
+	is displayed to them.  Also fixed an error whereby the VERSION number
+	wasn't updated to 4.0.0 at release time :x
+
+* pipsqueek-4.0.0
+
+	07 Jun 2003; Shaun Guth <l8nite@l8nite.net> 
+	lib/PipSqueek/Plugins/Stats.pm, misc files:
+	Some minor touchups, a few typos caught, etc. Released.
+
+	06 Jun 2003; Shaun Guth <l8nite@l8nite.net> 
+	lib/PipSqueek/Plugins/URLGrabber.pm, doc/INSTALL,
+	lib/PipSqueek/Plugin.pm, *:
+	Moved the URLGrabber to using URI::Find::Schemeless (much better than
+	the crappy regex that was there before), updated INSTALL docs to note
+	that it was required.  Also squashed a bug I thought had been fixed
+	previously with the bot's nickname.  Prepped for release of 4.0.0
+
+	01 Jun 2003; Shaun Guth <l8nite@l8nite.net> *:
+	Some big style cleanups all over the place, added a logo to the README
+	file, rewrote the delegation handler for commands, improved the help
+	documentation, etc..  Time to get started on a tutorial for module
+	writing :-)
+
+	31 May 2003; Shaun Guth <l8nite@l8nite.net> 
+	lib/PipSqueek/Plugins/Slap.pm, doc/INSTALL, lib/PipSqueek/Plugin.pm,
+	lib/PipSqueek/Plugins/Admin.pm, etc/pipsqueek.conf:
+	Slapping someone now allows more than one word as the 'thing' to hit.
+	Added more install information and configuration information, also
+	documented the configuration file itself.  Cleaned up the way kicks
+	were handled.  Fixed a small bug in the connection setup whereby if
+	the bots nickname was set, it wouldn't tell the config module that it
+	was using the default 'PipSqueek'.  So any further attempts to match
+	the bot's nickname would fail (nickname is nothing).
+
+	30 May 2003; Shaun Guth <l8nite@l8nite.net> *:
+	Another large cleanup of the code, overhauled the semantics of the way
+	pipsqueek tracks nicknames and maps them to their stats.  Squashed a
+	lot of bugs related to various plugin modules, fixed up an error in
+	the stats tracking that arose from the new nickname tracking code.
+	Rewrote the stats module to take advantage of the new tracking, etc.
+
+	27 May 2003; Shaun Guth <l8nite@l8nite.net> doc/plugins/*, 
+	lib/PipSqueek/Plugins/Help.pm, doc/README, doc/logo.txt:
+	Wrote initial help for each event handler and finished Help interface.
+	Added updated README file with better formatting, new credits to Cyon.
+	Added doc/logo.txt with the original PipSqueek ascii art logo!
+
+	26 May 2003; Shaun Guth <l8nite@l8nite.net> doc/INSTALL:
+	Added initial requirements, installation, configuration sections.
+	Also added a section on installing perl modules
+
+	25 May 2003; Shaun Guth <l8nite@l8nite.net> doc/Changelog:
+	Created Changelog (slightly modeled after gentoo's changelog format)
+
+	11 May 2003; Shaun Guth <l8nite@l8nite.net> *:
+	A complete, 90% from scratch, rewrite of the code.  Improved module
+	semantics, improved API, improved core, updated configuration, newer
+	features, and much, much, more!
+
+
+# It should be noted that the changelog prior to this is incomplete and most
+# likely innaccurate too.  It is pieced together from development notes and
+# snapshots of pipsqueek's homepage from the wayback machine ;)
+# PipSqueek up to this point was mostly learning code, not release code.
+
+* pipsqueek-3.2.2
+
+	07 Oct 2002; Shaun Guth <l8nite@l8nite.net> *:
+	Added quotes database using DBD::SQLite, cleaned up various warning
+	messages, hacked in a feature to have the bot respond to handlers in a
+	private message (useful for users that like to check their score or
+	stats in private), added the math handler again after some cleanup of
+	the exploitable code (still uses eval), misc bugfixes, etc...
+
+* pipsqueek-3.2.1
+
+	20 Jul 2002; Shaun Guth <l8nite@l8nite.net> *:
+	Fixed an error that occured when the bot was restarted but no users
+	had been added to the database yet.  Updated the handler loading so
+	that the primary code can be in a single directory, and still be run
+	for multiple channels.  Custom handlers will also be loaded from the 
+	cwd you run pipsqueek in, and will override handlers already set
+
+* pipsqueek-3.2.0
+
+	17 Jul 2002; Shaun Guth <l8nite@l8nite.net> *:
+	Lots of bugfixes, fixed an error in the ranking output that caused 
+	incorrect ranks to be calculated, added a math evaluation module, added
+	the ability to reload plugin modules on the fly, added online help, 
+	added a command to list the commands available, and also updated and
+	improved the usage/description info for all public and admin commands
+
+* pipsqueek-3.1.0
+
+	15 Jul 2002; Shaun Guth <l8nite@l8nite.net> *:
+	Complete rewrite of 3.0b code, kept same module style but implemented a
+	different API.  Created several additional modules for making the jobs
+	of module-writers easier.  Patched POE::Component::IRC to make part
+	messages work properly (or just use version 2.2 or later).  Made the
+	handler modules more flexible (one module can handle several events).
+
+* pipsqueek-3.0.0b
+
+	03 Jul 2002; Shaun Guth <l8nite@l8nite.net> *:
+	Complete rewrite of the 2.0 code.  PipSqueek now uses full-fledged perl
+	objects as handlers.  Added new core code to accomodate the new handler
+	formats, added a Users.pm and Settings.pm to move some of the code out
+	of the primary pipsqueek.pl script.
+
+* pipsqueek-2.0.0b
+
+	13 Mar 2002; Shaun Guth <l8nite@l8nite.net> *:
+	Cleaned up and released as an actual package.  Moved handlers to files
+	defined outside of the main code (they just contain anonymous subs).
+	Removed the !seen functionality since Epona botserv was providing it
+	anyway.
+	
+* pipsqueek-1.4.0
+
+	15 Sep 2001; Shaun Guth <l8nite@l8nite.net> *:
+	Another complete rewrite removing a ton of excess code, and reducing 
+	memory/processor usage. This version of pipsqueek also did away with
+	the Net::IRC module in favor of POE::Component::IRC, a much more
+	frequently  updated and stable module (thanks to a tip from #perl)
+
+* pipsqueek-1.2.2
+
+	26 Jul 2001; Shaun Guth <l8nite@l8nite.net> *:
+	This was just a maintenance update that fixed a regex problem with the
+	public command prefix when it was set to '.'.  The pipsqueek installer
+	script was also enhanced slightly.
+
+* pipsqueek-1.2.1
+
+	25 Jul 2001; Shaun Guth <l8nite@l8nite.net> *:
+	This version fixes a few minor formatting issues and integrates the 
+	Chatbot::Eliza perl module to give the bot a truly unique personality!
+	Also included with this release is an updated install script. 
+	* This was the first public release of pipsqueek's code
+
+* pipsqueek-1.1.0
+	
+	?? ??? 2001; Shaun Guth <l8nite@l8nite.net> *:
+	Added language translations (canadian, eh?) and some prelim support for
+	new commands... ???
+
+* pipsqueek-1.0.0
+* pipsqueek-0.3.0
+

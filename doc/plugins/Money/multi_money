@@ -1,0 +1,8 @@
+money [amount] <code from> <code to>
+
+Converts 'amount' from one currency to another.
+If 'amount' is not specified, defaults to 1.
+You may also use the special variable '_' from the math command as an amount.
+Use the command 'money codesearch <country name>' to try and locate the
+code for your currency.
+

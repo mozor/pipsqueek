@@ -1,0 +1,4 @@
+topic [#channel] <topic>
+
+Sets the topic in '#channel' (or our default channel), to 'topic'
+

@@ -1,0 +1,4 @@
+help <command>
+
+Returns the help information for 'command'
+

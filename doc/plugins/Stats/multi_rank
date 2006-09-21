@@ -1,0 +1,6 @@
+rank [<username>] ['category']
+
+Returns the rank for 'username' in 'category'.  Note that the quotes around
+the category name are mandatory if you specify a username.
+If 'username' is omitted, uses the caller's username.
+

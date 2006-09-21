@@ -1,0 +1,4 @@
+say <string>
+
+Makes the bot say 'string' in the channel
+

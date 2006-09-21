@@ -1,0 +1,6 @@
+reverse [<input string>]
+
+Returns the output of reversing 'input string'.
+If 'input string' is omitted, attempts to reverse the last said message in
+the channel.
+

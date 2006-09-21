@@ -1,0 +1,6 @@
+convert [amount] <from unit> <to unit>
+
+Converts 'amount' units from 'from unit' to 'to unit'.
+'amount' is 1 by default.  You can also use the special '_' symbol from the
+last mathematical expression here.
+

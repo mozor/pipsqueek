@@ -1,0 +1,6 @@
+quote [<id -or- phrase>]
+
+Returns the quote referenced by 'id', or tries to find a quote matching
+'phrase'.
+If no arguments are given, returns a random quote from the database.
+

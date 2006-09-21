@@ -1,0 +1,5 @@
+join [#channel]
+
+Tells the bot to join '#channel'.
+If '#channel' is not specified, joins the default channel
+

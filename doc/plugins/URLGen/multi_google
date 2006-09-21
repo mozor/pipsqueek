@@ -1,0 +1,4 @@
+google <search string>
+
+Returns a valid search URL for 'search string' on google.com
+

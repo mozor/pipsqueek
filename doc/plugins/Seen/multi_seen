@@ -1,0 +1,5 @@
+seen <username>
+
+Returns how long ago the bot last saw 'username', and what 'username' was
+doing at the time.
+

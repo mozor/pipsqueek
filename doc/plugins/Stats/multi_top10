@@ -1,0 +1,4 @@
+top10 ['category']
+
+Returns the 10 highest ranked usernames in the 'category'.
+If 'category' is omitted, defaults to characters typed in the channel ('chars').

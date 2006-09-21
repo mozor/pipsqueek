@@ -1,0 +1,181 @@
+# Install documentation for PipSqueek 
+# Copyright 2000-2003 Shaun Guth
+
+PipSqueek Requirements
+~~~~~~~~~~~~~~~~~~~~~~
+
+	Perl - At least version 5.6.1 (5.8.0 Recommended)
+
+	(Linux)   - http://www.perl.com/pub/a/language/info/software.html
+	(Windows) - http://www.activestate.com/Products/ActivePerl/
+
+	See the included documentation for how to install and test Perl.
+
+	Assorted Perl Modules - latest versions available
+	(* denotes modules installed by default with perl 5.8.0)
+
+		Data::Dumper *
+		File::Find *
+		File::Spec::Functions *
+		FindBin *
+		LWP::UserAgent *
+		URI::URL *
+		Class::Accessor
+		DBI
+		DBD::SQLite
+		Math::Units
+		Parse::RecDescent
+		POE
+		POE::Component::IRC
+		URI::Find
+
+		See the section 'Installing Perl Modules' for instructions
+
+
+Basic Installation
+~~~~~~~~~~~~~~~~~~
+
+	Make sure you have downloaded the latest version of PipSqueek from
+	http://pipsqueek.l8nite.net/ PipSqueek is distributed as either a 
+	tarball (.tar.gz extension) for Linux users, or a zip archive (.zip 
+	extension) for Windows users.
+
+	Check the 'PipSqueek Requirements' section to ensure that you have
+	everything needed to run the bot.
+
+	Unpack the archive into the directory you wish to install pipsqueek.
+	The archive will automatically create a subdirectory called 'pipsqueek'
+
+		(Linux):   tar -zxvf pipsqueek-version.tar.gz
+		(Windows): right-click the archive and select 'unzip here'
+
+	That's it, PipSqueek is now installed, now you have to configure it!
+	See the section 'Basic Configuration'
+
+
+Basic Configuration
+~~~~~~~~~~~~~~~~~~~
+
+	Most configuration items are stored in the file etc/pipsqueek.conf
+	The few that you'll want to really tweak are in there.
+
+	The important options to set are 'server_address', 'server_channel',
+	'identity_nickname', and 'primary_admin'.  The rest are well
+	documented and you should be able to figure them out.
+
+
+Installing Perl Modules
+~~~~~~~~~~~~~~~~~~~~~~~
+
+	For the technically savvy, you can view comprehensive documentation
+	using the 'perldoc' utility.  The page is 'perlmodinstall'.  The rest
+	of this section is almost a verbatim copy of that perlpage.
+
+	First, are you sure that the module isn't already on your system?
+	You can find out using:
+
+		perl -MFoo -e 1
+
+	Replace "Foo" with the module name; ie, "perl -MCGI::Carp -e 1".
+
+	If you don't see an error message, you have the module.  If you do see
+	an error, it's still possible you have the module, but that it's not 
+	in your path, which you can display with:
+
+		perl -e 'print qq(@INC)'
+
+	For the remainder of this document, we'll assume that you really are
+	missing the module, but want to install it from CPAN.
+
+	Also note that these instructions are tailored for installing the 
+	modules into your system's repository of Perl modules, but you can 
+	install them into any directory you wish using the PREFIX option.
+
+	For example, wherever you see 'perl Makefile.PL', you can substitute
+	'perl Makefile.PL PREFIX=/my/very/own/perl/directory'
+
+	If you do install them into your own directory, you must ensure that
+	any perl scripts you run know to look for modules there.  You can do
+	this using the -I switch to perl.  See 'perldoc perlrun' for details.
+
+
+Linux:
+
+	You can use Andreas Koenig's CPAN module to automate the next steps
+	( http://www.cpan.org/modules/by-module/CPAN ), ie:
+
+		perl -MCPAN -e 'install Foo::Bar'
+
+	First you have to find the module to install on CPAN, the 
+	Comprehensive Perl Archive Network (http://search.cpan.org).
+
+	So now you have a file ending in .tar.gz (or, less often, .zip).  You
+	know there's a tasty module inside.  There are three steps involved.
+	This is *not* a substitute for reading the README and INSTALL files
+	that may have come with your module!
+
+	UNPACK:
+		If you have a tarball (.tar.gz extension) you can use GNU tar 
+		to decompress and unpack the file:
+
+			tar -zxvf file.tar.gz
+
+		If you have a zip archive (.zip extension) you should use the
+		'unzip' tool (ftp://ftp.info-zip.org/pub/infozip/UnZip.html)
+
+			unzip file.zip
+
+	BUILD:
+		Go into the newly created directory and run:
+
+			perl Makefile.PL
+			make
+			make test
+
+		Remember, if you want to install the perl module into a local
+		directory, use 'perl Makefile.PL PREFIX=/custom/directory'
+
+	INSTALL:
+		While still in the new directory, just run:
+
+			make install
+
+		Note that you will need root permissions for this step if 
+		you are not installing it into a custom directory.
+
+Windows:
+
+	You can use ActiveState's PPM utility to see if it is available for
+	installation from their repository of perl modules.  Just launch a
+	shell (Start->Run - type in "cmd") and run:
+
+		ppm
+
+	You should see a prompt like 'ppm> '
+	To search for a module, at the prompt type 'search Foo', ie:
+
+		ppm> search Class::Accessor
+
+	After which, you should see a list of results, the one you want to
+	install is named 'Class-Accessor', to install it run:
+
+		ppm> install Class-Accessor
+
+	Repeat the procedure for whichever modules you need from the list at
+	the top of this document.  So far, the only module which you will 
+	have a problem finding is DBD::SQLite (for the !quote interface).
+	To install it you must add a new repository to PPM, by running:
+
+		ppm> repository add 
+		http://theoryx5.uwinnipeg.ca/cgi-bin/ppmserver?urn:/PPMServer58
+		(*note, this should be all on one line)
+
+	After that repository is added, ppm should be able to find and install 
+	the module without trouble :)
+
+	If for some reason you are unable to install a module using ppm, 
+	please email pipsqueek@l8nite.net and report it.  I have tested the 
+	installation on Windows XP using ActiveState Perl 5.8.0, and I have 
+	found all the modules required except DBD::SQLite (as noted above).
+
+

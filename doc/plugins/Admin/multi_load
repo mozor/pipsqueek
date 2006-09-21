@@ -1,0 +1,5 @@
+load
+
+Issues a pipsqueek_load_userdata event to the POE kernel.
+This loads all the current user info from disk.
+

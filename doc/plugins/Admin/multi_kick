@@ -1,0 +1,5 @@
+kick <user> [#channel] [<kick message>]
+
+Kicks 'user' from '#channel' with a kick message of 'kick message'.
+If #channel is omitted, uses the default channel.
+
