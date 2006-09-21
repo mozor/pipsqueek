@@ -8,13 +8,16 @@ sub plugin_initialize
 	my $self = shift;
 
 	$self->plugin_handlers({
-		'multi_int2hex' => 'convert',
-		'multi_int2bin' => 'convert',
-		'multi_int2oct' => 'convert',
-		'multi_hex2int' => 'convert',
+		'multi_bin2dec' => 'convert',
+		'multi_bin2hex' => 'convert',
+		'multi_bin2oct' => 'convert',
+		'multi_dec2hex' => 'convert',
+		'multi_dec2bin' => 'convert',
+		'multi_dec2oct' => 'convert',
+		'multi_hex2dec' => 'convert',
 		'multi_hex2bin' => 'convert',
 		'multi_hex2oct' => 'convert',
-		'multi_oct2int' => 'convert', 
+		'multi_oct2dec' => 'convert', 
 		'multi_oct2bin' => 'convert', 
 		'multi_oct2hex' => 'convert',
 	});
@@ -50,7 +53,7 @@ sub convert
 }
 
 
-sub bin2int
+sub bin2dec
 {
 	my ($self,$in) = @_;
 	return unpack("N", pack("B32", substr("0" x 32 . $in, -32)));
@@ -69,7 +72,7 @@ sub bin2oct
 		unpack("N", pack("B32", substr("0" x 32 . $in, -32)));
 }
 
-sub int2bin
+sub dec2bin
 {
 	my ($self,$in) = @_;
 	my $out = unpack("B*", pack("N", $in));
@@ -77,14 +80,14 @@ sub int2bin
 	return $out;
 }
 
-sub int2hex
+sub dec2hex
 {
 	my ($self,$in) = @_;
 	my $out = unpack("H8", pack("N", $in));
  	return sprintf '%x', $in;
 }
 
-sub int2oct
+sub dec2oct
 {
 	my ($self,$in) = @_;
 	return sprintf "%o", $in;
@@ -98,7 +101,7 @@ sub hex2bin
 	return $out;
 }
 
-sub hex2int
+sub hex2dec
 {
 	my ($self,$in) = @_;
 	return hex $in;
@@ -118,7 +121,7 @@ sub oct2bin
 	return $out;
 }
 
-sub oct2int
+sub oct2dec
 {
 	my ($self,$in) = @_;
 	return oct $in;

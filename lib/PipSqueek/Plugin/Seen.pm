@@ -18,6 +18,8 @@ sub multi_seen
 	my ($self,$message) = @_;
 	my $username = $message->command_input();
 
+	$username =~ s/\s+$//;
+
 	unless( defined($username) )
 	{
 		$self->respond( $message, "Use !help seen" );

@@ -1,5 +1,6 @@
-quote [<id | phrase>]
+quote [<id | ![r]<comparison> | phrase>]
 
-Returns the quote referenced by 'id', or tries to find a quote matching
-'phrase'.  If no arguments are given, returns a random quote from the database.  You can also use the special variable '_' in place of the id.
+Returns the quote referenced by 'id', or tries to find a quote matching 'phrase'.  To search for quotes with a specific rating (or greater/less than a rating), use !<X, !>X, and !=X, where X is the rating you want to compare against.
+To get a random quote from the database above a certain rating, use !r>X, etc.
+If no arguments are given, returns a random quote from the database.  You can also use the special variable '_' in place of the id.
 

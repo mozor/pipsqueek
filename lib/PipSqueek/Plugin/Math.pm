@@ -26,14 +26,14 @@ precedence_3:   precedence_4
 		| '-' precedence_4  {$item[2]*-1}
 
 
-precedence_4:   <rightop: precedence_5 ('^') precedence_5> { PipSqueek::Plugin::Math::rightop(@item) }
+precedence_4:   <rightop: precedence_5 ('^' | '**' ) precedence_5> { PipSqueek::Plugin::Math::rightop(@item) }
 
 
 precedence_5:   '(' statement ')'  {$item[2]}
 		| number
 
 
-number:         /(?=\d|\.\d)\d*(\.\d*)?([Ee](\d+))?/  {$item [1]}
+number:         /(?=\d|\.\d)\d*(\.\d*)?([Ee](-?\d+))?/  {$item [1]}
 		| 'pi' { 3.1415926535897932 }
 
 _EOGRAMMAR_
@@ -59,7 +59,7 @@ sub rightop
 	while ( @_ > 1 )
 	{
 		my ($y,$op,$x) = (pop(@_),pop(@_),pop(@_));
-		if( $op eq '^' ) { push(@_, $x ** $y) }
+		if( $op eq '^' || $op eq '**' ) { push(@_, $x ** $y) }
 	}
 	return $_[0];
 }
@@ -117,6 +117,11 @@ sub multi_math
 		$self->respond( $message, "Use !help math" );
 		return;
 	}
+
+    if( $expr =~ /[^\ \+\-\%\*\/\^\(\)\d\.Eepi\_]/ )
+    {
+        $self->respond( $message, "Invalid input." );
+    }
 
     my $par_cnt = $expr =~ tr/\(/\(/;
     my $ops_cnt = $self->op_count( $expr );

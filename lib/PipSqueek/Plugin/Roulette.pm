@@ -1,5 +1,6 @@
 package PipSqueek::Plugin::Roulette;
 use base qw(PipSqueek::Plugin);
+use strict;
 
 
 sub plugin_initialize
@@ -148,14 +149,14 @@ sub roulette_reload
 {
 	my ($self,$message) = @_;
 
-	@CHAMBERS = ( 0, 0, 0, 0, 0, 0 );
+	my @CHAMBERS = ( 0, 0, 0, 0, 0, 0 );
 	@CHAMBERS[rand @CHAMBERS] = 1;
 
 	if( time % 23 == 0 ) {
 		@CHAMBERS = ( 0, 0, 0, 0, 0, 0 );
 	}
 
-	@PLAYERS = ();
+	my @PLAYERS = ();
 
 	$self->{'PLAYERS'} = \@PLAYERS;
 	$self->{'CHAMBERS'} = \@CHAMBERS;

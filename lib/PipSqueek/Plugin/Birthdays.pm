@@ -187,13 +187,14 @@ sub multi_birthday
 	my ($self,$message) = @_;
 	my $name = $message->command_input();
 
+	$name =~ s/\s+$//;
+
 	unless( $name )
 	{
 		$self->respond( $message, "You must specify a user" );
 		return;
 	}
 
-	chomp $name;
 	my $bday = $self->dbi()->select_record( 'birthdays',
 			{ 'LOWER(name)' => lc($name) } );
 
@@ -221,7 +222,7 @@ sub multi_birthday
 	if( $bd == $td && $bm == $tm )
 	{
 		$self->respond( $message, 
-			"$name\'s $num birthday is today ($date)! (id: $id)" ); return;
+			"$name\'s $num birthday is today ($date)! Happy birthday, $name! (id: $id)" ); return;
 	}
 
 	# was their birthday before today?

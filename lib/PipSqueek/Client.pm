@@ -84,7 +84,7 @@ sub new
 		'default_kick_message'	=> 'You\'reeeee outta here!',
 		'default_ban_type'	=> '4',
 		'pipsqueek_version'	=> 
-			'PipSqueek v5.1.2: http://pipsqueek.net/',
+			'PipSqueek v5: http://pipsqueek.net/',
 	};
 
 	$config->load_config( undef, $c_data );
@@ -428,7 +428,7 @@ sub plugin_delegate
 
 	# pipsqueek_ events get special treatment
 	unless( $event =~ /^pipsqueek_/ ) {
-	$message = PipSqueek::Message->new($self->CONFIG(),$event,@args);
+		$message = PipSqueek::Message->new($self->CONFIG(),$event,@args);
 	}
 
 	# call the handlers
@@ -491,7 +491,7 @@ sub get_heap
 }
 
 
-# this lets use post events to the kernel from outside ourselves
+# this lets us post events to the kernel from outside ourselves
 sub post
 {
 	my $self = shift;

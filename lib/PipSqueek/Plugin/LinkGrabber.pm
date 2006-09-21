@@ -74,7 +74,7 @@ sub multi_urls
 {
 	my ($self,$message) = @_;
 	my ($amount,$name) = $message->command_input() =~ 
-		m/^(?:(\d+))?\s*(?:(.*?))?$/;
+		m/^(?:(\d+))?\s*(?:(.*?))?\s*$/;
 
 	my $config = $self->config();
 	my $default = $config->linkgrabber_default();

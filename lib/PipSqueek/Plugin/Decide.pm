@@ -63,7 +63,7 @@ sub decide
 			$rv = "$who should $rv";
 		}
 		# Randomly say "neither" for 2 choices
-		if (scalar @choices == 2 && !(int(rand 6))
+		if (scalar @choices == 2 && !(int(rand 66))
 		    && lc($choices[1]) ne 'not')
 		{
 			$rv = "Neither.";
@@ -71,7 +71,7 @@ sub decide
 		return $rv;
 	# One choice
 	} elsif (scalar @choices) {
-		my @opts = ('Yes.', 'No.', 'The choice is obvious.');
+		my @opts = ('Yes.', 'No.');
 		srand time;
 		return @opts[rand @opts];
 	# No choices
@@ -91,12 +91,13 @@ sub irc_public
 	my $text = $message->message();
 
 	my $botnick = $self->config()->current_nickname();
-	if ($text =~ /^$botnick[\s,:;]+(?:should|shall)\s+(\S+)\s+(.+)$/i) {
+	if ($text =~ /^$botnick[,:;]+(?:should|shall)\s+(\S+)\s+(.+)$/i) {
 		my $who = $1;
 		my $decision;
 		# "should I.." or "should my_nick ..."
 		if (lc($who) eq 'i' || lc($who) eq lc($message->nick())) {
 			$decision = $self->decide($2, "You");
+			$decision =~ s/my/your/i;
 		# "should the bot..."
 		} elsif (lc($who) eq lc($botnick) || lc($who) eq 'you') {
 			my @opts = ("HAH! I'll do whatever I want.",

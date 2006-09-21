@@ -18,8 +18,9 @@ sub plugin_initialize
 	find({ 'wanted' => sub
 	{
 		s/.*\///;
-		my $handler = $_;
-		return unless -f $File::Find::name;
+    my $handler = $_;
+    return if(m/\.svn-[a-z]{4}$/);
+    return unless -f $File::Find::name;
 
 		open( my $fh, '<', $File::Find::name ) 
 			or return warn "Error loading '$File::Find::name': $!";

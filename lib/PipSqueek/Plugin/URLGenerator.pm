@@ -8,6 +8,12 @@ sub plugin_initialize
 	my $self = shift;
 
 	$self->plugin_handlers(
+                'multi_sw'          => 'generate_url',
+                'multi_physics'     => 'generate_url',
+                'multi_mw'          => 'generate_url',
+                'multi_mathworld'   => 'generate_url',
+                'multi_imdb'        => 'generate_url',
+                'multi_wiki'        => 'generate_url',
 		'multi_cpan'        => 'generate_url',
 		'multi_perldoc'     => 'generate_url',
 		'multi_freshmeat'   => 'generate_url',
@@ -15,6 +21,7 @@ sub plugin_initialize
 		'multi_sf'          => 'generate_url',
 		'multi_google'      => 'generate_url',
 		'multi_search'      => 'generate_url',
+		'multi_yubnub'		=> 'generate_url',
 	);
 }
 
@@ -44,6 +51,30 @@ sub generate_url
 
 	'sf'		=>
 	[ 'http://sf.net', '/search/?type_of_search=soft&words=$search' ],
+
+	'yubnub'	=>
+	[ 'http://yubnub.org', '/parser/parse?command=$search' ],
+
+	'wiki'		=>
+	[ 'http://en.wikipedia.org',
+	  '/wiki/Special:Search?go=Go&search=$search' ],
+
+	'imdb'		=>
+	[ 'http://imdb.com', '/Find?$search' ],
+
+	'mathworld'	=>
+	[ 'http://mathworld.wolfram.com', '/search/index.cgi?q=$search' ],
+
+	'mw'		=>
+        [ 'http://mathworld.wolfram.com', '/search/index.cgi?q=$search' ],
+
+	'physics'	=>
+	[ 'http://scienceworld.wolfram.com',
+	  '/search/index.cgi?sitesearch=scienceworld.wolfram.com%2Fphysics&q=$search' ],
+
+	'sw'		=>
+        [ 'http://scienceworld.wolfram.com',
+	  '/search/index.cgi?sitesearch=scienceworld.wolfram.com%2Fphysics&q=$search' ],
 	);
 
 

@@ -11,6 +11,7 @@ sub plugin_initialize
 		'multi_+quote' => 'add_quote',
 		'multi_-quote' => 'del_quote',
 		'multi_#quote' => 'cnt_quote',
+		'multi_top10quotes' => 'top10_quotes',
 		'public_quote++' => 'rate_quote',
 		'public_quote--' => 'rate_quote',
 
@@ -38,6 +39,58 @@ sub plugin_initialize
 
 
 #--- begin irc handlers ---#
+sub top10_quotes
+{
+	my ($self,$message) = @_;
+	my $IDS = $self->{'IDS'};
+
+	unless( keys %$IDS )
+	{
+		$self->respond( $message, "There are no quotes." );
+		return;
+	}
+
+	my $dbh = $self->dbi()->dbh();
+	my $sth = $dbh->prepare( 
+		"SELECT * FROM quotes ORDER BY rating DESC LIMIT 10"
+		  );
+	   $sth->execute();
+	
+	my @top3;
+	my @rest;
+	
+	while( my $row = $sth->fetchrow_hashref('NAME_lc') )
+	{
+		my $sample = substr($row->{'quote'},0,200);
+		   $sample .= "..." unless length($sample) < 200;
+		
+		if( @top3 < 3 )
+		{
+			push(@top3, '#' . (@top3+1) . qq(, id $row->{'id'}: $sample));
+		}
+		else
+		{
+			push(@rest,$row->{'id'});
+		}
+	}
+
+	foreach my $text ( @top3 )
+	{
+		$self->respond( $message, $text );
+	}
+	
+	local $" = ', ' if @rest > 2;#"
+	$rest[$#rest] = "and $rest[$#rest]" if @rest > 1;
+	my $s = @rest == 1 ? '' : 's';
+	my $w = @rest == 1 ? 'is' : 'are';
+
+	if( @rest )
+	{
+		$self->respond( $message, "And the runner$s up $w id$s: @rest" );
+	}
+}
+
+
 sub get_quote
 {
 	my ($self,$message) = @_;
@@ -52,11 +105,28 @@ sub get_quote
 		return;
 	}
 
+	$pattern_or_id =~ s/^\s+//gi;
+	$pattern_or_id =~ s/\s+$//gi;
+	
+	my @rows;
+
 	# plain old !quote gets a random one
-	unless( defined $pattern_or_id )
+	unless( defined $pattern_or_id && $pattern_or_id ne "" )
 	{
 		my @IDS = keys %IDS;
 		$pattern_or_id = @IDS[rand @IDS];
+	}
+
+	# pick a random quote according to rating heuristic
+	if( $pattern_or_id =~ m/!(r)?([><=])(\d+)/ )
+	{
+		my ($r,$c,$x) = ($1,$2,$3);
+		@rows = $dbi->select_record( 'quotes', {
+					'rating' => [ $c, $x ]
+				} );
+		if( $r ) {
+			$pattern_or_id = (@rows[rand @rows])->[0];
+		}
 	}
 
 	# searching for a quote by id
@@ -90,17 +160,19 @@ sub get_quote
 	# searching for a quote by regex
 	else
 	{
-		my @rows = $dbi->select_record( 'quotes', {
-				'quote' => [ 'LIKE', "\%$pattern_or_id\%" ] 
-				} );
-	
+		@rows = $dbi->select_record( 'quotes', {
+			'quote' => [ 'LIKE', "\%$pattern_or_id\%" ] 
+			} ) unless @rows;
+
 		if( @rows > 1 )
 		{
 			my @ids = map { $_->[0] } @rows;
+			my $max = 0;
+			if( @ids >= 50 ) { $max = 1; @ids = @ids[0 .. 49] }
 
-			local $"=', ';
+			local $"=', ';#"
 			$self->respond( $message,
-				"Found ". @ids . " matching ids: @ids." );
+				"Found " . ($max ? 'more than 50' : @ids) . " matching ids" . ($max ? ' (first 50)' : '') . ": @ids." );
 
 			return;
 		}

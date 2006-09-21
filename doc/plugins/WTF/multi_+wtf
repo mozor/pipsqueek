@@ -1,0 +1,3 @@
++wtf <acronym> <definition>
+
+Adds the acronym and its definition to the database. Returns a success message and the database id.

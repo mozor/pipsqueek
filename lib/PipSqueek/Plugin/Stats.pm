@@ -2,6 +2,18 @@ package PipSqueek::Plugin::Stats;
 use base qw(PipSqueek::Plugin);
 use strict;
 
+use LWP::UserAgent; # For fah_top10.
+
+sub config_initialize
+{
+	my $self = shift;
+	
+	$self->plugin_configuration({
+		'fah_team_stats_url'	=> 'http://vspx27.stanford.edu/cgi-bin/main.py?qtype=teampage&teamnum=38753',
+		'fah_http_timeout'	=> 30,
+	});
+}
+
 sub plugin_initialize
 {
 	my $self = shift;
@@ -35,7 +47,7 @@ sub plugin_initialize
 	my %CATEGORIES = 
 	map{ ($_,1) } qw( 
 		chars words lines cpl wpl actions 
-		smiles modes topics kicked kicks 
+		smiles modes topics kicked kicks
 	);
 
 
@@ -177,6 +189,9 @@ sub multi_stats
 {
 	my ($self,$message) = @_;
 	my $username = $message->command_input();
+       $username =~ s/^\s*|\s*$//g;
+
+	$username =~ s/\s+$//;
 
 	my $user  = $self->search_user( $username || $message );
 
@@ -214,6 +229,20 @@ sub multi_top10
 	my ($self,$message) = @_;
 	my $category = $message->command_input() || 'chars';
 
+	if( $category eq 'fah' )
+	{
+		$self->fah_top10($message);
+		return;
+	}
+	
+	if( $category =~ /^quotes?$/ )
+	{
+		my $mode = $message->event() =~ /^private_/ ? 'private' : 'public';
+		my $event = $mode . "_top10quotes";
+		$self->client()->yield( $event, @{$message->raw()} );
+		return;
+	}
+	
 	unless( exists $self->{'CATEGORIES'}->{$category} )
 	{
 		$self->respond( $message, "Unknown category" );
@@ -345,6 +374,56 @@ sub pipsqueek_mergeuser
 	$self->dbi()->delete_record( 'stats', $stats2 );
 }
 
+# Respond with the top 10 list of fah participants.
+sub fah_top10
+{
+	my ($self,$message) = @_;
+	
+	my $config = $self->config();
+	
+	# Much of the following LWP::UserAgent business was taken from
+	# RSSGrabber.pm since I'm currently rather hungry and feeling
+	# rather lazy. That raises a question that I feel I should address:
+	# Why am I programming when I'm hungry and lazy? That
+	# can't be an entirely good idea.
+	
+	my $agent = LWP::UserAgent->new('agent' => 'Mozilla/5.0');
+	
+	# The following timeout was found in RSSGrabber.pm
+	# Meh, this is all ready setup, so I might as well use it.
+	# Perhaps this should be generalized to http_timeout()?
+	$agent->timeout( $config->fah_http_timeout() );
+	
+	my $response = $agent->get( $config->fah_team_stats_url() );
+	unless( $response->is_success() )
+	{
+		$self->respond( $message, "HTTP Error: " . $config->fah_team_stats_url() . ": " . $response->status_line() );
+	}
+	
+	my $content = $response->content();
+	
+	my @top10;
+	
+	for my $i (1 .. 10) {
+		# Is the following ugly? Perhaps. However, it does work.
+		# Okay, here's the result:
+		# $1 is the username,
+		# $2 are the points for $1,
+		# and $3 is the number of work units that $1 has completed.
+		
+		# Oh, and Shaun: I've been taking great care to follow your coding style. :-)
+		# Not that I entirely agree with it, but it is your choice. ;-)
+		if( $content =~ /teamnum=\d+&username=.*?">\s(.*?)\s.*?cert.*?target="_blank">\s(.*?)\s.*?cert.*?target="_blank">\s(.*?)\s/gis )
+		{
+			push(@top10, "$1 ($2)");
+		}
+	}
+	
+	# Shaun, the following trick is fantastic. I found it in your code above and it's really useful. :-)
+	local $" = ', ';
+	$self->respond( $message, "Top10 ('fah'): @top10!" );
+	return;
+}
 
 1;
 

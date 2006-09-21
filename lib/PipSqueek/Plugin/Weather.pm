@@ -6,60 +6,72 @@ use LWP::UserAgent;
 
 sub plugin_initialize
 {
-    my $self = shift;
-    
-    $self->plugin_handlers({
+  my $self = shift;
+
+  $self->plugin_handlers({
       'multi_weather'    => 'weather',
-      'multi_temp' => 'weather',
-    });
+  });
 }
 
 sub weather
 {
-    my ($self, $message) = @_;
-    my $cmd = $message->command();
-    my $url = 'http://www.w3.weather.com/weather/local/ZIP';
-    
-    my $input = $message->command_input();
-    
-    if($input) {
-        if($input !~ m/^\d{5}$/) {
-            return $self->respond($message,
-                    "You must enter a US ZIP code. Try !help weather");
-        }
-        $url =~ s/ZIP/$input/g;
+  my ($self, $message) = @_;
+  my $cmd = $message->command();
+  my $url;
+
+  my $input = $message->command_input();
+
+  if($input =~ m/\d{5}/) {
+    $url = 'http://www.w3.weather.com/weather/local/' . $input;
+  } else {
+    $url = 'http://www.weather.com/search/enhanced?where=' . $input;
+    $url = URI::URL->new($url);
+
+    my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.5) Gecko/20041110 Firefox/1.0');
+    my $response = $browser->get($url);
+
+    unless($response->is_success() && $response->content_type() eq 'text/html') {
+      return $self->respond($message, "HTTP Error or invalid content type");
     }
 
-	my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0');
+    my $results = $response->content();
+    $results =~ s/[\n\r]*//g;
+
+    ($url) = $results =~ m/<B>1.(?:<\/B> | )<A HREF="([^\?]+\?)/gis;
+    $url = "http://www.w3.weather.com" . $url;
+  }
+
+  $url = URI::URL->new($url);
+
+	my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.5) Gecko/20041110 Firefox/1.0');
 	my $response = $browser->get($url);
 
 	unless($response->is_success() && $response->content_type() eq 'text/html')
 	{
-		$self->respond($message, 
-			"HTTP Error or invalid content type");
-		return;
+		return $self->respond($message, "HTTP Error or invalid content type");
 	}
 
 	my $results = $response->content();
-       $results =~ s/[\n\r]*//g;
+  $results =~ s/[\n\r]*//g;
 
-    my ($town, $state) = $results =~ /Local Forecast for ([^,]+), ([A-Z]{2})/gis;
-    my ($temp) = $results =~ /<TD VALIGN=MIDDLE ALIGN=CENTER CLASS=obsInfo2 WIDTH=50%><B CLASS=obsTempTextA>(\d+)&deg;F<\/B><\/TD><\/TR>/gis;
-    my ($weather) = $results =~ /<TR><TD VALIGN=TOP ALIGN=CENTER CLASS=obsInfo2><B CLASS=obsTextA>(\w+)<\/B><\/TD>/gis;
+  my ($city, $region) = $results =~ /Right now for<\/B><BR>([^,]+), ([^<]+)</gis;
+  my ($weather) = $results =~ /WIDTH=52 HEIGHT=52 BORDER=0 ALT=><BR><B CLASS=obsTextA>([^<]+)<\/B><\/TD>/gis;
+  my ($temp, $unit) = $results =~ /<B CLASS=obsTempTextA>(\d+)&deg;([CF])<\/B>/gis;
 
-    my $ouput;
+  my ($temp2,$unit2) = $unit eq 'C' ? ((9*$temp)/5+32,'F') : ((($temp-32)/9)*5,'C');
 
-    if(length($town) > 1) {
-        $output = "$town, $state" . ": $temp" . "F, $weather"; 
-    } else {
-        $output = "That place doesn't exist.";
-    }
+  $temp2 = sprintf("%0.1f",$temp2);
+ 
+  if(length($city) > 1) {
+	$output = "$city, $region" . ": $temp°$unit / $temp2°$unit2, $weather";
+  } else {
+    $output = "Couldn't find where you were looking for, sorry.";
+  }
 
-    return $self->respond($message, $output);
+  return $self->respond($message, $output);
 }
 
 
 1;
-
 
 __END__

@@ -33,7 +33,7 @@ sub multi_uptime
 	push( @list, "$day " . &_p('day',    '',  's',  $day) ) if $day;
 	push( @list, "$hou " . &_p('hour',   '',  's',  $hou) ) if $hou;
 	push( @list, "$min " . &_p('minute', '',  's',  $min) ) if $min;
-	push( @list, "and" ) if $min;
+	push( @list, "and" ) if $sec;
 	push( @list, "$sec " . &_p('second', '',  's',  $sec) ) if $sec;
 	my $output = join(' ', @list );
 

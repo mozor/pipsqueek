@@ -19,8 +19,9 @@ sub multi_date
 {
 	my ($self,$message) = @_;
 	my $tz = $message->command_input() || 'GMT';
+	$tz =~ s/\s+$//;
 	my @time = localtime(time);
-	$self->respond( $message, strftime("%A %B the %d, %Y", @time, $tz) );
+	$self->respond( $message, strftime("%A %B %d, %Y", @time, $tz) );
 }
 
 
@@ -28,6 +29,7 @@ sub multi_time
 {
 	my ($self,$message) = @_;
 	my $tz = $message->command_input() || 'GMT';
+	$tz =~ s/\s+$//;
 	my @time = localtime(time);
 	$self->respond( $message, strftime("%T $tz", @time, $tz) );
 }

@@ -17,6 +17,8 @@ sub multi_host
 	my ($self,$message) = @_;
 	my $input = $message->command_input();
 
+	$input =~ s/\s+$//;
+
 	if( $input =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ )
 	{
 		my ($name) = gethostbyaddr( pack("C4",split(/\./,$input)), 2);

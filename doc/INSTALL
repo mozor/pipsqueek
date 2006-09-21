@@ -1,10 +1,10 @@
 # Install documentation for PipSqueek 
-# Copyright 2000-2003 Shaun Guth
+# Copyright 2000-2005 Shaun Guth
 
 PipSqueek Requirements
 ~~~~~~~~~~~~~~~~~~~~~~
 
-	Perl - At least version 5.6.1 (5.8.0 Recommended)
+	Perl - At least version 5.6.1 (5.8.X Recommended)
 
 	(Linux)   - http://www.perl.com/pub/a/language/info/software.html
 	(Windows) - http://www.activestate.com/Products/ActivePerl/
@@ -26,7 +26,7 @@ PipSqueek Requirements
 		Parse::RecDescent
 		POE
 		URI::Find
-		POE::Component::IRC (bundled with PipSqueek)
+		POE::Component::IRC
 		Date::Parse (bundled with PipSqueek)
 
 		See the section 'Installing Perl Modules' for instructions

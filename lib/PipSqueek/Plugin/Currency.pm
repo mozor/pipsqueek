@@ -27,7 +27,7 @@ sub plugin_initialize
 
 		my $sth = $self->dbi()->dbh()->prepare( $sql );
 
-		print STDERR "Creating currency database... (this could take a bit): ";
+		print STDERR "Creating currency database... (this could take a bit, but only has to happen once): ";
 		foreach my $line (<DATA>)
 		{
 			chomp($line);

@@ -164,7 +164,7 @@ sub _delegate_command
 	my $c_identi = $config->require_identified_for_level();
 
 	my $user  = $self->search_or_create_user($message);
-	my $level = $self->{'LEVELS'}->{$command} || $c_access;
+	my $level = $self->client()->get_heap()->{'LEVELS'}->{$command} || $c_access;
 
 	if( $user->{'cmd_level'} < $level )
 	# Are they authorized for this command?
@@ -439,7 +439,7 @@ sub _merge_levels_conf_file
 	foreach my $line (grep(/=/,@lines))
 	{
 		my ($k,$v) = split(/=/,$line);
-		$self->{'LEVELS'}->{$k} = $v;
+		$self->client()->get_heap()->{'LEVELS'}->{$k} = $v;
 	}
 }
 
