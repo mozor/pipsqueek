@@ -1,0 +1,17 @@
+.-------------------------------------------------------------------------------------------------------------.
+INSTALLATION:
+
+Make sure you have downloaded the latest version of pipsqueek from http://pipsqueek.l8nite.net/
+
+To unpack:
+	tar -zxvf pipsqueek-version.tar.gz
+
+*IMPORTANT*
+Make sure you edit the file data/bot.xml to suit your liking.
+It should be self-explanatory.  If not, send email to pipsqueek@l8nite.net, and I will attempt to write
+some better documentation
+
+To run:
+	cd /path/to/pipsqueek
+	perl pipsqueek.pl
+________________________________________________________________________________________________________________
