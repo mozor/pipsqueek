@@ -1,0 +1,4 @@
+mode [target] <modestring>
+
+The bot will change the modes for 'target' to modestring.
+

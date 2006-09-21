@@ -1,0 +1,4 @@
+invite <user> [#channel]
+
+The bot will invite 'user' into #channel (or the default channel)
+

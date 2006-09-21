@@ -1,0 +1,4 @@
+mergeuser <username-into> <username-from>
+
+Merges all data for supporting plugins from 'username-from' into 'username-into', then deletes records of 'username-from'. Use with great care.
+
