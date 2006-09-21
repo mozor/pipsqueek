@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+#
+# Mysql connection code for Pipsqueek
+#
+
+use DBI;
+
+$dbh = "";	# This is a handle to the database object
+$sdebug = "1";	# output mysql debugging info ?
+$query = "";	# This is a handle to the results of a query
+$query2 = "";	# A second results handle (for nested sql)
+
+##################################################################################################
+# Connect to the database
+sub connectDB
+{
+	$dbh = DBI->connect('DBI:mysql:<removed>','<removed>','<removed>', { LongReadLen => 102400 }) or &sql_debug("mysql.lib: Error connecting database");
+}
+
+
+##################################################################################################
+# Generates an SQL query to the	database.  It will automatically connect the database if need be.
+sub doQuery
+{
+	&connectDB() if $dbh eq "";
+
+	my ($command) = $_[0];
+
+	if($_[1] ne 1)
+	{
+	    $query = $dbh->prepare($command) || &sql_debug("mysql_l8nitedb.lib: Error preparing statement");
+	    $query->execute || &sql_debug("mysql_l8nitedb.lib: Error executing command\n\t$command\n\t$DBI::errstr");
+	}
+	else
+	{
+	    $query2 = $dbh->prepare($command) || &sql_debug("mysql_l8nitedb.lib: Error preparing statement");
+	    $query2->execute || &sql_debug("mysql_l8nitedb.lib: Error executing command\n\t$command\n\t$DBI::errstr");
+	}
+}
+
+
+
+##################################################################################################
+# Releases the query results
+sub finishQuery{ $query->finish() unless $query eq "";$query="";$query2->finish() unless $query2 eq ""; $query2 = "";}
+
+
+##################################################################################################
+# Releases the database connection 
+sub disconnectDB{ $dbh->disconnect unless $dbh eq ""; $dbh=""; }
+
+
+##################################################################################################
+# Finishes all query handles and closes the database
+sub finishUp
+{
+	&finishQuery();
+	&disconnectDB();
+}
+
+
+##################################################################################################
+# debug output
+sub sql_debug
+{
+	print $_[0] . "\n" if $sdebug == 1;
+}
+
+1;

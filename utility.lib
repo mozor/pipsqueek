@@ -1,0 +1,48 @@
+###########################################################################
+# loads the configuration file passed into $_[0]
+# expects the config file to be in the same directory as the bot and the
+# perl script has to have defined the appropriate variables.
+sub loadConfigurationFile()
+{
+	open( INF, $_[0] ) or &die_nice( "Error reading configuration file: $_[0]" );
+	my( @config_lines ) = <INF>;
+	chomp(@config_lines);
+	close(INF);
+
+	my($line);
+	foreach $line ( @config_lines )
+	{
+		my ($line_check) = $line;
+		$line_check =~ s/ //gi;
+		if( $line_check ne "" && $line_check ne "\n" )
+		{
+			if( $line !~ m/^# / )
+			{
+				eval( $line );
+			}
+		}
+	}
+
+	print "Loaded configuration file: $_[0]\n" if $debug == 1;
+
+	return 1;
+}
+
+
+###########################################################################
+# Returns a random line from the specified file
+sub randomLine()
+{
+	print "Retrieving a random line from: $_[0]\n" if $debug == 1;
+	open(INF, $_[0] ) or &die_nice( "Error reading from random line file: $_[0]" );
+	my($line);
+	srand;
+	rand($.) < 1 && ($line = $_) while <INF>;
+	close(INF);
+
+	return $line;
+}
+
+# so the perl interpreter knows it got the whole library 
+1;
+
