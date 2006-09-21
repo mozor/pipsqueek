@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-#	PipSqueek [version 1.2.1-mysql]
+#	PipSqueek [version 1.2.2-mysql]
 #	© 2001 l8nite [l8nite@l8nite.net]
 #	Shouts to trapper for the original ideas present in his subordinate bot
 #	Shouts to slyfx for writing the original pipsqueek
@@ -10,6 +10,8 @@
 #	all your help beta testing and improving.
 #
 #	Changelog
+#	1.2.2 - Fixed nasty regex bug with command prefix - thanks ex0cet!!
+# 		Added push(@INC,".") to the install scripts
 #	1.2.1 - Added eliza module support
 #
 
@@ -43,7 +45,7 @@ my (%font_style) = (
 );
 
 
-my ($version) = "PipSqueek [version 1.2.1-mysql]";
+my ($version) = "PipSqueek [version 1.2.2-mysql]";
 my ($accepted_characters) = ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~!@#$%^&*()_+`- =[]{}:<>,.?/|';
 my ($command_characters) = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 my ($last_command_time);
@@ -427,7 +429,7 @@ sub on_public
 		print "<$nick> $channel_text\n" if $debug == 2;
 
 		# Find out if this is a command
-		if( $channel_text =~ m/^$command_prefix/ )
+		if( $channel_text =~ m/^\Q$command_prefix\E/ )
 		{
 			# The first characters were a command prefix, now make sure it's not been disabled by our config file
 			my (@temp) = split( / /, $channel_text );
