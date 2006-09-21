@@ -1,4 +1,0 @@
-multi_int2oct <input | _>
-
-Converts 'input' or the value stored in '_' from an integer to octal.
-
