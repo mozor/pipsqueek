@@ -1,0 +1,39 @@
+* It should be noted that this changelog is incomplete
+* PipSqueek is mostly 'weekend code' until someone steps
+* up to write some really good documentation for it.
+
+[ 3.1 ]
+- complete rewrite of 3.0b code
+- kept same module style, but different API
+- created several additional modules to make the job
+  of module-writers easier
+- patched PoCo::IRC for the optional part message to work
+  (Needs a later version then 2.2, or just patch it yourself:
+  Change the line:
+  	'part' => \&commasep,
+  To:
+  	'part' => \&onlytwoargs,
+- more flexible handlers, multiple events can be handled
+  by a single module (see Handlers/IRC/Basic.pm)
+
+<no active development for 1 day >
+
+[ 3.0b ]
+- complete rewrite of 2.0 code
+- new modular handlers, using real perl modules
+- new core code to accomidate the new handler format
+- add Users.pm and Settings.pm to move some of the code
+  out of the main program
+
+< no active development for 4 months >
+
+[ 2.0b ]
+- cleaned up and released
+- new handlers are 'modules' (which are really anonymous subs)
+- removed !seen functionality (botserv does it anyway)
+
+[ previous ]
+- don't remember
+- don't care
+
+

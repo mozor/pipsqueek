@@ -1,9 +1,0 @@
-#------------------------------------------------------------------------------#
-# ~ irc_socketerr
-# ~ Sent when a connection couldn't be established to the IRC server
-sub
-{
-	my $err = $_[ARG0];
-	&fatal(qq|Failed to connect to server: $err|);
-}
-#______________________________________________________________________________#

@@ -1,9 +1,0 @@
-<opt>
-  <nickserv nick="NickServ" enabled="0" />
-  <channel revenge="1" autogreet="0" name="#pipsqueek" />
-  <admin hostmask="*.dsl.mindspring.com" password="botpass" />
-  <server port="6667" host="irc.topgamers.net" />
-  <command prefix="!" />
-  <info nick="PipSqueek" alt="PipSqueek_" pass="invalid" user="pips" name="Mr. Squeek" />
-  <vhost username="vhostuser" enabled="0" password="vhostpass" />
-</opt>
