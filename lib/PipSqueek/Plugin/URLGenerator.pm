@@ -21,7 +21,9 @@ sub plugin_initialize
 		'multi_sf'          => 'generate_url',
 		'multi_google'      => 'generate_url',
 		'multi_search'      => 'generate_url',
-		'multi_yubnub'		=> 'generate_url',
+		'multi_mbartist'    => 'generate_url',
+		'multi_mbalbum'     => 'generate_url',
+		'multi_mbtrack'     => 'generate_url',
 	);
 }
 
@@ -52,9 +54,6 @@ sub generate_url
 	'sf'		=>
 	[ 'http://sf.net', '/search/?type_of_search=soft&words=$search' ],
 
-	'yubnub'	=>
-	[ 'http://yubnub.org', '/parser/parse?command=$search' ],
-
 	'wiki'		=>
 	[ 'http://en.wikipedia.org',
 	  '/wiki/Special:Search?go=Go&search=$search' ],
@@ -75,8 +74,20 @@ sub generate_url
 	'sw'		=>
         [ 'http://scienceworld.wolfram.com',
 	  '/search/index.cgi?sitesearch=scienceworld.wolfram.com%2Fphysics&q=$search' ],
-	);
 
+	'mbalbum'	=>
+	[ 'http://musicbrainz.org',
+	  '/newsearch.html?limit=25&table=album&search=$search' ],
+
+	'mbartist'	=>
+	[ 'http://musicbrainz.org',
+	  '/newsearch.html?limit=25&table=artist&search=$search' ],
+
+	'mbtrack'	=>
+	[ 'http://musicbrainz.org',
+	  '/newsearch.html?limit=25&table=track&search=$search' ],
+
+	);
 
 	my $event = $message->event();
 	   $event =~ s/^(?:private|public)_//;
