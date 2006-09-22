@@ -21,7 +21,7 @@ sub multi_date
 	my $tz = $message->command_input() || 'GMT';
 	$tz =~ s/\s+$//;
 	my @time = localtime(time);
-	$self->respond( $message, strftime("%A %B %d, %Y", @time, $tz) );
+	$self->respond( $message, strftime("%A, %B %d, %Y", @time, $tz) );
 }
 
 
