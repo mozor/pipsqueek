@@ -30,6 +30,7 @@ sub translate {
                 'es'          => 'es',
                 'espanol'     => 'es',
                 'french'      => 'fr',
+                'francais'    => 'fr',
                 'fr'          => 'fr',
                 'italian'     => 'it',
                 'it'          => 'it',
@@ -44,6 +45,17 @@ sub translate {
                 'zh-CN'       => 'zh-CN'
               };
 
+
+  # Sort out special variables first.
+  if($text =~ m/^(~?[\^\$]{1})[2|](~?[\^\$]{1})/i) {
+    if($1 eq $2) {
+      $self->respond($message, "There's nothing to translate.");
+      return;
+    } else {
+      $self->respond($message, "Ok, now I need to implement this stuff.");
+    }
+  }
+
   # Every language on Google has 2 letters designating it, except for
   # simplified Chinese which uses zh-CN. Go figure.
   if($text =~ m/^([a-z-]{2,})[2|]([a-z-]{2,})\s+(.*)$/i) {
@@ -51,17 +63,11 @@ sub translate {
     $from = $1;
     $to = $2;
     $text = $3;
-  } elsif($text =~ m/^([~^$]{1})[2|]([~^$]{1})/i) {
-    if($1 eq $2) {
-      $self->respond($message, "That's not a translation.");
-    } else {
-      $self->respond($message, "Ok, now I need to implement this stuff.");
-    }
   } else {
     $pair = "fr|en";
     $from = "fr";
     $to = "en";
-    $text = "Ou est la fromage?";
+    $text = "Le singe est sur le branch.";
     # We need to guess the language. If it's anything but English then
     # we translate to English for the hell of it.
     # If the input _is_ English then we translate to whatever language
