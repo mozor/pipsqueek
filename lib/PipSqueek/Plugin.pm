@@ -5,17 +5,17 @@ use strict;
 # creates a new plugin instance
 sub new
 {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
-	my $self  = bless( {}, $class );
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
+    my $self  = bless( {}, $class );
 
-	$self->mk_accessors(qw(client _handlers _configuration));
+    $self->mk_accessors(qw(client _handlers _configuration));
 
-	$self->client(shift);
-	$self->_handlers({});
-	$self->_configuration({});
+    $self->client(shift);
+    $self->_handlers({});
+    $self->_configuration({});
 
-	return $self;
+    return $self;
 }
 
 
@@ -28,51 +28,51 @@ sub plugin_teardown   {} # when a plugin is about to be destroyed
 # their associated handler methods
 sub plugin_handlers 
 {
-	my $self = shift;
-	my $hash = $self->_handlers();
+    my $self = shift;
+    my $hash = $self->_handlers();
 
-	# Merges an arrayref or hashref with $hash
-	# arrayrefs are merged as 'val1 => val1, val2=>val2' in the hash
-	if( scalar(@_) )
-	{
-		my %data = ref($_[0]) eq 'HASH' ? %{$_[0]} :
+    # Merges an arrayref or hashref with $hash
+    # arrayrefs are merged as 'val1 => val1, val2=>val2' in the hash
+    if( scalar(@_) )
+    {
+        my %data = ref($_[0]) eq 'HASH' ? %{$_[0]} :
                            ref($_[0]) eq 'ARRAY'? map{$_=>$_} @{$_[0]} : (@_);
 
-		# before merge, replace multi_* handlers with private_* and
-		# public_*
-		foreach my $key ( keys %data )
-		{
-			if( $key =~ m/^multi_(.+)/ )
-			{
-				$data{"public_$1"}  = $data{$key};
-				$data{"private_$1"} = $data{$key};
+        # before merge, replace multi_* handlers with private_* and
+        # public_*
+        foreach my $key ( keys %data )
+        {
+            if( $key =~ m/^multi_(.+)/ )
+            {
+                $data{"public_$1"}  = $data{$key};
+                $data{"private_$1"} = $data{$key};
 
-				delete $data{$key};
-			}
-		}
+                delete $data{$key};
+            }
+        }
 
                 %{ $hash } = ( %{ $hash }, %data );
         }
 
-	return $self->_handlers($hash);
+    return $self->_handlers($hash);
 }
 
 # a subclass will use this method to define the configuration parameters and
 # default values which they accept
 sub plugin_configuration
 {
-	my $self = shift;
-	my $hash = $self->_configuration();
+    my $self = shift;
+    my $hash = $self->_configuration();
 
-	if( scalar(@_) )
-	{
-		my %data = ref($_[0]) eq 'HASH' ? %{$_[0]} :
+    if( scalar(@_) )
+    {
+        my %data = ref($_[0]) eq 'HASH' ? %{$_[0]} :
                            ref($_[0]) eq 'ARRAY'? map{$_=>$_} @{$_[0]} : (@_);
 
-		%{ $hash } = ( %{ $hash }, %data );
-	}
+        %{ $hash } = ( %{ $hash }, %data );
+    }
 
-	return $self->_configuration($hash);
+    return $self->_configuration($hash);
 }
 
 
@@ -98,40 +98,40 @@ sub respond_user { return (shift)->client()->respond_user(@_); }
 # object or username passed in
 sub create_user
 {
-	my ($self,$target) = @_;
+    my ($self,$target) = @_;
 
-	my $username = ref($target) eq 'PipSqueek::Message' 
-			? $target->nick()
-			: $target;
+    my $username = ref($target) eq 'PipSqueek::Message' 
+            ? $target->nick()
+            : $target;
 
-	return $self->dbi()->create_record( 'users',
-		{
-		'username' => $username,
-		'nickname' => $username,
-		'created'  => time()
-		} 
-	);
+    return $self->dbi()->create_record( 'users',
+        {
+        'username' => $username,
+        'nickname' => $username,
+        'created'  => time()
+        } 
+    );
 }
 
 
 # returns a user record based on the parameters passed in (see PipSqueek::DBI)
 sub select_user
 {
-	my $self = shift;
-	return $self->dbi()->select_record( 'users', @_);
+    my $self = shift;
+    return $self->dbi()->select_record( 'users', @_);
 }
 
 
 # updates (or creates) a user record in the database with the specified values
 sub update_user
 {
-	my ($self,$target,$data) = @_;
+    my ($self,$target,$data) = @_;
 
-	my $user = ref($target) eq 'HASH' 
-			? $target 
-			: $self->search_or_create_user($target);
+    my $user = ref($target) eq 'HASH' 
+            ? $target 
+            : $self->search_or_create_user($target);
 
-	$self->dbi()->update_record( 'users', $user, $data );
+    $self->dbi()->update_record( 'users', $user, $data );
 }
 
 
@@ -139,13 +139,13 @@ sub update_user
 # specified values
 sub delete_user
 {
-	my ($self,$target) = @_;
+    my ($self,$target) = @_;
 
-	my $user = ref($target) eq 'HASH' 
-			? $target 
-			: $self->search_or_create_user($target);
+    my $user = ref($target) eq 'HASH' 
+            ? $target 
+            : $self->search_or_create_user($target);
 
-	$self->dbi()->delete_record( 'users', $user );
+    $self->dbi()->delete_record( 'users', $user );
 }
 
 
@@ -154,27 +154,27 @@ sub delete_user
 # changed nicknames and we tracked it
 sub search_user
 {
-	my ($self,$target) = @_;
+    my ($self,$target) = @_;
 
-	if( ref($target) eq 'HASH' ) { return $target; }
+    if( ref($target) eq 'HASH' ) { return $target; }
 
-	my $nick = ref($target) eq 'PipSqueek::Message'
-			? $target->nick()
-			: $target;
+    my $nick = ref($target) eq 'PipSqueek::Message'
+            ? $target->nick()
+            : $target;
 
-	{
-	my $sql  = 'SELECT * FROM users WHERE LOWER(nickname) = LOWER(?)';
+    {
+    my $sql  = 'SELECT * FROM users WHERE LOWER(nickname) = LOWER(?)';
 
-	my $user = $self->dbi()->select_record( 'users', undef, $sql, $nick );
-	return $user if $user;
-	}
+    my $user = $self->dbi()->select_record( 'users', undef, $sql, $nick );
+    return $user if $user;
+    }
 
-	{
-	my $sql  = 'SELECT * FROM users WHERE LOWER(username) = LOWER(?)';
+    {
+    my $sql  = 'SELECT * FROM users WHERE LOWER(username) = LOWER(?)';
 
-	my $user = $self->dbi()->select_record( 'users', undef, $sql, $nick );
-	return $user if $user;
-	}
+    my $user = $self->dbi()->select_record( 'users', undef, $sql, $nick );
+    return $user if $user;
+    }
 }
 
 
@@ -182,14 +182,14 @@ sub search_user
 # finds none, then creates a new one and returns it
 sub search_or_create_user
 {
-	my ($self,$target) = @_;
+    my ($self,$target) = @_;
 
-	if( my $user = $self->search_user($target) )
-	{
-		return $user;
-	}
+    if( my $user = $self->search_user($target) )
+    {
+        return $user;
+    }
 
-	return $self->create_user($target);
+    return $self->create_user($target);
 }
 
 # end users database wrappers

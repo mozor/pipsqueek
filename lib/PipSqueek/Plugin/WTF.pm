@@ -5,13 +5,13 @@ sub plugin_initialize
 {
   my $self = shift;
 
-	$self->plugin_handlers({
+    $self->plugin_handlers({
     'multi_acronym' => 'get_wtf',
-		'multi_wtf'     => 'get_wtf',
+        'multi_wtf'     => 'get_wtf',
     'multi_+wtf'    => 'add_wtf',
     'multi_-wtf'    => 'del_wtf',
     'multi_#wtf'    => 'num_wtf',
-	});
+    });
 
   my $schema = [
     ['id', 'INTEGER PRIMARY KEY'],
@@ -19,22 +19,22 @@ sub plugin_initialize
     ['definition', 'VARCHAR NOT NULL'],
   ];
 
-	if($self->dbi()->install_schema('wtf', $schema)) {
-		my $sql =
+    if($self->dbi()->install_schema('wtf', $schema)) {
+        my $sql =
     'INSERT INTO wtf (acronym,definition) VALUES(?,?)';
 
-		my $sth = $self->dbi()->dbh()->prepare($sql);
+        my $sth = $self->dbi()->dbh()->prepare($sql);
 
-		foreach my $line (<DATA>) {
-			chomp($line);
-			my (@values) = split(/ /, $line, 2);
-			next unless @values == 2;
-			$sth->execute(@values);
-		}
-	}
+        foreach my $line (<DATA>) {
+            chomp($line);
+            my (@values) = split(/ /, $line, 2);
+            next unless @values == 2;
+            $sth->execute(@values);
+        }
+    }
 
   my %IDS = map { $_->[0] => 1 } @{
-  	$self->dbi()->dbh()->selectall_arrayref('SELECT id FROM wtf') };
+      $self->dbi()->dbh()->selectall_arrayref('SELECT id FROM wtf') };
   $self->{'IDS'} = \%IDS;
 }
 
@@ -146,7 +146,7 @@ sub del_wtf
   unless(defined($id_to_del)) {
     return $self->respond( $message, "Use !help -wtf" );
   }
-		
+        
   my $wtf = $self->dbi()->select_record('wtf',{'id'=>$id_to_del});
 
   if($wtf) {
@@ -155,7 +155,7 @@ sub del_wtf
     return $self->respond($message, "Deleted id $id_to_del");
   } else {
     return $self->respond($message, "Acronym not found.");
-	}
+    }
 }
 
 

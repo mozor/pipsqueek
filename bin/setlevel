@@ -11,68 +11,68 @@ use Getopt::Long;
 
 sub main
 {
-	my $username = "";
-	my $level = 0;
-	my $help;
+    my $username = "";
+    my $level = 0;
+    my $help;
 
-	my $parser = Getopt::Long::Parser->new();
-	   $parser->configure( 'bundling' );
-	   $parser->getoptions(
-	   	'help|h|?'  => \$help,
-		'user|u=s'  => \$username,
-		'level|l=i' => \$level,
-	   ) or pod2usage(2);
+    my $parser = Getopt::Long::Parser->new();
+       $parser->configure( 'bundling' );
+       $parser->getoptions(
+           'help|h|?'  => \$help,
+        'user|u=s'  => \$username,
+        'level|l=i' => \$level,
+       ) or pod2usage(2);
 
-	pod2usage(1) if $help;
+    pod2usage(1) if $help;
 
-	my $filename = $ARGV[0] || pod2usage(1);
+    my $filename = $ARGV[0] || pod2usage(1);
 
-	unless( -e $filename )
-	{
-		warn "File '$filename' does not exist.\n";
-		return 3;
-	}
+    unless( -e $filename )
+    {
+        warn "File '$filename' does not exist.\n";
+        return 3;
+    }
 
-	while( $username eq "" || $level eq "" || $level =~ /[^\d]/ || !$level)
-	{
-		if( $username eq "" )
-		{
-			print "Username? ";
-			$username = <STDIN>;
-			chomp($username);
-		}
+    while( $username eq "" || $level eq "" || $level =~ /[^\d]/ || !$level)
+    {
+        if( $username eq "" )
+        {
+            print "Username? ";
+            $username = <STDIN>;
+            chomp($username);
+        }
 
-		if( $level eq "" || $level =~ /[^\d]/ || !$level )
-		{
-			print "Level? ";
-			$level = <STDIN>;
-			chomp($level);
-		}
-	}
+        if( $level eq "" || $level =~ /[^\d]/ || !$level )
+        {
+            print "Level? ";
+            $level = <STDIN>;
+            chomp($level);
+        }
+    }
 
-	my $dbh = DBI->connect( "DBI:SQLite:$filename", 
-				{ 'RaiseError' => 1, 'AutoCommit' => 1 } );
+    my $dbh = DBI->connect( "DBI:SQLite:$filename", 
+                { 'RaiseError' => 1, 'AutoCommit' => 1 } );
 
         my $sql = 'SELECT id FROM users WHERE LOWER(username) = LOWER(?)';
-	my $sth = $dbh->prepare( $sql );
-	   $sth->execute( $username );
+    my $sth = $dbh->prepare( $sql );
+       $sth->execute( $username );
 
-	my $userid = ($sth->fetchrow_array())[0];
+    my $userid = ($sth->fetchrow_array())[0];
 
-	if( defined($userid) && $userid )
-	{
-		my $sql = 'UPDATE users SET cmd_level=? WHERE id=?';
-		my $sth = $dbh->prepare( $sql );
-		   $sth->execute( $level, $userid );
+    if( defined($userid) && $userid )
+    {
+        my $sql = 'UPDATE users SET cmd_level=? WHERE id=?';
+        my $sth = $dbh->prepare( $sql );
+           $sth->execute( $level, $userid );
 
-		print "Record for $username updated.\n";
-	}
-	else
-	{
-		warn "User not found: '$username'\n";
-	}
+        print "Record for $username updated.\n";
+    }
+    else
+    {
+        warn "User not found: '$username'\n";
+    }
 
-	return 0;
+    return 0;
 }
 
 

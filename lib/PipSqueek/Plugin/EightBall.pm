@@ -35,8 +35,8 @@ sub multi_8ball
     my ($self,$message) = @_;
     my $thing = $message->command_input();
 
-	srand time;
-	$self->respond($message, @{$self->{'yn'}}[rand @{$self->{'yn'}}]);
+    srand time;
+    $self->respond($message, @{$self->{'yn'}}[rand @{$self->{'yn'}}]);
 }
 
 

@@ -5,39 +5,39 @@ use Date::Format;
 
 sub plugin_initialize
 {
-	my $self = shift;
+    my $self = shift;
 
-	$self->plugin_handlers([
-		'multi_date',
-		'multi_time',
-		'multi_stime',
-	]);
+    $self->plugin_handlers([
+        'multi_date',
+        'multi_time',
+        'multi_stime',
+    ]);
 }
 
 
 sub multi_date
 {
-	my ($self,$message) = @_;
-	my $tz = $message->command_input() || 'GMT';
-	$tz =~ s/\s+$//;
-	my @time = localtime(time);
-	$self->respond( $message, strftime("%A, %B %d, %Y", @time, $tz) );
+    my ($self,$message) = @_;
+    my $tz = $message->command_input() || 'GMT';
+    $tz =~ s/\s+$//;
+    my @time = localtime(time);
+    $self->respond( $message, strftime("%A, %B %d, %Y", @time, $tz) );
 }
 
 
 sub multi_time
 {
-	my ($self,$message) = @_;
-	my $tz = $message->command_input() || 'GMT';
-	$tz =~ s/\s+$//;
-	my @time = localtime(time);
-	$self->respond( $message, strftime("%T $tz", @time, $tz) );
+    my ($self,$message) = @_;
+    my $tz = $message->command_input() || 'GMT';
+    $tz =~ s/\s+$//;
+    my @time = localtime(time);
+    $self->respond( $message, strftime("%T $tz", @time, $tz) );
 }
 
 
 sub multi_stime
 {
-	(shift)->respond( shift, time() );
+    (shift)->respond( shift, time() );
 }
 
 

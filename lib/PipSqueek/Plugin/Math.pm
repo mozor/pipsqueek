@@ -22,46 +22,46 @@ precedence_2:   <leftop: precedence_3 ('*' | '/' | '%') precedence_3> { PipSquee
 
 
 precedence_3:   precedence_4 
-		| '+' precedence_4  {$item[2]}
-		| '-' precedence_4  {$item[2]*-1}
+        | '+' precedence_4  {$item[2]}
+        | '-' precedence_4  {$item[2]*-1}
 
 
 precedence_4:   <rightop: precedence_5 ('^' | '**' ) precedence_5> { PipSqueek::Plugin::Math::rightop(@item) }
 
 
 precedence_5:   '(' statement ')'  {$item[2]}
-		| number
+        | number
 
 
 number:         /(?=\d|\.\d)\d*(\.\d*)?([Ee](-?\d+))?/  {$item [1]}
-		| 'pi' { 3.1415926535897932 }
+        | 'pi' { 3.1415926535897932 }
 
 _EOGRAMMAR_
 
 sub leftop
 {
-	my $orig = shift @{$_[1]};
-	while( @{$_[1]} )
-	{
-		my ($op,$v) = splice(@{$_[1]}, 0, 2);
-		   if( $op eq '+' ) { $orig+=$v }
-		elsif( $op eq '-' ) { $orig-=$v }
-		elsif( $op eq '%' ) { $orig%=$v }
-		elsif( $op eq '/' ) { $orig/=$v }
-		elsif( $op eq '*' ) { $orig*=$v }
-	}
-	return $orig;
+    my $orig = shift @{$_[1]};
+    while( @{$_[1]} )
+    {
+        my ($op,$v) = splice(@{$_[1]}, 0, 2);
+           if( $op eq '+' ) { $orig+=$v }
+        elsif( $op eq '-' ) { $orig-=$v }
+        elsif( $op eq '%' ) { $orig%=$v }
+        elsif( $op eq '/' ) { $orig/=$v }
+        elsif( $op eq '*' ) { $orig*=$v }
+    }
+    return $orig;
 }
 
 sub rightop
 {
-	@_ = @{$_[1]};
-	while ( @_ > 1 )
-	{
-		my ($y,$op,$x) = (pop(@_),pop(@_),pop(@_));
-		if( $op eq '^' || $op eq '**' ) { push(@_, $x ** $y) }
-	}
-	return $_[0];
+    @_ = @{$_[1]};
+    while ( @_ > 1 )
+    {
+        my ($y,$op,$x) = (pop(@_),pop(@_),pop(@_));
+        if( $op eq '^' || $op eq '**' ) { push(@_, $x ** $y) }
+    }
+    return $_[0];
 }
 
 
@@ -93,30 +93,30 @@ sub op_count
 
 sub plugin_initialize
 {
-	my $self = shift;
+    my $self = shift;
 
-	$self->plugin_handlers([
-		'multi_math'
-	]);
-	
-	$parser = Parse::RecDescent->new( $grammar ) or die "Bad Grammar!\n";
+    $self->plugin_handlers([
+        'multi_math'
+    ]);
+    
+    $parser = Parse::RecDescent->new( $grammar ) or die "Bad Grammar!\n";
 }
 
 
 sub multi_math
 {
-	my ($self,$message) = @_;
-	
-	my $session_heap = $self->client()->get_heap();
-	my $result = $session_heap->{'last_math_result'};
+    my ($self,$message) = @_;
+    
+    my $session_heap = $self->client()->get_heap();
+    my $result = $session_heap->{'last_math_result'};
 
-	my $expr = $message->command_input();
+    my $expr = $message->command_input();
 
-	unless( defined($expr) )
-	{
-		$self->respond( $message, "Use !help math" );
-		return;
-	}
+    unless( defined($expr) )
+    {
+        $self->respond( $message, "Use !help math" );
+        return;
+    }
 
     if( $expr =~ /[^\ \+\-\%\*\/\^\(\)\d\.Eepi\_]/ )
     {
@@ -131,21 +131,21 @@ sub multi_math
         return;
     }
 
-	my $original = $result;
-	$expr =~ s/_/$result/g;
+    my $original = $result;
+    $expr =~ s/_/$result/g;
 
-	if( $result = $parser->start($expr) )
-	{
-		$session_heap->{'last_math_result'} = $result;
-		if( $result eq '0e0' ) { $result = 0 }
+    if( $result = $parser->start($expr) )
+    {
+        $session_heap->{'last_math_result'} = $result;
+        if( $result eq '0e0' ) { $result = 0 }
 
-		return $self->respond_user( $message, $result );
-	}
-	else
-	{
-		return $self->respond( $message, 
-			"Invalid input in expression" );
-	}
+        return $self->respond_user( $message, $result );
+    }
+    else
+    {
+        return $self->respond( $message, 
+            "Invalid input in expression" );
+    }
 }
 
 

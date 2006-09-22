@@ -6,179 +6,179 @@ use DBI;
 
 sub new
 {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
-	my $self  = bless( {}, $class );
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
+    my $self  = bless( {}, $class );
 
-	$self->mk_accessors( 'dbh', 'schemas' );
+    $self->mk_accessors( 'dbh', 'schemas' );
 
-	$self->schemas({});
+    $self->schemas({});
 
-	$self->connect_database(@_) if @_;
+    $self->connect_database(@_) if @_;
 
-	return $self;
+    return $self;
 }
 
 sub connect_database
 {
-	my $self = shift;
+    my $self = shift;
 
-	if( ref($_[0]) =~ /^DBI/ )
-	{
-		$self->dbh(shift);
-	}
-	else
-	{
-		$self->dbh( DBI->connect(shift, @_) );
-	}
+    if( ref($_[0]) =~ /^DBI/ )
+    {
+        $self->dbh(shift);
+    }
+    else
+    {
+        $self->dbh( DBI->connect(shift, @_) );
+    }
 }
 
 sub install_schema
 {
-	my ($self,$table,$schema) = @_;
+    my ($self,$table,$schema) = @_;
 
-	return 0 if $self->check_table_exists($table);
+    return 0 if $self->check_table_exists($table);
 
-	my @sfill = map { "@$_" } @$schema;
+    my @sfill = map { "@$_" } @$schema;
 
-	local $" = ',';
+    local $" = ',';
 
-	my $sql = "CREATE TABLE $table ( @sfill )";
-	$self->dbh()->do( $sql );
+    my $sql = "CREATE TABLE $table ( @sfill )";
+    $self->dbh()->do( $sql );
 
-	
-	my $data = $self->schemas();
-	$data->{$table} = $schema;
-	$self->schemas($data);
+    
+    my $data = $self->schemas();
+    $data->{$table} = $schema;
+    $self->schemas($data);
 
-	return 1;
+    return 1;
 }
 
 sub check_table_exists
 {
-	my ($self,$table) = @_;
+    my ($self,$table) = @_;
 
-	my $sql = 'SELECT tbl_name FROM sqlite_master ' .
-		  'WHERE type="table" AND tbl_name=?';
-	my $sth = $self->dbh()->prepare( $sql );
-	   $sth->execute($table);
+    my $sql = 'SELECT tbl_name FROM sqlite_master ' .
+          'WHERE type="table" AND tbl_name=?';
+    my $sth = $self->dbh()->prepare( $sql );
+       $sth->execute($table);
 
-	my ($table) = $sth->fetchrow_array();
-	
-	return $table;
+    my ($table) = $sth->fetchrow_array();
+    
+    return $table;
 }
 
 
 #-- begin sql-related functions --#
 sub create_record
 {
-	my ($self,$table,$data) = @_;
-	my $dbh = $self->dbh();
+    my ($self,$table,$data) = @_;
+    my $dbh = $self->dbh();
 
-	my @fields = keys %$data;
-	my @values = map { $data->{$_} } @fields;
-	my @placeh = map { '?' } @fields;
+    my @fields = keys %$data;
+    my @values = map { $data->{$_} } @fields;
+    my @placeh = map { '?' } @fields;
 
-	local $" = ',';
-	my $sql = "INSERT INTO $table (@fields) VALUES(@placeh)";
-	my $sth = $dbh->prepare( $sql );
-	   $sth->execute( @values );
+    local $" = ',';
+    my $sql = "INSERT INTO $table (@fields) VALUES(@placeh)";
+    my $sth = $dbh->prepare( $sql );
+       $sth->execute( @values );
 #print "$sql\n[@values]\n";
 
-	my $rid  = ($dbh->selectrow_array( "SELECT LAST_INSERT_ROWID()" ))[0];
+    my $rid  = ($dbh->selectrow_array( "SELECT LAST_INSERT_ROWID()" ))[0];
 
-	return $self->select_record( $table, { 
-			'id' => $rid 
-		} );
+    return $self->select_record( $table, { 
+            'id' => $rid 
+        } );
 }
 
 
 sub select_record
 {
-	my ($self,$table,$data,$custom,@values) = @_;
-	my $dbh = $self->dbh();
+    my ($self,$table,$data,$custom,@values) = @_;
+    my $dbh = $self->dbh();
 
-	if( defined($custom) && $custom ne "" )
-	{
-		my $sth = $self->dbh()->prepare( $custom );
-		   $sth->execute(@values);
+    if( defined($custom) && $custom ne "" )
+    {
+        my $sth = $self->dbh()->prepare( $custom );
+           $sth->execute(@values);
 
-		return $sth->fetchrow_hashref( 'NAME_lc' );
-	}
+        return $sth->fetchrow_hashref( 'NAME_lc' );
+    }
 
-	my @fields = keys %$data;
+    my @fields = keys %$data;
 
-	my @placeh = map { 
-			my $tmp = $data->{$_};
-			my $cmp = ref($tmp) ? $tmp->[0] : '=';
+    my @placeh = map { 
+            my $tmp = $data->{$_};
+            my $cmp = ref($tmp) ? $tmp->[0] : '=';
 
-			"$_ $cmp ?";
-		     } @fields;
+            "$_ $cmp ?";
+             } @fields;
 
-	my @values = map {
-			my $tmp = $data->{$_};
-			$_ = ref($tmp) ? $tmp->[1] : $tmp;
-		     } @fields;
+    my @values = map {
+            my $tmp = $data->{$_};
+            $_ = ref($tmp) ? $tmp->[1] : $tmp;
+             } @fields;
 
-	local $" = ' AND ';
-	my $sql = "SELECT * FROM $table WHERE @placeh";
-	my $sth = $dbh->prepare( $sql );
-	   $sth->execute(@values);
+    local $" = ' AND ';
+    my $sql = "SELECT * FROM $table WHERE @placeh";
+    my $sth = $dbh->prepare( $sql );
+       $sth->execute(@values);
 
 #print "$sql\n[@values]\n";
 
-	return wantarray 
-		? @{$sth->fetchall_arrayref()} 
-		: $sth->fetchrow_hashref( 'NAME_lc' );
+    return wantarray 
+        ? @{$sth->fetchall_arrayref()} 
+        : $sth->fetchrow_hashref( 'NAME_lc' );
 }
 
 
 sub update_record
 {
-	my ($self,$table,$record,$data) = @_;
-	my $dbh = $self->dbh();
+    my ($self,$table,$record,$data) = @_;
+    my $dbh = $self->dbh();
 
-	if( defined($record) && !defined($data) ) 
-	{
-		$data = $record;
-	}
+    if( defined($record) && !defined($data) ) 
+    {
+        $data = $record;
+    }
 
-	if( defined($record) && ref($record) ne 'HASH' )
-	{
-		$record = { 'id' => $record };
-	}
+    if( defined($record) && ref($record) ne 'HASH' )
+    {
+        $record = { 'id' => $record };
+    }
 
-	my @fields = keys %$data;
-	my @placeh = map { "$_=?" } @fields;
-	my @values = map { $data->{$_} } @fields;
+    my @fields = keys %$data;
+    my @placeh = map { "$_=?" } @fields;
+    my @values = map { $data->{$_} } @fields;
 
-	local $"=',';
-	my $sql = "UPDATE $table SET @placeh";
+    local $"=',';
+    my $sql = "UPDATE $table SET @placeh";
 
-	if( defined($record) )
-	{
-		$sql .= " WHERE id=?";
-		my $sth = $dbh->prepare( $sql );
-		   $sth->execute( @values, $record->{'id'} );
+    if( defined($record) )
+    {
+        $sql .= " WHERE id=?";
+        my $sth = $dbh->prepare( $sql );
+           $sth->execute( @values, $record->{'id'} );
 #print "$sql\n[@values,$record->{'id'}]\n";
-	}
-	else
-	{
+    }
+    else
+    {
 #print "$sql\n[@values]\n";
-		my $sth = $dbh->prepare( $sql );
-		   $sth->execute( @values );
-	}
+        my $sth = $dbh->prepare( $sql );
+           $sth->execute( @values );
+    }
 }
 
 
 sub delete_record
 {
-	my ($self,$table,$record) = @_;
-	my $dbh = $self->dbh();
+    my ($self,$table,$record) = @_;
+    my $dbh = $self->dbh();
 
-	my $sql = "DELETE FROM $table WHERE id=?";
-	my $sth = $dbh->prepare( $sql );
-	   $sth->execute( $record->{'id'} );
+    my $sql = "DELETE FROM $table WHERE id=?";
+    my $sth = $dbh->prepare( $sql );
+       $sth->execute( $record->{'id'} );
 }
 
 

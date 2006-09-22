@@ -43,15 +43,15 @@ sub weather
 
   $url = URI::URL->new($url);
 
-	my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.5) Gecko/20041110 Firefox/1.0');
-	my $response = $browser->get($url);
+    my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.5) Gecko/20041110 Firefox/1.0');
+    my $response = $browser->get($url);
 
-	unless($response->is_success() && $response->content_type() eq 'text/html')
-	{
-		return $self->respond($message, "HTTP Error or invalid content type");
-	}
+    unless($response->is_success() && $response->content_type() eq 'text/html')
+    {
+        return $self->respond($message, "HTTP Error or invalid content type");
+    }
 
-	my $results = $response->content();
+    my $results = $response->content();
   $results =~ s/[\n\r]*//g;
 
   my ($city, $region) = $results =~ /Right now for<\/B><BR>([^,]+), ([^<]+)</gis;
@@ -63,7 +63,7 @@ sub weather
   $temp2 = sprintf("%0.1f",$temp2);
  
   if(length($city) > 1) {
-	$output = "$city, $region" . ": $temp°$unit / $temp2°$unit2, $weather";
+    $output = "$city, $region" . ": $temp°$unit / $temp2°$unit2, $weather";
   } else {
     $output = "Couldn't find where you were looking for, sorry.";
   }

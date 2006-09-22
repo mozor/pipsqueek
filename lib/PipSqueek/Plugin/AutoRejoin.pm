@@ -4,35 +4,35 @@ use base qw(PipSqueek::Plugin);
 
 sub config_initialize
 {
-	my $self = shift;
+    my $self = shift;
 
-	$self->plugin_configuration({
-		'autorejoin' => '1',
-	});
+    $self->plugin_configuration({
+        'autorejoin' => '1',
+    });
 }
 
 
 sub plugin_initialize
 {
-	my $self = shift;
+    my $self = shift;
 
-	$self->plugin_handlers([ 
-		'irc_kick',
-	]);
+    $self->plugin_handlers([ 
+        'irc_kick',
+    ]);
 }
 
 
 sub irc_kick
 {
-	my ($self,$message) = @_;
-	my $c = $self->config();
+    my ($self,$message) = @_;
+    my $c = $self->config();
 
-	my $autorejoin = $c->autorejoin();
+    my $autorejoin = $c->autorejoin();
 
-	if( $message->recipients() eq $c->current_nickname() && $autorejoin )
-	{
-		$self->client()->join( $message->channel() );
-	}
+    if( $message->recipients() eq $c->current_nickname() && $autorejoin )
+    {
+        $self->client()->join( $message->channel() );
+    }
 }
 
 

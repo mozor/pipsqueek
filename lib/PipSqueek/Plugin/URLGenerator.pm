@@ -5,108 +5,108 @@ use URI::URL;
 
 sub plugin_initialize
 {
-	my $self = shift;
+    my $self = shift;
 
-	$self->plugin_handlers(
+    $self->plugin_handlers(
                 'multi_sw'          => 'generate_url',
                 'multi_physics'     => 'generate_url',
                 'multi_mw'          => 'generate_url',
                 'multi_mathworld'   => 'generate_url',
                 'multi_imdb'        => 'generate_url',
                 'multi_wiki'        => 'generate_url',
-		'multi_cpan'        => 'generate_url',
-		'multi_perldoc'     => 'generate_url',
-		'multi_freshmeat'   => 'generate_url',
-		'multi_sourceforge' => 'generate_url',
-		'multi_sf'          => 'generate_url',
-		'multi_google'      => 'generate_url',
-		'multi_search'      => 'generate_url',
-		'multi_mbartist'    => 'generate_url',
-		'multi_mbalbum'     => 'generate_url',
-		'multi_mbtrack'     => 'generate_url',
-	);
+        'multi_cpan'        => 'generate_url',
+        'multi_perldoc'     => 'generate_url',
+        'multi_freshmeat'   => 'generate_url',
+        'multi_sourceforge' => 'generate_url',
+        'multi_sf'          => 'generate_url',
+        'multi_google'      => 'generate_url',
+        'multi_search'      => 'generate_url',
+        'multi_mbartist'    => 'generate_url',
+        'multi_mbalbum'     => 'generate_url',
+        'multi_mbtrack'     => 'generate_url',
+    );
 }
 
 
 sub generate_url
 {
-	my ($self,$message) = @_;
+    my ($self,$message) = @_;
 
-	my %urls = (
-	'cpan'		=>
-	[ 'http://search.cpan.org', '/search?mode=module&query=$search' ],
+    my %urls = (
+    'cpan'        =>
+    [ 'http://search.cpan.org', '/search?mode=module&query=$search' ],
 
-	'google'	=> 
-	[ 'http://www.google.com', '/search?q=$search' ],
+    'google'    => 
+    [ 'http://www.google.com', '/search?q=$search' ],
 
-	'search'	=>
-	[ 'http://www.google.com', '/search?q=$search' ],
+    'search'    =>
+    [ 'http://www.google.com', '/search?q=$search' ],
 
-	'perldoc'	=>
-	[ 'http://www.perldoc.com', '/cgi-bin/htsearch?words=$search' ],
-		
-	'freshmeat'	=>
-	[ 'http://freshmeat.net', '/search/?q=$search&section=projects' ],
+    'perldoc'    =>
+    [ 'http://www.perldoc.com', '/cgi-bin/htsearch?words=$search' ],
+        
+    'freshmeat'    =>
+    [ 'http://freshmeat.net', '/search/?q=$search&section=projects' ],
 
-	'sourceforge'	=> 
-	[ 'http://sf.net', '/search/?type_of_search=soft&words=$search' ],
+    'sourceforge'    => 
+    [ 'http://sf.net', '/search/?type_of_search=soft&words=$search' ],
 
-	'sf'		=>
-	[ 'http://sf.net', '/search/?type_of_search=soft&words=$search' ],
+    'sf'        =>
+    [ 'http://sf.net', '/search/?type_of_search=soft&words=$search' ],
 
-	'wiki'		=>
-	[ 'http://en.wikipedia.org',
-	  '/wiki/Special:Search?go=Go&search=$search' ],
+    'wiki'        =>
+    [ 'http://en.wikipedia.org',
+      '/wiki/Special:Search?go=Go&search=$search' ],
 
-	'imdb'		=>
-	[ 'http://imdb.com', '/Find?$search' ],
+    'imdb'        =>
+    [ 'http://imdb.com', '/Find?$search' ],
 
-	'mathworld'	=>
-	[ 'http://mathworld.wolfram.com', '/search/index.cgi?q=$search' ],
+    'mathworld'    =>
+    [ 'http://mathworld.wolfram.com', '/search/index.cgi?q=$search' ],
 
-	'mw'		=>
+    'mw'        =>
         [ 'http://mathworld.wolfram.com', '/search/index.cgi?q=$search' ],
 
-	'physics'	=>
-	[ 'http://scienceworld.wolfram.com',
-	  '/search/index.cgi?sitesearch=scienceworld.wolfram.com%2Fphysics&q=$search' ],
+    'physics'    =>
+    [ 'http://scienceworld.wolfram.com',
+      '/search/index.cgi?sitesearch=scienceworld.wolfram.com%2Fphysics&q=$search' ],
 
-	'sw'		=>
+    'sw'        =>
         [ 'http://scienceworld.wolfram.com',
-	  '/search/index.cgi?sitesearch=scienceworld.wolfram.com%2Fphysics&q=$search' ],
+      '/search/index.cgi?sitesearch=scienceworld.wolfram.com%2Fphysics&q=$search' ],
 
-	'mbalbum'	=>
-	[ 'http://musicbrainz.org',
-	  '/newsearch.html?limit=25&table=album&search=$search' ],
+    'mbalbum'    =>
+    [ 'http://musicbrainz.org',
+      '/newsearch.html?limit=25&table=album&search=$search' ],
 
-	'mbartist'	=>
-	[ 'http://musicbrainz.org',
-	  '/newsearch.html?limit=25&table=artist&search=$search' ],
+    'mbartist'    =>
+    [ 'http://musicbrainz.org',
+      '/newsearch.html?limit=25&table=artist&search=$search' ],
 
-	'mbtrack'	=>
-	[ 'http://musicbrainz.org',
-	  '/newsearch.html?limit=25&table=track&search=$search' ],
+    'mbtrack'    =>
+    [ 'http://musicbrainz.org',
+      '/newsearch.html?limit=25&table=track&search=$search' ],
 
-	);
+    );
 
-	my $event = $message->event();
-	   $event =~ s/^(?:private|public)_//;
+    my $event = $message->event();
+       $event =~ s/^(?:private|public)_//;
 
-	my $text = $message->command_input();
-	   $text =~ s/^for\s*//i; # !search for whatever
+    my $text = $message->command_input();
+       $text =~ s/^for\s*//i; # !search for whatever
 
-	my $parts = $urls{$event};
-	my $url = $parts->[0];
+    my $parts = $urls{$event};
+    my $url = $parts->[0];
 
-	if( $text )
-	{
-		$url .= $parts->[1];
-		$url =~ s/\$search/$text/;
-	}
+    if( $text )
+    {
+        $url .= $parts->[1];
+        $url =~ s/\$search/$text/;
+    }
 
-	$url = URI::URL->new($url);
+    $url = URI::URL->new($url);
 
-	return $self->respond( $message, $url->as_string() );
+    return $self->respond( $message, $url->as_string() );
 }
 
 
