@@ -1,7 +1,7 @@
 package PipSqueek::Plugin::Mathbin;
+use base qw(PipSqueek::Plugin);
 use strict;
 use warnings;
-use base qw(PipSqueek::Plugin);
 
 use LWP::UserAgent;
 use URI::Escape qw(uri_escape);
