@@ -91,7 +91,7 @@ sub irc_public
 	my $text = $message->message();
 
 	my $botnick = $self->config()->current_nickname();
-	if ($text =~ /^$botnick[,:;]+(?:should|shall)\s+(\S+)\s+(.+)$/i) {
+	if ($text =~ /^$botnick[\s,:;]+(?:should|shall)\s+(\S+)\s+(.+)$/i) {
 		my $who = $1;
 		my $decision;
 		# "should I.." or "should my_nick ..."
