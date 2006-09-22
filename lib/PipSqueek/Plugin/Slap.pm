@@ -8,16 +8,16 @@ sub config_initialize
 
 	$self->plugin_configuration({
 		'slap_verbs' =>
-		'slaps,hits,smashes,beats,bashes,smacks,blats,punches,stabs,whacks',
+		'slaps,hits,smashes,beats,bashes,smacks,blats,punches,stabs',
 
 		'slap_areas' => 
-		'around the head,viciously,repeatedly,in the face,to death,savagely',
+		'around the head,viciously,repeatedly,in the face,to death',
 
 		'slap_sizes' => 
 		'large,huge,small,tiny,miniscule,enormous,gargantuan,normal',
 
 		'slap_tools' => 
-		'trout,fork,mouse,bear,piano,cello,vacuum,mosquito,sewing needle,desk lamp',
+		'trout,fork,mouse,bear,piano,cello,vacuum,mosquito,sewing needle',
 	});
 }
 
@@ -47,8 +47,6 @@ sub multi_slap
 {
 	my ($self,$message) = @_;
 	my $thing = $message->command_input() || $message->nick();
-  $thing =~ s/\s{2,}/ /gi;
-  $thing =~ s/\s*$//;
 
 	my @verbs = @{$self->{'verbs'}};
 	my @areas = @{$self->{'areas'}};
