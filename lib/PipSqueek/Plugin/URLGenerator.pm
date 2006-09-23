@@ -16,10 +16,12 @@ sub plugin_initialize
                 'multi_wiki'        => 'generate_url',
         'multi_cpan'        => 'generate_url',
         'multi_perldoc'     => 'generate_url',
+        'multi_fm'          => 'generate_url',
         'multi_freshmeat'   => 'generate_url',
         'multi_sourceforge' => 'generate_url',
         'multi_sf'          => 'generate_url',
         'multi_google'      => 'generate_url',
+        'multi_gimg'        => 'generate_url',
         'multi_search'      => 'generate_url',
         'multi_mbartist'    => 'generate_url',
         'multi_mbalbum'     => 'generate_url',
@@ -42,10 +44,16 @@ sub generate_url
     'search'    =>
     [ 'http://www.google.com', '/search?q=$search' ],
 
+    'gimg'      =>
+    [ 'http://images.google.com', '/images?q=$search' ],
+
     'perldoc'    =>
     [ 'http://www.perldoc.com', '/cgi-bin/htsearch?words=$search' ],
         
     'freshmeat'    =>
+    [ 'http://freshmeat.net', '/search/?q=$search&section=projects' ],
+
+    'fm'    =>
     [ 'http://freshmeat.net', '/search/?q=$search&section=projects' ],
 
     'sourceforge'    => 
