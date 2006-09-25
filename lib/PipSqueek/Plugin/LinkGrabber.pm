@@ -24,6 +24,7 @@ sub plugin_initialize
     $self->plugin_handlers([
         'irc_public',
         'multi_urls',
+        'multi_links',
         'pipsqueek_mergeuser',
     ]);
 
@@ -69,6 +70,10 @@ sub add_url
     );
 }
 
+
+sub multi_links {
+    (shift)->multi_urls(@_);
+}
 
 sub multi_urls
 {
