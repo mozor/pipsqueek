@@ -49,35 +49,35 @@ sub translate {
                 'zh-CN'       => 'zh-CN'
               };
 
-  # Sort out special variables first.
-  # TODO
-  #   All of this needs a big rewrite. Ideally it should be one
-  #   regex that matches the special characters or the
-  #   abbreviations/spellings in both, one, or neither position.
-  #   Then I need a big if statement to replace special characters
-  #   or spellings with the two letter abbreviations specified
-  #   in $langs.
-  if($text =~ m/^(~?[\^\$]{1})[2|](~?[\^\$]{1})\s+(.*)$/i) {
+  if($text =~ m/^(~?[\^\$]{1}|[a-z-]{2,})
+                [2|](~?[\^\$]{1}|[a-z-]{2,})
+                \s+(.*)$/ix) {
+
     if($1 eq $2) {
-      $self->respond($message, "There's nothing to translate.");
-      return;
-    } else {
-      $self->respond($message, "Ok, now I need to implement this stuff.");
+      return($self->respond($message, "There's nothing to translate."));
+    }
+
+    if($1 eq '^') {
       $from = $session_heap->{'last_translated_from'};
-      $to   = $session_heap->{'last_translated_to'};
-      $text = $3;
+    } elsif($1 eq '$') {
+      $from = $session_heap->{'last_translated_to'};
+    } elsif($2 eq '^') {
+      $to = $session_heap->{'last_translated_from'};
+    } elsif($2 eq '$') {
+      $to = $session_heap->{'last_translated_to'};
     }
-  # Now we go for abbreviations or spellings of languages.
-  } elsif($text =~ m/^([a-z-]{2,})[2|]([a-z-]{2,})\s+(.*)$/i) {
-    if($langs->{$1} && $langs->{$2} && $langs->{$1} ne $langs->{$2}) {
+
+    if(!$from) {
       $from = $langs->{$1};
-      $to   = $langs->{$2};
-      $text = $3;
     }
+
+    if(!$to) {
+      $to = $langs->{$2};
+    }
+    
+    $text = $3;
   } else {
-    $from = "fr";
-    $to = "en";
-    $text = "Le singe est sur le branch.";
+    return($self->respond($message, "Try using the help (which Stu hasn't actually written yet)."));
   }
 
   $url .= "?langpair=$from|$to&text=$text";
