@@ -22,7 +22,7 @@ sub weather
   my $input = $message->command_input();
 
   if($input =~ m/\d{5}/) {
-    $url = 'http://www.w3.weather.com/weather/local/' . $input;
+    $url = 'http://www.weather.com/weather/local/' . $input;
   } else {
     $url = 'http://www.weather.com/search/enhanced?where=' . $input;
     $url = URI::URL->new($url);
@@ -38,7 +38,7 @@ sub weather
     $results =~ s/[\n\r]*//g;
 
     ($url) = $results =~ m/<B>1.(?:<\/B> | )<A HREF="([^\?]+\?)/gis;
-    $url = "http://www.w3.weather.com" . $url;
+    $url = "http://www.weather.com" . $url;
   }
 
   $url = URI::URL->new($url);
@@ -56,7 +56,7 @@ sub weather
 
   my ($city, $region) = $results =~ /Right now for<\/B><BR>([^,]+), ([^<]+)</gis;
   my ($weather) = $results =~ /WIDTH=52 HEIGHT=52 BORDER=0 ALT=><BR><B CLASS=obsTextA>([^<]+)<\/B><\/TD>/gis;
-  my ($temp, $unit) = $results =~ /<B CLASS=obsTempTextA>(\d+)&deg;([CF])<\/B>/gis;
+  my ($temp, $unit) = $results =~ /<B CLASS=obsTempTextA>(-?\d+)&deg;([CF])<\/B>/gis;
 
   my ($temp2,$unit2) = $unit eq 'C' ? ((9*$temp)/5+32,'F') : ((($temp-32)/9)*5,'C');
 
