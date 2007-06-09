@@ -105,9 +105,8 @@ sub new
     # (I would much rather just use the session ID, but oh well)
     $self->IRC_CLIENT_ALIAS( $$ + rand(5000) . time() );
 
-    POE::Component::IRC->new( $self->IRC_CLIENT_ALIAS() ) 
+    POE::Component::IRC->spawn( alias => $self->IRC_CLIENT_ALIAS() )
         or die "Failed to create P::C::I object: $!";
-
 
     # create the client session and store the session ID
     $self->SESSION_ID( $self->_create_session()->ID() );
@@ -285,7 +284,7 @@ sub plugin_register
     {
         my $metadata = {'obj' => $plugin, 'sub' => $method};
 
-        $session->register_state( $event, $self,  'plugin_delegate' )
+        $session->_register_state( $event, $self,  'plugin_delegate' )
             unless exists $registry->{$event};
 
         push( @{ $registry->{$event} }, $metadata );
@@ -327,7 +326,7 @@ sub plugin_unregister
 
         if( @$r_events == 0 ) 
         {
-            $session->register_state($event);
+            $session->_register_state($event);
             delete $registry->{$event};
         }
     }
