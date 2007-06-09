@@ -78,10 +78,9 @@ sub multi_links {
 sub multi_urls
 {
     my ($self,$message) = @_;
-    my ($amount,$name) = $message->command_input() =~ 
-        m/^(?:(\d+))?\s*(?:(.*?))?\s*$/;
+    my ($amount,$name) = split /\s+/, $message->command_input();
 
-    if ($name !~ /\D/) {
+    if ($name =~ /^\d+$/) {
 	($amount,$name) = ($name,$amount);
     }
 
