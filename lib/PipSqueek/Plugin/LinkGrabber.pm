@@ -81,6 +81,10 @@ sub multi_urls
     my ($amount,$name) = $message->command_input() =~ 
         m/^(?:(\d+))?\s*(?:(.*?))?\s*$/;
 
+    if ($name !~ /\D/) {
+	($amount,$name) = ($name,$amount);
+    }
+
     my $config = $self->config();
     my $default = $config->linkgrabber_default();
     my $maximum = $message->event() =~ /^private_/ 
