@@ -118,6 +118,8 @@ sub multi_math
         return;
     }
 
+    $expr =~ s/(ans|_)/$result/g;
+
     if( $expr =~ /[^\ \+\-\%\*\/\^\(\)\d\.Eepi\_]/ )
     {
         $self->respond( $message, "Invalid input." );
@@ -130,9 +132,6 @@ sub multi_math
         $self->respond( $message, "Yummy, parens!" );
         return;
     }
-
-    my $original = $result;
-    $expr =~ s/_/$result/g;
 
     if( $result = $parser->start($expr) )
     {
