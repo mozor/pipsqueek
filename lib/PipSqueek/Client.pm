@@ -284,7 +284,7 @@ sub plugin_register
     {
         my $metadata = {'obj' => $plugin, 'sub' => $method};
 
-        $session->_register_state( $event, $self,  'plugin_delegate' )
+        $session->register_state( $event, $self,  'plugin_delegate' )
             unless exists $registry->{$event};
 
         push( @{ $registry->{$event} }, $metadata );
@@ -326,7 +326,7 @@ sub plugin_unregister
 
         if( @$r_events == 0 ) 
         {
-            $session->_register_state($event);
+            $session->register_state($event);
             delete $registry->{$event};
         }
     }
