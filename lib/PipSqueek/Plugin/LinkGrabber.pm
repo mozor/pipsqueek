@@ -78,7 +78,7 @@ sub multi_links {
 sub multi_urls
 {
     my ($self,$message) = @_;
-    my ($amount,$name) = split /\s+/, $message->command_input();
+    my ($name, $amount) = split /\s+/, $message->command_input();
 
     if ($name =~ /^\d+$/) {
 	($amount,$name) = ($name,$amount);
@@ -92,6 +92,7 @@ sub multi_urls
 
     $amount ||= $default;
     $amount = $maximum if $amount > $maximum;
+    $amount = $default if $amount < 1;
 
     my @links = ();
 

@@ -273,18 +273,19 @@ sub session_shutdown
 # an event handler that registers a pipsqueek plugin's events
 sub plugin_register
 {
-    my ($self,$session,$plugin) = @_[OBJECT, SESSION, ARG0];
+    my ($self,$kernel,$plugin) = @_[OBJECT, KERNEL, ARG0];
 
 #print "* Load plugin: ", ref($plugin), "\n";
 
     my $registry = $self->REGISTRY();
     my $handlers = $plugin->plugin_handlers();
-
+   
     while( my ($event,$method) = each %$handlers )
     {
         my $metadata = {'obj' => $plugin, 'sub' => $method};
 
-        $session->register_state( $event, $self,  'plugin_delegate' )
+   #     $session->register_state( $event, $self,  'plugin_delegate' )
+	$kernel->state($event,$self, 'plugin_delegate' )
             unless exists $registry->{$event};
 
         push( @{ $registry->{$event} }, $metadata );
@@ -297,7 +298,7 @@ sub plugin_register
 # an event handler which unregisters a pipsqueek plugin's events
 sub plugin_unregister
 {
-    my ($self,$session,$plugin) = @_[OBJECT, SESSION, ARG0];
+    my ($self,$kernel,$plugin) = @_[OBJECT, KERNEL, ARG0];
 
 #print "* Unload plugin: ", ref($plugin), "\n";
 
@@ -326,7 +327,7 @@ sub plugin_unregister
 
         if( @$r_events == 0 ) 
         {
-            $session->register_state($event);
+            $kernel->state($event);
             delete $registry->{$event};
         }
     }

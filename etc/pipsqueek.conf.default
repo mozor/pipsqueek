@@ -32,7 +32,7 @@ server_password = "";
 server_channel = "#test";
 
 # What nickname the bot should assume
-identity_nickname = "StriderSqueek";
+identity_nickname = "DevSqueek";
 
 # The ident string that the bot should present to the server when connecting
 # eg:  pips@foo.host.com
