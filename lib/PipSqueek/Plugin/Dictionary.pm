@@ -2,7 +2,8 @@ package PipSqueek::Plugin::Dictionary;
 use base qw(PipSqueek::Plugin);
 
 use URI::URL;
-
+use Lingua::Ispell qw(spellcheck);
+$Lingua::Ispell::path = '/usr/bin/ispell';
 
 sub config_initialize
 {
@@ -46,6 +47,8 @@ sub dictionary
         my $word = $message->command_input();
            $word =~ s/\d+//g;
             $url =~ s/\$word/$word/;
+	    
+        return $self->respond( $message, URI::URL->new($url)->as_string() );
     }
     else
     {
@@ -53,7 +56,20 @@ sub dictionary
         if( $text =~ m/\b([\w-]{4,})\s*\(sp\??\)/ )
         {
             my $word = $1;
-            $url =~ s/\$word/$word/;
+            for my $results ( spellcheck("$word") )
+	    {
+	        if ($results->{'type'} eq 'miss')
+	        {
+	          my $response = "Spelling suggestions: @{ $results->{'misses'} }";
+	          return $self->respond ( $message, $response );
+	        } elsif ($results->{'type'} eq 'none') {
+	          my $response = "No spelling suggestions found.";
+	          return $self->respond ( $message, $response );
+	        } else {
+	          my $response = "Recieved $results->{'type'} from ispell.";
+	          return $self->respond ( $message, $response );
+	        }
+	    }
         }
         else
         {
@@ -61,7 +77,7 @@ sub dictionary
         }
     }
 
-    return $self->respond( $message, URI::URL->new($url)->as_string() );
+    return 0; 
 }
 
 
