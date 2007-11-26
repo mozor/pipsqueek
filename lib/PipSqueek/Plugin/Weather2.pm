@@ -37,7 +37,7 @@ sub weather2
   my ($city, $region) = $results =~ /<h1>([^,]+), ([^<]+) <\/h1>/gis;
   my ($temp, $unit) = $results =~ /<nobr><b>(-?\d+)<\/b>&nbsp;&#176;([FC])<\/nobr>/gis;
   my ($temp2,$unit2) = $unit eq 'C' ? ((9*$temp)/5+32,'F') : ((($temp-32)/9)*5,'C');
-  my ($weather) = $results =~ /$<div id="b" style="font-size: 14px;">([^<]+)<\/div>/gis;
+  my ($weather) = $results =~ /<div id="b" style="font-size: 14px;">([^<]+)<\/div>/gis;
 
   $temp2 = sprintf("%0.1f",$temp2);
  
