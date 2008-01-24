@@ -10,6 +10,7 @@ sub plugin_initialize
     $self->plugin_handlers([
         'multi_date',
         'multi_time',
+        'multi_dtime',
         'multi_stime',
     ]);
 }
@@ -17,21 +18,50 @@ sub plugin_initialize
 
 sub multi_date
 {
-    my ($self,$message) = @_;
-    my $tz = $message->command_input() || 'GMT';
-    $tz =~ s/\s+$//;
-    my @time = localtime(time);
-    $self->respond( $message, strftime("%A, %B %d, %Y", @time, $tz) );
+    my ($self,$message,$format) = @_;
+    my ($timestamp, $timezone) = (time, 'GMT');
+
+    $format ||= "%A, %B %d, %Y";
+
+    my @args = split /\s+/, $message->command_input();
+
+    if (@args == 1) {
+        if ($args[0] =~ /^\d+$/) {
+            $timestamp = shift @args;
+        }
+        else {
+            $timezone = shift @args;
+        }
+    }
+    elsif (@args == 2) {
+        if ($args[0] =~ /^\d+$/) {
+            ($timestamp, $timezone) = @args;
+        }
+        elsif ($args[1] =~ /^\d+$/) {
+            ($timezone, $timestamp) = @args;
+        }
+        else {
+            return $self->respond( $message, "Use !help date" );
+        }
+    }
+
+    $timestamp =~ s/^\s+|\s+$//g;
+    $timezone  =~ s/^\s+|\s+$//g;
+
+    my @time = localtime($timestamp);
+    $self->respond( $message, strftime($format, @time, $timezone) );
 }
 
 
 sub multi_time
 {
-    my ($self,$message) = @_;
-    my $tz = $message->command_input() || 'GMT';
-    $tz =~ s/\s+$//;
-    my @time = localtime(time);
-    $self->respond( $message, strftime("%T $tz", @time, $tz) );
+    (shift)->multi_date(@_, "%T %Z");
+}
+
+
+sub multi_dtime
+{
+    (shift)->multi_date(@_, "%A, %B %d, %Y %T %Z");
 }
 
 
