@@ -5,13 +5,13 @@
 $$`     $$ $$`      '''  $  $$, ;;_ |   $$     $$ $$""""     $$""""   $$;;_;;
 8       88 8       8b  dP   'Y,   `\.   8    .d8   888oo,_    888oo,_ 88   P8
 M       MM M       "YmY"     `"MUY"  *   YmmMM     """"YUM    """YUM  MM    MM
-                                                           (c)2000-2005 l8nite
+                                                           (c)2000-2008 l8nite
  "More than just a friendly bot"       
-  _.-|---|          |__/,|   <`\       TopGamers IRC Network - #aspectfx
+  _.-|---|          |__/,|   <`\       IdleMonkeys IRC Network - #idlemonkeys
  <   |   |          |o o  |__ _> >     
-  "_.|___|        __< T   >  `  /      irc.topgamers.net
-   .--'-`_.     _<._ `^--' /_<  \      |-tg1.irc.topgamers.net
- .+|______|__.-||__>`-'<<</  <<</      `-services.topgamers.net
+  "_.|___|        __< T   >  `  /      irc.idlemonkeys.net
+   .--'-`_.     _<._ `^--' /_<  \      `-services.topgamers.net
+ .+|______|__.-||__>`-'<<</  <<</      
  --------------------------------
 ===============================================================================
 
@@ -47,7 +47,7 @@ M       MM M       "YmY"     `"MUY"  *   YmmMM     """"YUM    """YUM  MM    MM
 
 6.  COPYRIGHT
 
-	Copyright 2000-2005 Shaun Guth; Distributed under the GPL v2
+	Copyright 2000-2008 Shaun Guth; Distributed under the GPL v2
 	See the file 'LICENSE' for more details
 
 7.  USEFUL LINKS
@@ -88,7 +88,17 @@ M       MM M       "YmY"     `"MUY"  *   YmmMM     """"YUM    """YUM  MM    MM
 
 	Cyon <cyon@bestweb.net>
 
-		Cyon just showed up one day and gave irc.topgamers.net a very
+		Cyon just showed up one day and gave irc.idlemonkeys.net a very
 		nice server/network to run off of.  In addition, he has spent
 		a lot of time helping manage, debug, and run pipsqueek for
-		the various users on irc.topgamers.net.
+		the various users on irc.idlemonkeys.net.
+
+	StriderA <stridera@stridera.com>
+
+		StriderA contributed multiple bug fixes for newer versions of POE 
+                while fixing many of the modules within pipsqueek.
+
+        zach <zach@mozor.net>
+                
+                zach has provided extensive testing for pipsqueek while coming up 
+                with ideas and fixes for pipsqueek.2

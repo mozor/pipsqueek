@@ -1,5 +1,5 @@
 # Install documentation for PipSqueek 
-# Copyright 2000-2005 Shaun Guth
+# Copyright 2000-2008 Shaun Guth
 
 PipSqueek Requirements
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -27,16 +27,21 @@ PipSqueek Requirements
 		POE
 		URI::Find
 		POE::Component::IRC
-		Date::Parse (bundled with PipSqueek)
+		Date::Parse (bundled with PipSqueek)                
+                Lingua::Ispell (Required for Dictionary.pm)
 
 		See the section 'Installing Perl Modules' for instructions
 
+        Ispell - Required for Dictonary.pm
+
+        (Linux) - http://www.gnu.org/software/ispell/ispell.html
+        (Windows) - http://www.ssc.wisc.edu/~dvanness/ispell.htm
 
 Basic Installation
 ~~~~~~~~~~~~~~~~~~
 
 	Make sure you have downloaded the latest version of PipSqueek from
-	http://pipsqueek.l8nite.net/ PipSqueek is distributed as either a 
+	http://pipsqueek.net/ or http://code.google.com/p/pipsqueek/ PipSqueek is distributed as either a 
 	tarball (.tar.gz extension) for Linux users, or a zip archive (.zip 
 	extension) for Windows users.
 
