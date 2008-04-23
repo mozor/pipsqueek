@@ -29,6 +29,8 @@ PipSqueek Requirements
 		POE::Component::IRC
 		Date::Parse (bundled with PipSqueek)                
                 Lingua::Ispell (Required for Dictionary.pm)
+		XML::RSS (Required for RSSGrabber.pm)
+		Geo::IP::PurePerl (Required for Country.pm)
 
 		See the section 'Installing Perl Modules' for instructions
 
