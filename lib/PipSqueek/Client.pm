@@ -85,6 +85,7 @@ sub new
         'default_ban_type'    => '4',
         'pipsqueek_version'    => 
             'PipSqueek v5: http://pipsqueek.net/',
+	'disabled_plugins' => '',
     };
 
     $config->load_config( undef, $c_data );
@@ -363,6 +364,12 @@ sub plugins_load
 
         my $module = "PipSqueek::Plugin::$_";
         return if exists $plugins->{$module};
+
+	my @disabled_plugins = split / /,$config->disabled_plugins();
+	foreach (@disabled_plugins) {
+		$_ = "PipSqueek::Plugin::" . $_;
+		return if $_ =~ /$module/;
+	}
 
         eval {
             delete $INC{$File::Find::name}; # unload
