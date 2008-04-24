@@ -369,7 +369,7 @@ sub plugins_load
 	my @disabled_plugins = split / /,$config->disabled_plugins();
 	foreach (@disabled_plugins) {
 		$_ = "PipSqueek::Plugin::" . $_;
-		return if $_ =~ /$module/;
+		return if $_ =~ /$module$/;
 	}
 
         eval {
