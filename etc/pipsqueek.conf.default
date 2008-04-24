@@ -51,6 +51,9 @@ local_address = "";
 # have the bot select a random valid one)
 local_port = ""
 
+# If PipSqueek connects to an IRC network behind a firewall, this HTTP proxy
+# will allow PipSqueek to access the Internet for plugins like Weather, etc.
+plugin_proxy = "";
 
 # [ Interface ]
 # These options define the interface between plugins and users
@@ -104,3 +107,8 @@ default_kick_message = "Dial 1-800-COLLECT and save a buck or two!"
 # The default is 4
 default_ban_type = "4";
 
+# A space-separated list of plugins to disable.  Note this completely prevents
+# the plugin from initializing, so renabling plugins will require the bot to
+# # be restarted, not just rehashed.
+# # disabled_plugins = "Slap Woot";
+disabled_plugins = "";

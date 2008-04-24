@@ -17,6 +17,7 @@ sub weather
 {
   my ($self, $message) = @_;
   my $cmd = $message->command();
+  my $config = $self->config();
   my $url;
 
   my $input = $message->command_input();
@@ -28,6 +29,10 @@ sub weather
     $url = URI::URL->new($url);
 
     my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.5) Gecko/20041110 Firefox/1.0');
+    if ($config->plugin_proxy()) {
+        my $proxy = $config->plugin_proxy();
+        $browser->proxy(['http','ftp'], "$proxy");
+    }
     my $response = $browser->get($url);
 
     unless($response->is_success() && $response->content_type() eq 'text/html') {
@@ -44,6 +49,10 @@ sub weather
   $url = URI::URL->new($url);
 
     my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.5) Gecko/20041110 Firefox/1.0');
+    if ($config->plugin_proxy()) {
+        my $proxy = $config->plugin_proxy();
+        $browser->proxy(['http','ftp'], "$proxy");
+    }
     my $response = $browser->get($url);
 
     unless($response->is_success() && $response->content_type() eq 'text/html')

@@ -75,6 +75,7 @@ sub new
         'identity_gecos'    => 'http://pipsqueek.net/',
         'local_address'        => '',
         'local_port'        => '',
+        'plugin_proxy'  => '',
         'public_command_prefix'    => '!',
         'answer_when_addressed'    => '1',
         'strip_privmsg_newlines'=> '1',
