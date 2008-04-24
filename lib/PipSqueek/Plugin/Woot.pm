@@ -15,7 +15,8 @@ sub woot_checker {
    my ($self,$message) = @_;
    my $uaw = LWP::UserAgent->new;
 	$uaw->timeout(15);
-   
+	
+   $uaw->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
    my $woot = $uaw->get('http://www.woot-tracker.com/pips/index.php');
 	
 	if ($woot->is_success) {

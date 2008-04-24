@@ -29,6 +29,7 @@ sub mathbin
 
     if ($eq) {
         my $ua = LWP::UserAgent->new();
+        $ua->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
         my $url = $MATHBIN_BACKEND . '?eq=' . uri_escape($eq)
             . '&name=' . uri_escape($user);
         my $res = $ua->get($url);

@@ -190,6 +190,7 @@ sub rss_from_url
 
     my $agent = LWP::UserAgent->new('agent' => 'Mozilla/5.0');
     $agent->timeout($self->config()->rss_http_timeout());
+    $agent->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
     my $response = $agent->get($url); 
     unless ($response->is_success()) {
         my $msg = "HTTP Error for $url: " . $response->status_line();

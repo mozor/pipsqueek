@@ -17,11 +17,12 @@ sub plugin_initialize
 sub babelise
 {
     my ($self,$message) = @_;
-    
-    my $url = 'http://www.tashian.com/perl/multibabel.cgi';
+
+    my $url = 'http://tashian.com/perl/multibabel.cgi';
     my $text = $message->command_input();
 
     my $browser  = LWP::UserAgent->new( 'agent' => 'Mozilla/5.0' );
+    $browser->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
     my $response = $browser->post( 
             URI::URL->new($url)->as_string(),
             { 'english_text' => $text }

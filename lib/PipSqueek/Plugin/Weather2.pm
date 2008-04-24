@@ -24,6 +24,7 @@ sub weather2
   $url = URI::URL->new($url);
 
   my $browser  = LWP::UserAgent->new('agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.5) Gecko/20041110 Firefox/1.0');
+  $browser->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
   my $response = $browser->get($url);
 
   unless($response->is_success() && $response->content_type() eq 'text/html')

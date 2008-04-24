@@ -73,6 +73,7 @@ sub multi_money
            '&Header=PipSqueek&Footer=PipSqueek';
 
     my $browser  = LWP::UserAgent->new( 'agent' => 'Mozilla/5.0' );
+    $browser->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
     my $response = $browser->get( $url ); 
 
     unless( $response->is_success()    &&

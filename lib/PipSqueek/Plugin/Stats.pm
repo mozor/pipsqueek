@@ -394,6 +394,7 @@ sub fah_top10
     # Perhaps this should be generalized to http_timeout()?
     $agent->timeout( $config->fah_http_timeout() );
     
+    $agent->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
     my $response = $agent->get( $config->fah_team_stats_url() );
     unless( $response->is_success() )
     {
