@@ -103,7 +103,7 @@ sub public_roulette
     push( @$PLAYERS, $ruser->{'userid'} );
 
     my $bullet = shift @$CHAMBERS;
-    $bullet = 0 if $message->nick() eq 'Stu';
+
     my $output = sprintf( '%s: chamber #%d of 6 => %s',
                   $message->nick(),
                   (6-@$CHAMBERS),
@@ -138,6 +138,7 @@ sub public_roulette
 
     $self->update_roulette_user( $ruser );
 
+    $self->client()->kick( $message->channel(), $message->nick(), $output ) if $bullet;
     $self->respond( $message, $output );
     $self->roulette_reload( $message ) if $bullet || !@$CHAMBERS;
 
