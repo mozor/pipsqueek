@@ -47,6 +47,7 @@ sub multi_slap
 {
     my ($self,$message) = @_;
     my $thing = $message->command_input() || $message->nick();
+    $thing =~ s/\s+$//;
 
     my @verbs = @{$self->{'verbs'}};
     my @areas = @{$self->{'areas'}};
