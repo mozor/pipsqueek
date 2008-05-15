@@ -31,6 +31,8 @@ sub plugin_initialize
 sub decide
 {
     my ($self, $text, $who) = @_;
+   
+    $text =~ s/\bmy\b/your/g;
 
     my @choices =
         grep { length }
@@ -87,7 +89,6 @@ sub irc_public
 {
     my ($self,$message) = @_;
 
-    #my $user = $self->search_user( $message );
     my $text = $message->message();
 
     my $botnick = $self->config()->current_nickname();
@@ -97,7 +98,7 @@ sub irc_public
         # "should I.." or "should my_nick ..."
         if (lc($who) eq 'i' || lc($who) eq lc($message->nick())) {
             $decision = $self->decide($2, "You");
-            $decision =~ s/my/your/i;
+            $decision =~ s/\bmy\b/your/i;
         # "should the bot..."
         } elsif (lc($who) eq lc($botnick) || lc($who) eq 'you') {
             my @opts = ("HAH! I'll do whatever I want.",
@@ -119,6 +120,8 @@ sub multi_decider
 {
     my ($self,$message) = @_;
     my $text = $message->command_input();
+    my $who = $self->search_user( $message )->{ 'username' };
+
     if ($text =~ /^(?:among|between|one of|from)\s+/i) {
         $text =~ s/^(?:among|between|one of|from)\s+//i;
         $text =~ s/(?<=\W)and(?=\W)/or/gi;

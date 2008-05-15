@@ -3,7 +3,7 @@ use base qw(PipSqueek::Plugin);
 
 use URI::URL;
 use Lingua::Ispell qw(spellcheck);
-$Lingua::Ispell::path = '/usr/bin/ispell';
+$Lingua::Ispell::path = '/usr/local/bin/ispell';
 
 sub config_initialize
 {
