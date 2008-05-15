@@ -80,8 +80,13 @@ sub multi_urls
     my ($self,$message) = @_;
     my ($name, $amount) = split /\s+/, $message->command_input();
 
-    if ($name =~ /^\d+$/) {
-	($amount,$name) = ($name,$amount);
+    if ($name =~ /^-?\d+$/) {
+        ($amount,$name) = ($name,$amount);
+    }
+
+    if ($name =~ /^[^\d+]$/) 
+    {
+        $amount = $default;
     }
 
     my $config = $self->config();
@@ -156,3 +161,4 @@ sub pipsqueek_mergeuser
 
 
 __END__
+
