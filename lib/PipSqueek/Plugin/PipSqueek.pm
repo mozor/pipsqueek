@@ -217,7 +217,7 @@ sub irc_ctcp_version
 
     $self->client()->ctcpreply( 
         $message->nick(), 
-        $self->config()->pipsqueek_version() 
+        'VERSION ' . $self->config()->pipsqueek_version() 
     );
 }
 
