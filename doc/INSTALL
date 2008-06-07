@@ -17,7 +17,7 @@ PipSqueek Requirements
 		File::Find *
 		File::Spec::Functions *
 		FindBin *
-		LWP::UserAgent *
+		LWP::UserAgent * (not included with FreeBSD)
 		URI::URL *
 		Class::Accessor
 		DBI
