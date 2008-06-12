@@ -81,7 +81,7 @@ sub get_wtf
   }
 
   if(!$row && $input !~ m/^\s*[0-9]+\s*$/) {
-    my $url = 'http://acronymfinder.com/af-query.asp?acronym=' . $input;
+    my $url = 'http://acronymfinder.com/' . $input . '.html';
     return $self->respond($message,
       "That acronym wasn't in the database, please add the"
       . " definition if you find it: $url");
