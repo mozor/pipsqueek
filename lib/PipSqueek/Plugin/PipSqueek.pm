@@ -391,7 +391,7 @@ sub irc_353
 
     foreach my $name ( @{ $message->recipients() } )
     {
-        $name =~ s/^.// if $name =~ /^[+@%^]/;
+        $name =~ s/^.// if $name =~ /^[%&+@~^]/;
 
         $self->update_user( $name, {
             'logged_in' => 1,
