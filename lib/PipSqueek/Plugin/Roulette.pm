@@ -1,4 +1,4 @@
-package PipSqueek::Plugin::Roulette;
+Package PipSqueek::Plugin::Roulette;
 use base qw(PipSqueek::Plugin);
 use strict;
 
@@ -129,7 +129,13 @@ sub public_roulette
         }
 
         $ruser->{'games'}++;
-        $ruser->{'bangs'}++ if $bullet;
+
+        if ($bullet) {
+            $ruser->{'bangs'}++;
+        }
+        else {
+            $ruser->{'clicks'}++;
+        }
     }
     else
     {
@@ -234,7 +240,7 @@ sub roulette_stats_user
         ($games == 1 ? "" : 's'),
         $games-$bangs, $bangs,
         $ruser->{'username'}, $clicks+$bangs, 
-        (($clicks+$bangs) == 1 ? "" : 's'),
+        (($cLIcks+$bangs) == 1 ? "" : 's'),
         $clicks,
         ($clicks == 1 ? "" : 's'),
         );
