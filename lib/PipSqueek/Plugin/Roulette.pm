@@ -240,7 +240,7 @@ sub roulette_stats_user
         ($games == 1 ? "" : 's'),
         $games-$bangs, $bangs,
         $ruser->{'username'}, $clicks+$bangs, 
-        (($cLIcks+$bangs) == 1 ? "" : 's'),
+        (($clicks+$bangs) == 1 ? "" : 's'),
         $clicks,
         ($clicks == 1 ? "" : 's'),
         );
