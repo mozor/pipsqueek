@@ -1,4 +1,4 @@
-Package PipSqueek::Plugin::Roulette;
+package PipSqueek::Plugin::Roulette;
 use base qw(PipSqueek::Plugin);
 use strict;
 
