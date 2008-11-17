@@ -128,7 +128,7 @@ sub multi_math
     my $par_cnt = $expr =~ tr/\(/\(/;
     my $ops_cnt = $self->op_count( $expr );
 
-    if( $par_cnt > $ops_cnt ) {
+    if( $par_cnt > $ops_cnt || $par_cnt > 5) {
         $self->respond( $message, "Yummy, parens!" );
         return;
     }
