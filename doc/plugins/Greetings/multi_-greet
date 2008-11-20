@@ -1,0 +1,2 @@
+-greet <id>
+Delete greet by id. (To know how to get id use !help show_greet)
