@@ -10,6 +10,7 @@ require LWP::UserAgent;
                   'multi_woot'      => 'woot_checker',
                   'multi_shirt'      => 'shirt_checker',
                   'multi_wine'      => 'wine_checker',
+                  'multi_sellout'      => 'sellout_checker',                  
 
 });
 
@@ -60,6 +61,26 @@ sub shirt_checker {
         } else {
                         return $self->respond( $message,("An error has occurred.") );
         }
+}
+
+sub sellout_checker {
+   my ($self,$message) = @_;
+   my $uaw = LWP::UserAgent->new;
+        $uaw->timeout(15);
+
+   $uaw->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
+        my $woot = $uaw->get('http://shopping.yahoo.com/?name=woot');
+        my $content = $woot->content;
+        
+        
+        my ($name) = $content =~ /rel=\"nofollow\" >(.+?)<\/a><\/h2/gis;
+        my ($price) = $content =~ /<p class=\"price\"><strong>(.+?)</gis;
+        my ($url) = $content =~ /sellout.woot.com\/(.+?)\" alt/gis;
+
+
+        return $self->respond( $message, "$name - $price - http://sellout.woot.com/$url\n");
+
+
 }
 
 
