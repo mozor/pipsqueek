@@ -1,0 +1,5 @@
+!set_timer <* * * * *> <destination> <message>
+<* * * * *> - min hour day month day_of_week (like crontab)
+<destination> - channel or nick (where the result of current command will be printed)
+<message> - the bot command to execute periodically
+Example: !set_timer */30 * * * * #channel !bash.org - this command will execute bash.org command every 30 minutes on #channel
