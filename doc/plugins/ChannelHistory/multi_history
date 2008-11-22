@@ -1,0 +1,2 @@
+!history <num_rows> [channel]
+Show channel history: num_rows - number of last channel lines to show, if channel not given then show current channel history lines.
