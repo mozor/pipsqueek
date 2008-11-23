@@ -25,7 +25,8 @@ sub plugin_initialize {
  $command="SELECT time,destination,command_text FROM timer WHERE session=?";
  $sth=$dbh->prepare($command);
  unless ($sth) {print $dbh->errstr(); return;}
- $sth->execute($self->client()->get_heap()->{'whoami'});
+ my $whoami=$self->client()->get_heap()->{'whoami'} || 'irc';
+ $sth->execute($whoami);
  while (my $row = $sth->fetchrow_arrayref()) {
   #print "SET TIMER: ",join(' ',@$row),"\n";
   my $delay=$self->define_next_time($row->[0]) - time();
