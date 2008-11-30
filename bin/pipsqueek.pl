@@ -10,7 +10,7 @@ use POE;
 
 use lib "$Bin/../lib";
 use PipSqueek::Client;
-
+use PipSqueek::Jabber_Client;
 
 my @clients;
 
@@ -32,6 +32,9 @@ sub main
         my $client = PipSqueek::Client->new( $dir );
         push(@clients,$client);
     }
+
+    my $client = PipSqueek::Jabber_Client->new($dirs[0]);
+    if (ref($client)) {push(@clients,$client);}
 
     # start our primary poe session
     POE::Session->create(
@@ -102,7 +105,9 @@ sub _start
         
         # configure connection
         my $config = $client->CONFIG();
-        my $options = {
+      my $options;
+      if ($client->can('IRC_CLIENT_ALIAS')) {
+        $options = {
             'Server'    => $config->server_address(),
             'Password'  => $config->server_password(),
             'Port'      => $config->server_port(),
@@ -112,6 +117,7 @@ sub _start
             'Username'  => $config->identity_ident(),
             'Ircname'   => $config->identity_gecos(),
         };
+       }
 
         # connect session
         $kernel->post( $client->SESSION_ID(), 'session_connect', 
