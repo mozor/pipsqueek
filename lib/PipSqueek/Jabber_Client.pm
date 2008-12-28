@@ -46,7 +46,7 @@ sub new {
  $self->DBI( $dbi );
  my $config = PipSqueek::Config->new($self->ROOTPATH(),$self->BASEPATH());
  my $c_data = {
-        'enable_jabber_session'	=> '0',
+        'enable_jabber_session'	=> '1',
         'jabber_server_address'    => 'talk.google.com',
         'jabber_server_port'        => '5222',
         'jabber_password'    => '',
@@ -55,13 +55,17 @@ sub new {
         'jabber_tls_enable'	=> '1',
         'allowed_plugins'	=> '',
         'automatically_subscribe'	=> '1',
+	'chatrooms'	=> '',
+	'default_access_level'	=> '10',
     };
 
  $config->load_config( undef, $c_data );
  $config->load_config( '/etc/pipsqueek_jabber.conf' );
- my @allowed_plugins=split(/,|\s+|,\s+/,$config->allowed_plugins);
- $self->ALLOWED_PLUGINS(\@allowed_plugins);
  if ($config->enable_jabber_session() ne "1") {return;}
+ my @allowed_plugins=split(/,|,?\s+/,$config->allowed_plugins);
+ $self->ALLOWED_PLUGINS(\@allowed_plugins);
+ my @chatrooms=split(/,|,?\s+/,$config->chatrooms);
+ $config->chatrooms(\@chatrooms);
  $self->CONFIG( $config );
  $self->SESSION_ID($self->_create_session()->ID());
  return $self;
@@ -80,7 +84,7 @@ sub _create_session {
 				$kernel->alias_remove();
 			},
 		},
-	object_states => [$self => ['_start', 'input_event', 'error_event', 'status_event', 'output_event', 'plugins_load', 'plugins_wipe', 'plugin_delegate', 'plugin_unregister', 'send_presence', 'add_to_roster', 'remove_from_roster', 'roster_request', 'roster_return']]
+	object_states => [$self => ['_start', 'error_event', 'status_event', 'output_event', 'plugins_load', 'plugins_wipe', 'plugin_delegate', 'plugin_unregister', 'plugin_register', 'send_presence', 'add_to_roster', 'remove_from_roster', 'roster_request', 'roster_return', 'join_chatroom']]
 	);
  }
 
@@ -133,12 +137,32 @@ sub status_event() {
   $self->SESSION_ID('Tester');
 
   $kernel->post($self->JABBER_CLIENT_ALIAS(), 'output_handler', XNode->new('presence'));
+  foreach my $chatroom(@{$self->CONFIG()->chatrooms()}) {
+   $kernel->yield('join_chatroom',$chatroom); 
+   print "JOINING $chatroom\n";
+   }
   $kernel->post($self->JABBER_CLIENT_ALIAS(), 'purge_queue');
 
   $kernel->yield('roster_request');
   }
 
  print "Status received: $state \n";
+ }
+
+sub join_chatroom {
+ my ($self,$chatroom, $heap)=@_[OBJECT,ARG0,HEAP];
+ my $password; ($chatroom,$password)=split(/:/,$chatroom);
+ my ($key) = grep {$heap->{'chatrooms'}{$_} eq $chatroom} keys %{$heap->{'chatrooms'}};
+ $key ||= $chatroom; $key=~s/\/.*$//;
+ if ($chatroom!~/\/.+$/) {$chatroom.='/'.$self->CONFIG()->jabber_nickname();}
+ $heap->{'chatrooms'}{$key}=$chatroom;
+ #$self->kernel->yield('send_presence',$chatroom);
+ my $node=XNode->new('presence');
+ $node->attr('to',$chatroom );
+ $node->insert_tag('x')->attr('xmlns','http://jabber.org/protocol/muc');
+ $node->get_tag('x')->insert_tag('password')->data($password) if $password;
+ $node->get_tag('x')->insert_tag('history')->attr('maxstanzas',0);
+ $self->kernel->post($self->JABBER_CLIENT_ALIAS(), 'output_handler',$node);
  }
 
 sub roster_request() {
@@ -189,47 +213,19 @@ sub remove_from_roster {
  $self->kernel->post($self->JABBER_CLIENT_ALIAS(), 'output_handler', $respond);
  }
 
-sub input_event() {
- my ($kernel, $heap, $node, $self) = @_[KERNEL, HEAP, ARG0, OBJECT];
-
- print "\n===PACKET RECEIVED===\n";
- print $node->to_str() . "\n";
- print "=====================\n\n";
-
- my $type=$node->attr('type');
- if ($self->CONFIG()->automatically_subscribe() and $node->name=~/^presence$/i and $type=~/^subscribe$/i) {
-  print "ASK FOR SUBSCRIBTION FROM ".$node->attr('from')."\n";
-  $self->kernel->yield('send_presence', $node->attr('from'), 'subscribed');
-  $self->kernel->yield('add_to_roster',$node->attr('from'));
-  $self->kernel->yield('roster_request');
-  }
-
- elsif ($node->name=~/^presence$/i and $type=~/^unsubscribed$/i) {
-  $self->kernel->yield('send_presence', $node->attr('from'), 'unsubscribed');
-  delete($heap->{'roster'}->{$node->attr('from')});
-  $self->kernel->yield('remove_from_roster',$node->attr('from'));
-  }
-
- elsif ($node->name=~/^message$/i) {
-  my $jm=PipSqueek::Jabber_Message->new($node);
-  if ($jm) {
-   $self->plugin_delegate($jm);
-   }
-  }
- }
-
 sub respond() {
- my ($self,$message,$output)=@_;
+ my ($self,$message,$output,$type)=@_;
  my $heap=$self->get_heap();
+ $type=$type || (ref($message) ? $message->type()||'chat' : 'chat');
+ my $sender= (ref($message) ? ($type eq 'chat' ? $message->nick() : $message->sender()) : $message);
 
- print "\n\n=====================\n\n";
- print "Nick to = ", $self->JABBER_CLIENT_ALIAS()." & ".$heap->{'sid'} . "\n";
- print "\n\n=====================\n\n";
+ #print "\n\n=====================\n\n";
+ #print "Nick to = ", $self->JABBER_CLIENT_ALIAS()." & ".$heap->{'sid'} . "\n";
+ #print "\n\n=====================\n\n";
 
  my $node = XNode->new('message');
- my $sender= (ref($message) ? $message->sender() : $message);
  $node->attr('to', $sender);
- $node->attr('type', 'chat');
+ $node->attr('type', $type);
  Encode::_utf8_on($output);
  $node->insert_tag('body')->data($output);
  print $node->to_str() . "\n";
@@ -237,21 +233,24 @@ sub respond() {
  return 1;
  }
 
-sub privmsg() {return (shift)->respond(@_);}
-sub respond_act { return (shift)->respond(@_); }
-sub respond_user { return (shift)->respond(@_); }
+sub privmsg() {return (shift)->respond(@_,'chat');}
+sub respond_act {
+ my ($self,$message,$output)=@_;
+ $output="/me ".$output;
+ return $self->respond($message,$output);
+ }
+sub respond_user {return (shift)->respond(@_);}
 
-sub output_event()
-{
-	my ($kernel, $heap, $node, $sid) = @_[KERNEL, HEAP, ARG0, ARG1];
-	
-	print "\n===PACKET SENT===\n";
-	print $node->to_str() . "\n";
-	print "=================\n\n";
-	print $node->to_str(),"\n";
-	
-	$kernel->post($sid, 'output_handler', $node);
-}
+sub output_event() {
+ my ($kernel, $heap, $node, $sid) = @_[KERNEL, HEAP, ARG0, ARG1];
+
+ print "\n===PACKET SENT===\n";
+ print $node->to_str() . "\n";
+ print "=================\n\n";
+ print $node->to_str(),"\n";
+
+ $kernel->post($sid, 'output_handler', $node);
+ }
 
 sub error_event()
 {
@@ -325,17 +324,18 @@ sub plugins_load {
     sub {
         $_ =~ s|^.*/||;
         return if /^\./ or $_ !~ /\.pm$/;
+	s/\.pm$//;
         return if $File::Find::name =~ /CVS/;
-        return if $File::Find::dir !~ /Plugin$/;
-        s/\.pm$//;
-        
+	my $module;
+        if ($File::Find::dir =~ /Plugin$/) {$module = "PipSqueek::Plugin::$_";}
+	elsif ($File::Find::dir =~ /Plugin\/Jabber$/) {$module = "PipSqueek::Plugin::Jabber::$_";}
+	else {return;}
         $File::Find::name =~ s/bin\/..\///;
 
-        my $module = "PipSqueek::Plugin::$_";
-		my $name=$_;
+        my $name=$_;
         return if exists $plugins->{$module};
 
-        if (grep {$_ eq $name} @{$self->ALLOWED_PLUGINS}) {
+        if ($File::Find::dir =~ /Plugin\/Jabber$/ or grep {$_ eq $name} @{$self->ALLOWED_PLUGINS}) {
             delete $INC{$File::Find::name}; # unload
             require $File::Find::name;      # reload 
 
@@ -348,12 +348,9 @@ sub plugins_load {
             $plugin->plugin_initialize();  # initialize plugin
 
             $plugins->{$module} = $plugin; # store in registry	
-  	    my $registry = $self->REGISTRY();
-	    my $handlers = $plugin->plugin_handlers();
-	    while( my ($event,$method) = each %$handlers ) {
-		my $metadata = {'obj' => $plugin, 'sub' => $method};
-		push( @{ $registry->{$event} }, $metadata );
-		}
+
+	    $kernel->post( $self->SESSION_ID(), 'plugin_register', $plugin );
+
             1;
         };
 
@@ -361,7 +358,9 @@ sub plugins_load {
 
     }, 'no_chdir' => 1, },
     catdir( $self->BASEPATH(), 'lib/PipSqueek/Plugin' ),
+    catdir( $self->BASEPATH(), 'lib/PipSqueek/Plugin/Jabber' ),
     catdir( $self->ROOTPATH(), 'lib/PipSqueek/Plugin' ),
+    catdir( $self->ROOTPATH(), 'lib/PipSqueek/Plugin/Jabber' ),
     );
  return 1;
  }
@@ -374,6 +373,7 @@ sub plugin_register {
 
  while( my ($event,$method) = each %$handlers ) {
   my $metadata = {'obj' => $plugin, 'sub' => $method};
+  $self->kernel()->state($event, $self, 'plugin_delegate') unless exists $registry->{$event};
   push( @{ $registry->{$event} }, $metadata );
   }
 
@@ -419,15 +419,9 @@ sub plugins_wipe {
  }
 
 sub plugin_delegate {
- my ($self,$message) = @_;
+ my ($self,$event,$message) = @_[OBJECT,STATE,ARG0];
  my $registry = $self->REGISTRY();
- if (!%$registry) {print "1"; $self->plugins_load();}
- my $event=$message->command();
-	
- if (exists($registry->{"public_$event"})) {$event="public_$event";}
- elsif (exists($registry->{"private_$event"})) {$event="private_$event";}
- elsif (exists($registry->{"multi_$event"})) {$event="multi_$event";}
- elsif (!exists($registry->{$event})) {return 0;}
+
  # call the handlers
  foreach my $metaobject ( @{ $registry->{$event} } ) {
   my $plugin = $metaobject->{'obj'};

@@ -11,6 +11,7 @@ use POE;
 use lib "$Bin/../lib";
 use PipSqueek::Client;
 use PipSqueek::Jabber_Client;
+use POE::Component::Server::XMLRPC;
 
 my @clients;
 
@@ -29,8 +30,8 @@ sub main
     # create a new client for every argument passed in our client config
     foreach my $dir ( @dirs )
     {
-        my $client = PipSqueek::Client->new( $dir );
-        push(@clients,$client);
+	my $client = PipSqueek::Client->new( $dir ); 
+	if (ref($client)) {push(@clients,$client);}
     }
 
     my $client = PipSqueek::Jabber_Client->new($dirs[0]);
@@ -57,7 +58,6 @@ sub main
 
     return 0;
 }
-
 
 # reads the command line arguments using Getopt::Long
 sub parse_command_line
@@ -87,7 +87,6 @@ sub parse_command_line
     return @dirs;
 }
 
-
 # called once our POE::Session is active, initialize and connect our clients
 sub _start
 {
@@ -105,9 +104,8 @@ sub _start
         
         # configure connection
         my $config = $client->CONFIG();
-      my $options;
-      if ($client->can('IRC_CLIENT_ALIAS')) {
-        $options = {
+        if ($client->can('IRC_CLIENT_ALIAS')) {
+		 my $options = {
             'Server'    => $config->server_address(),
             'Password'  => $config->server_password(),
             'Port'      => $config->server_port(),
@@ -116,12 +114,12 @@ sub _start
             'Nick'      => $config->identity_nickname(),
             'Username'  => $config->identity_ident(),
             'Ircname'   => $config->identity_gecos(),
-        };
-       }
+         };
 
         # connect session
-        $kernel->post( $client->SESSION_ID(), 'session_connect', 
+         $kernel->post( $client->SESSION_ID(), 'session_connect', 
                 $options );
+		 }
     }
 
     return 1;
@@ -154,8 +152,12 @@ sub pipsqueek_signal
     }
 }
 
-
 exit( &main(@ARGV) );
+
+#my @dirs = &parse_command_line();
+#my $client = PipSqueek::Jabber_Client->new($dirs[0]);
+#$poe_kernel->run();
+
 
 
 __END__
