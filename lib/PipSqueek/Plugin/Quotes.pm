@@ -11,6 +11,7 @@ sub plugin_initialize
         'multi_+quote' => 'add_quote',
         'multi_-quote' => 'del_quote',
         'multi_#quote' => 'cnt_quote',
+        'multi_#quotes' => 'cnt_quote',
         'multi_top10quotes' => 'top10_quotes',
         'public_quote++' => 'rate_quote',
         'public_quote--' => 'rate_quote',
