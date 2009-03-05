@@ -1,78 +1,43 @@
 package PipSqueek::Plugin::GoogleWeather;
 use base qw(PipSqueek::Plugin);
 
-use Weather::Google;
-use utf8;
-
 sub plugin_initialize {
     my $self = shift;
 
-    $self->plugin_handlers( [ 'multi_w', 'multi_f', ] );
+   $self->plugin_handlers({
+		'multi_w'      => 'weather',
+                #'multi_weather'      => 'weather',
+
+
+	});
 }
+sub weather {
+		my ( $self, $message ) = @_;
+		my $input = $message->command_input();
+		$input =~ s/\s+$//;
 
+my $uaw = LWP::UserAgent->new;
+   $uaw->timeout(15);
+my $gw = $uaw->get('http://www.google.com/ig/api?weather=' . "$input");
+my $content = $gw->content;
 
-sub multi_w {
-    my ( $self, $message ) = @_;
-    my $input = $message->command_input();
-    $input =~ s/\s+$//;
+		my ($city) = $content =~ /city data=\"(.+?)\"\//gis;
+		my ($tempf) = $content =~ /temp_f data=\"(.+?)\"/gis;
+		my ($tempc) = $content =~ /temp_c data=\"(.+?)\"/gis;
+		my ($conditions) = $content =~ /condition data=\"(.+?)\"\//gis;
+		my ($humidity) = $content =~ /humidity data=\"(.+?)\"\//gis;
+		my ($wind) = $content =~ /wind_condition data=\"(.+?)\"\//gis;
 
-    $gw = new Weather::Google;
+		return $self->respond( $message, "Sorry, I can't find what you're looking for." ) unless defined $city;
+		return $self->respond( $message, "$city: $tempf캟 / $tempc캜, $conditions - $humidity - $wind" );
 
-    if ( $input eq m/^[0-9]{5}/ ) {
-        $gw->zip($input);
-    }
-    else {
-        $gw->city($input);
-    }
+};
 
-    $current = $gw->current;
-    $tc      = $current->{temp_c};
-    $tf      = $current->{temp_f};
-    $hum     = $gw->humidity;
-    $wind    = $gw->wind_condition;
-    $city    = $gw->info('city');
-    $cond    = $gw->condition;
-
-    return $self->respond( $message,
-        "Sorry can't find what you're looking for." )
-      unless defined $city;
-    return $self->respond( $message,
-        "$city: $tf째F / $tc째C , $cond - $hum - $wind" );
-
-}
-
-sub multi_f {
-    my ( $self, $message ) = @_;
-    my $input = $message->command_input();
-    $input =~ s/\s+$//;
-
-    $gw = new Weather::Google;
-
-    if ( $input eq m/^[0-9]{5}/ ) {
-        $gw->zip($input);
-    }
-    else {
-        $gw->city($input);
-    }
-
-    $city  = $gw->info('city');
-    $today = $gw->forecast_conditions(0);
-    $phigh = $today->{high};
-    $plow  = $today->{low};
-    $pcnd  = $today->{condition};
-    $pday  = $today->{day_of_week};
-    $date  = $gw->forecast_information('forecast_date');
-
-    return $self->respond( $message,
-        "Sorry can't find what you're looking for." )
-      unless defined $city;
-    return $self->respond( $message,
-        "[$pday] $city: High $phigh째F / Low $plow째F with $pcnd - $date" );
-
-}
 
 1;
 
 __END__
+
+
 
 
