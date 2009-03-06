@@ -18,6 +18,8 @@ sub weather {
 
 my $uaw = LWP::UserAgent->new;
    $uaw->timeout(15);
+   $uaw->proxy(['http','ftp'], $self->config()->plugin_proxy()) if ($self->config()->plugin_proxy());
+
 my $gw = $uaw->get('http://www.google.com/ig/api?weather=' . "$input");
 my $content = $gw->content;
 
