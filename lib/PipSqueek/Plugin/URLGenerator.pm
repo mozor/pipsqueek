@@ -26,6 +26,7 @@ sub plugin_initialize
         'multi_mbartist'    => 'generate_url',
         'multi_mbalbum'     => 'generate_url',
         'multi_mbtrack'     => 'generate_url',
+	'multi_lmgtfy'      => 'generate_url',
     );
 }
 
@@ -94,6 +95,9 @@ sub generate_url
     'mbtrack'    =>
     [ 'http://musicbrainz.org',
       '/newsearch.html?limit=25&table=track&search=$search' ],
+    'lmgtfy'	=>
+    [ 'http://lmgtfy.com',
+      '/search?q=$search' ],
 
     );
 
