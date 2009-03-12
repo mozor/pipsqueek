@@ -96,7 +96,7 @@ sub translate {
 
   my $results = $response->content();
 
-  my ($output) = $results =~ m/<textarea.*?>(.*?)<\/textarea>/is;
+  my ($output) = $results =~ m/<div id=result_box dir="(?:ltr|rtl)">([^<]+)</is;
   $output =~ s/\s+$//;
 
   if(defined($output) && $output ne "") {
