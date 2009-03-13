@@ -185,11 +185,14 @@ sub multi_birthdays
 sub multi_birthday
 {
     my ($self,$message) = @_;
+
     my $name = $message->command_input();
+       $name =~ s/^\s*//g;
+       $name =~ s/\s*$//g;
 
-    $name =~ s/\s+$//;
+    my $user  = $self->search_user( $name || $message );
 
-    unless( $name )
+    unless( $user )
     {
         $self->respond( $message, "You must specify a user" );
         return;
