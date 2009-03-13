@@ -198,13 +198,20 @@ sub multi_birthday
         return;
     }
 
+    $name = $user->{'nickname'};
+
     my $bday = $self->dbi()->select_record( 'birthdays',
             { 'LOWER(name)' => lc($name) } );
 
     unless( $bday )
     {
-        $self->respond( $message, "Doesn't look like I know yet..." );
-        return;
+        $bday = $self->dbi()->select_record( 'birthdays',
+            { 'LOWER(name)' => lc($user->{'username'}) } );
+
+        unless ($bday) {
+            $self->respond( $message, "Doesn't look like I know yet..." );
+            return;
+        }
     }
 
     $name = $bday->{'name'};
