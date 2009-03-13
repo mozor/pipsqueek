@@ -192,21 +192,13 @@ sub multi_birthday
 
     my $user  = $self->search_user( $name || $message );
 
-    unless( $user )
-    {
-        $self->respond( $message, "You must specify a user" );
-        return;
-    }
-
-    $name = $user->{'nickname'};
-
     my $bday = $self->dbi()->select_record( 'birthdays',
-            { 'LOWER(name)' => lc($name) } );
+            { 'LOWER(name)' => lc($user->{'username'}) } );
 
     unless( $bday )
     {
         $bday = $self->dbi()->select_record( 'birthdays',
-            { 'LOWER(name)' => lc($user->{'username'}) } );
+            { 'LOWER(name)' => lc($user->{'nickname'}) } );
 
         unless ($bday) {
             $self->respond( $message, "Doesn't look like I know yet..." );
