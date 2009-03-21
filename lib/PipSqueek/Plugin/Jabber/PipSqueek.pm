@@ -105,7 +105,7 @@ sub _delegate_command {
  #use Data::Dumper; print Dumper $self->{'LEVELS'};
  my $level = $self->{'LEVELS'}->{$message->command()} || $c_access;
  if ($user->{'cmd_level'} < $level) {
-  $self->client()->privmsg($message->nick(), "This command requires a command level of $level. You currently have a level of ".$user->{'cmd_level'}+0);
+  $self->client()->privmsg($message->nick(), "This command requires a command level of $level. You currently have a level of ".($user->{'cmd_level'}+0));
   if (!$nick) {$self->client()->privmsg($message,"Can't get your jid for getting level. If you're in chatroom, maybe I'm not moderator. Try command into jabber private.");}
   return;
   }

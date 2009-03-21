@@ -66,6 +66,7 @@ sub new
     
     # initialize the configuration object with defaults and keys we accept
     my $c_data = {
+	'enable_jabber_session'	=> 0,
         'server_address'    => '',
         'server_port'        => '6667',
         'server_password'    => '',

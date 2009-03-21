@@ -10,8 +10,6 @@ use POE;
 
 use lib "$Bin/../lib";
 use PipSqueek::Client;
-use PipSqueek::Jabber_Client;
-use POE::Component::Server::XMLRPC;
 
 my @clients;
 
@@ -32,10 +30,12 @@ sub main
     {
 	my $client = PipSqueek::Client->new( $dir ); 
 	if (ref($client)) {push(@clients,$client);}
+	if ($client->CONFIG->enable_jabber_session()) {
+                require("PipSqueek/Jabber_Client.pm");
+                my $jclient = PipSqueek::Jabber_Client->new($dir);
+                if (ref($jclient)) {push(@clients,$jclient);}
+        }
     }
-
-    my $client = PipSqueek::Jabber_Client->new($dirs[0]);
-    if (ref($client)) {push(@clients,$client);}
 
     # start our primary poe session
     POE::Session->create(

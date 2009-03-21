@@ -46,7 +46,6 @@ sub new {
  $self->DBI( $dbi );
  my $config = PipSqueek::Config->new($self->ROOTPATH(),$self->BASEPATH());
  my $c_data = {
-        'enable_jabber_session'	=> '1',
         'jabber_server_address'    => 'talk.google.com',
         'jabber_server_port'        => '5222',
         'jabber_password'    => '',
@@ -61,7 +60,6 @@ sub new {
 
  $config->load_config( undef, $c_data );
  $config->load_config( '/etc/pipsqueek_jabber.conf' );
- if ($config->enable_jabber_session() ne "1") {return;}
  my @allowed_plugins=split(/,|,?\s+/,$config->allowed_plugins);
  $self->ALLOWED_PLUGINS(\@allowed_plugins);
  my @chatrooms=split(/,|,?\s+/,$config->chatrooms);
