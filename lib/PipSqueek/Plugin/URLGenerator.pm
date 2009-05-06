@@ -97,7 +97,7 @@ sub generate_url
       '/newsearch.html?limit=25&table=track&search=$search' ],
     'lmgtfy'	=>
     [ 'http://lmgtfy.com',
-      '/search?q=$search' ],
+      '/?q=$search' ],
 
     );
 
