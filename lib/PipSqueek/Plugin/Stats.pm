@@ -168,6 +168,8 @@ sub _do_stats
         $stats->{'lines'} += 1;
     }
 
+    $stats->{'lines'} ||= 1;
+
     $stats->{'cpl'} = $stats->{'chars'} / $stats->{'lines'};
     $stats->{'wpl'} = $stats->{'words'} / $stats->{'lines'};
 
