@@ -51,8 +51,8 @@ sub plugin_handlers
             }
         }
 
-                %{ $hash } = ( %{ $hash }, %data );
-        }
+        %{ $hash } = ( %{ $hash }, %data );
+    }
 
     return $self->_handlers($hash);
 }
