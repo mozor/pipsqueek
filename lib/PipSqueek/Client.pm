@@ -287,8 +287,8 @@ sub plugin_register
     {
         my $metadata = {'obj' => $plugin, 'sub' => $method};
 
-   #     $session->register_state( $event, $self,  'plugin_delegate' )
-	$kernel->state($event,$self, 'plugin_delegate' )
+            # $session->register_state( $event, $self,  'plugin_delegate' )
+	        $kernel->state($event, $self, 'plugin_delegate' )
             unless exists $registry->{$event};
 
         push( @{ $registry->{$event} }, $metadata );
@@ -436,7 +436,7 @@ sub plugin_delegate
     my $message;
 
     # pipsqueek_ events get special treatment
-    unless( $event =~ /^pipsqueek_/ ) {
+    unless( $event =~ /^(?:pipsqueek)?_/ ) {
         $message = PipSqueek::Message->new($self->CONFIG(),$event,@args);
     }
 
@@ -449,7 +449,7 @@ sub plugin_delegate
         if( $plugin->can( $method ) )
         {
             eval { 
-                if( $event =~ /^pipsqueek_/ ) {
+                if( $event =~ /^(?:pipsqueek)?_/ ) {
                     $plugin->$method( @args ); 
                 } else {
                     $plugin->$method( $message );
@@ -459,7 +459,7 @@ sub plugin_delegate
             if( $@ ) {
                 $@ =~ s/ at.*?$//;
                 print "ERROR: $@\n";
-                unless( $event =~ /^pipsqueek_/ ) 
+                unless( $event =~ /^(?:pipsqueek)?_/ ) 
                 {
                     $self->respond($message, "ERROR: $@");
                 }
@@ -472,7 +472,7 @@ sub plugin_delegate
 
             print "$err\n";
 
-            unless( $event =~ /^pipsqueek_/ )
+            unless( $event =~ /^(?:pipsqueek)?_/ )
             {
                 $self->respond( $message, $err );
             }
