@@ -21,6 +21,7 @@ sub plugin_initialize
         'multi_mode',
         'multi_invite',
         'multi_mergeuser',
+		'multi_prune',
     ]);
 }
 
@@ -272,6 +273,56 @@ sub multi_mergeuser
     return;
 }
 
+
+# Somehow we ran into a bug where multiple records were created for the same
+# username, which resulted in all sorts of oddities.  This routine helped sort
+# some of it out.
+# finds all duplicate usernames and merges them
+sub multi_prune
+{
+    my ($self,$message) = @_;
+
+	my $dbh = $self->dbi()->dbh();
+	my $sth = $dbh->prepare('SELECT id, username FROM users ORDER BY id');
+	   $sth->execute();
+	
+	$self->respond($message, "Acknowledged");
+
+	my $data = {};
+	while (my ($id, $name) = $sth->fetchrow_array()) {
+		$name =~ s/_+$//;
+		push @{$data->{$name}}, $id;
+	}
+	
+	$self->respond($message, sprintf("Fetched %d records", scalar(keys %$data)));
+
+	foreach my $name (keys %$data) {
+		next unless @{$data->{$name}} > 1;
+		
+		$self->respond($message, "$name has more than one similar ID");
+
+		my $sql = 'SELECT * FROM users WHERE id = ?';
+		my $user1 = $self->dbi()->select_record(
+				'users', undef, $sql, $data->{$name}->[0]
+		);
+
+		while (@{$data->{$name}} > 1) {
+			my $user2 = $self->dbi()->select_record(
+				 'users', undef, $sql, pop @{$data->{$name}}
+			);
+			
+			$self->client()->yield(
+				'pipsqueek_mergeuser', $message, $user1, $user2
+			);
+
+			$self->respond($message, "Merging $user2->{'id'} ($user2->{'username'}) into $user1->{'id'}");
+		}
+	}
+	
+	$self->respond($message, "Done");
+
+    return;
+}
 
 1;
 
