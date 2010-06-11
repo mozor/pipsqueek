@@ -6,7 +6,8 @@ sub plugin_initialize {
 
    $self->plugin_handlers({
 		'multi_w'      => 'weather',
-                #'multi_weather'      => 'weather',
+                'multi_weather'      => 'weather',
+		'multi_weather2'	=> 'weather',
 
 
 	});
