@@ -1,4 +1,4 @@
-package PipSqueek::Plugin::GoogleWeather;
+package PipSqueek::Plugin::Weather;
 use base qw(PipSqueek::Plugin);
 
 sub plugin_initialize {
