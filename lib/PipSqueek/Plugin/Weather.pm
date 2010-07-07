@@ -71,11 +71,12 @@ sub weather {
     my $response = $self->get_weather($location);
 
     unless ($weather_by_username) {
-        $db_weather->{'last_loc'} = $input;
+        $db_weather->{'last_loc'} = $location;
     }
 
     if ($store_as_home_loc) {
-        $db_weather->{'home_loc'} = $input;
+        $self->respond( $message, "Storing your home location as: $location");
+        $db_weather->{'home_loc'} = $location;
     }
 
     $self->dbi()->update_record( 'weather', $db_weather );
