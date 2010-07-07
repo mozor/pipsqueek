@@ -25,16 +25,19 @@ sub multi_bmi {
     }
 
     my $bmi = ( $weight / ( $height * $height ) ) * 703;
-    $bmi = sprintf "%0.2f", $bmi;
+    $p_bmi = sprintf "%0.2f", $bmi;
 
     if ( $bmi < 18.5 ) {
-        return $self->respond( $message, "BMI: $bmi - Underweight" );
+        my $gain = sprintf("%0.1f", (18.5 / 703) * ($height * $height));
+        return $self->respond( $message, "BMI: $p_bmi - Underweight (Gain $gain pounds to be 'Normal')" );
     } elsif ( $bmi < 25 ) {
-        return $self->respond( $message, "BMI: $bmi - Normal" );
+        return $self->respond( $message, "BMI: $p_bmi - Normal" );
     } elsif ( $bmi < 30 ) {
-        return $self->respond( $message, "BMI: $bmi - Overweight" );
+        my $lose = (24.9 / 703) * ($height * $height);
+        return $self->respond( $message, "BMI: $p_bmi - Overweight (Lose at least $lose pounds to be 'Normal')" );
     } else {
-        return $self->respond( $message, "BMI: $bmi - Fatty" );
+        my $lose = (24.9 / 703) * ($height * $height);
+        return $self->respond( $message, "BMI: $p_bmi - Fatty (Lose at least $lose pounds to be 'Normal')" );
     }
 }
 
