@@ -13,35 +13,40 @@ sub plugin_initialize {
 
 sub multi_bmi {
     my ( $self, $message ) = @_;
-    my ( $height, $weight ) = split /\s+/, $message->command_input();
+    my ( $height, $weight, $metric) = split /\s+/, $message->command_input();
 
     # bmi = (weight / height^2) * 703
 
     if ( !$height || !$weight ) {
         return $self->respond(
             $message,
-            "Usage: !bmi <height (in)> <weight (lb)>"
+            "Usage: !bmi <height> <weight> [metric]"
         );
     }
 
-    my $bmi = ( $weight / ( $height * $height ) ) * 703;
-    $p_bmi = sprintf "%0.2f", $bmi;
+    my $bmi = $metric 
+        ? ($weight / ($height*$height))
+        : ($weight / ($height*$height)) * 703;
 
-    if ( $bmi < 18.5 ) {
-        my $gain = sprintf("%0.1f", (18.5 / 703) * ($height * $height));
-        $gain = $gain - $weight;
-        return $self->respond( $message, "BMI: $p_bmi - Underweight (${gain}lbs below Normal)");
-    } elsif ( $bmi < 25 ) {
-        return $self->respond( $message, "BMI: $p_bmi - Normal" );
-    } elsif ( $bmi < 30 ) {
-        my $lose = sprintf("%0.1f", (24.9 / 703) * ($height * $height));
-        $lose = $weight - $lose;
-        return $self->respond( $message, "BMI: $p_bmi - Overweight (${lose}lbs above Normal)");
-    } else {
-        my $lose = sprintf("%0.1f", (24.9 / 703) * ($height * $height));
-        $lose = $weight - $lose;
-        return $self->respond( $message, "BMI: $p_bmi - Obese (${lose}lbs above Normal)");
-    }
+    my $wgt = $metric 
+        ? ($target_bmi) * ($height * $height)
+        : ($target_bmi / 703) * ($height * $height);
+
+    my $diff = $wgt - $weight;
+
+    my $label = 
+        $bmi < 18.5 ? 'Underweight' :
+        $bmi < 25.0 ? 'Normal' :
+        $bmi < 30.0 ? 'Overweight' :
+                      'Obese';
+
+    my $justdoit = $label ne 'Normal'
+        ? sprintf(" (%0.1f%s %s normal)", $diff, $metric ? 'kg' : 'lb', $diff > 0 ? 'below' : 'above')
+        : "";
+
+    my $response = sprintf("BMI: %0.1f - %s%s", $bmi, $label, $justdoit);
+
+    return $self->respond($message, $response);
 }
 
 
