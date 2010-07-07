@@ -28,9 +28,10 @@ sub multi_bmi {
         ? ($weight / ($height*$height))
         : ($weight / ($height*$height)) * 703;
 
+    my $tbmi = $bmi < 18.5 ? 18.5 : 24.9;
     my $wgt = $metric 
-        ? ($target_bmi) * ($height * $height)
-        : ($target_bmi / 703) * ($height * $height);
+        ? ($tbmi) * ($height * $height)
+        : ($tbmi / 703) * ($height * $height);
 
     my $diff = $wgt - $weight;
 
