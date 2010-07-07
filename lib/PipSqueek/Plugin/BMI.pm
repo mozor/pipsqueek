@@ -25,6 +25,7 @@ sub multi_bmi {
     }
 
     my $bmi = ( $weight / ( $height * $height ) ) * 703;
+    $bmi = sprintf "%0.2f", $bmi;
 
     if ( $bmi < 18.5 ) {
         return $self->respond( $message, "BMI: $bmi - Underweight" );
