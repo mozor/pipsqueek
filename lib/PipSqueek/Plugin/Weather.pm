@@ -38,7 +38,7 @@ sub weather {
         "Sorry, I can't find what you're looking for." )
       unless defined $city;
     return $self->respond( $message,
-        "$city: $tempf°F / $tempc°C, $conditions - $humidity - $wind" );
+        "$city: $tempf\u{00B0}F / $tempc\u{00B0}C, $conditions - $humidity - $wind" );
 
 }
 
