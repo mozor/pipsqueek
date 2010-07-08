@@ -79,7 +79,9 @@ sub weather {
         $db_weather->{'home_loc'} = $location;
     }
 
-    $self->dbi()->update_record( 'weather', $db_weather );
+    if ($db_weather) {
+        $self->dbi()->update_record( 'weather', $db_weather );
+    }
 
     return $self->respond( $message, $response );
 }
