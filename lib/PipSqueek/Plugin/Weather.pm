@@ -9,6 +9,9 @@ sub plugin_initialize {
             'multi_w'        => 'weather',
             'multi_weather'  => 'weather',
             'multi_weather2' => 'weather',
+            'multi_+w'        => 'add_weather',
+            'multi_+weather'  => 'add_weather',
+            'multi_+weather2' => 'add_weather',
 
 # TODO: this should probably be handled
 #            'pipsqueek_mergeuser' => 'pipsqueek_mergeuser',
@@ -26,12 +29,15 @@ sub plugin_initialize {
     $self->dbi()->install_schema( 'weather', $schema );
 }
 
+sub add_weather {
+    my $self = shift;
+    $self->weather(@_, 1);
+}
 
 sub weather {
-    my ( $self, $message ) = @_;
+    my ( $self, $message, $store_as_home_loc ) = @_;
 
     my $weather_by_username = 0;
-    my $store_as_home_loc = 0;
     my $db_weather = $self->search_weather($message);
 
     my $input = $message->command_input();
@@ -59,11 +65,6 @@ sub weather {
         }
         # not a valid user, let's see if they want us to store this
         else {
-            if ($input =~ /^\+/) {
-                $input =~ s/^\+//;
-                $store_as_home_loc = 1;
-            }
-
             $location = $input;
         }
     }
