@@ -49,6 +49,13 @@ sub weather {
     # if they didn't specify any input, try to use their last_loc
     if (!$input || $input eq "") {
         $location = $db_weather->{'last_loc'};
+        unless ($location) {
+            $location = $db_weather->{'home_loc'};
+
+            unless ($location) {
+                return $self->respond($message, "Try !w <location>, or !+w <home location> first");
+            }
+        }
     }
     # otherwise, see if it's a valid username and that user has a home_loc
     else {
@@ -69,9 +76,11 @@ sub weather {
         }
     }
 
-    my $response = $self->get_weather($location);
+    my ($response, $success) = $self->get_weather($location);
+    
+    $self->respond( $message, $response );
 
-    if($response ne "Sorry, I can't find what you're looking for.") {
+    if ($success) {
         unless ($weather_by_username) {
             $db_weather->{'last_loc'} = $location;
         }
@@ -80,13 +89,15 @@ sub weather {
             $self->respond( $message, "Storing your home location as: $location");
             $db_weather->{'home_loc'} = $location;
         }
-
-        if ($db_weather) {
-            $self->dbi()->update_record( 'weather', $db_weather );
+    } else {
+        if ($store_as_home_loc) {
+            $self->respond( $message, "Location was not stored" );
         }
     }
-
-    return $self->respond( $message, $response );
+    
+    if ($db_weather) {
+        $self->dbi()->update_record( 'weather', $db_weather );
+    }
 }
 
 
@@ -140,7 +151,7 @@ sub get_weather
         return "Sorry, I can't find what you're looking for.";
     }
 
-    return "$city: $tempf\x{B0}F / $tempc\x{B0}C, $conditions - $humidity - $wind";
+    return ("$city: $tempf\x{B0}F / $tempc\x{B0}C, $conditions - $humidity - $wind", 1);
 }
 
 
