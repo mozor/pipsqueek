@@ -30,8 +30,11 @@ sub multi_rehash
 {
     my ($self,$message) = @_;
 
+    # call() is synchronous [as opposed to yield()]
     $self->client()->kernel()->call( $self->client()->SESSION_ID(),
                      'plugins_load' );
+
+    $self->client()->kernel()->yield( 'pipsqueek_rehashed' , $message );
 
     return $self->respond( $message, "Bot rehashed" );
 }
