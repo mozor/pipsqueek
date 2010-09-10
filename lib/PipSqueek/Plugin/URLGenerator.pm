@@ -8,25 +8,11 @@ sub plugin_initialize
     my $self = shift;
 
     $self->plugin_handlers(
-                'multi_sw'          => 'generate_url',
-                'multi_physics'     => 'generate_url',
-                'multi_mw'          => 'generate_url',
-                'multi_mathworld'   => 'generate_url',
-                'multi_imdb'        => 'generate_url',
-                'multi_wiki'        => 'generate_url',
-        'multi_cpan'        => 'generate_url',
-        'multi_perldoc'     => 'generate_url',
-        'multi_fm'          => 'generate_url',
-        'multi_freshmeat'   => 'generate_url',
-        'multi_sourceforge' => 'generate_url',
-        'multi_sf'          => 'generate_url',
-        'multi_google'      => 'generate_url',
-        'multi_gimg'        => 'generate_url',
-        'multi_search'      => 'generate_url',
-        'multi_mbartist'    => 'generate_url',
-        'multi_mbalbum'     => 'generate_url',
-        'multi_mbtrack'     => 'generate_url',
-	'multi_lmgtfy'      => 'generate_url',
+        map { "multi_$_" => 'generate_url' } qw(
+            sw physics mw mathworld imdb wiki cpan perldoc fm freshmeat
+            sourceforge sf google gimg search mbartist mbalbum mbtrack
+            lmgtfy bing map amazon
+        )
     );
 }
 
@@ -95,9 +81,22 @@ sub generate_url
     'mbtrack'    =>
     [ 'http://musicbrainz.org',
       '/newsearch.html?limit=25&table=track&search=$search' ],
+
     'lmgtfy'	=>
     [ 'http://lmgtfy.com',
       '/?q=$search' ],
+
+    'bing' => 
+    [ 'http://www.bing.com',
+       '/search?q=$search' ],
+
+    'amazon' => 
+    [ 'http://www.amazon.com',
+       '/s/?url=search-alias%3Daps&field-keywords=$search' ],
+
+    'map' => 
+    [ 'http://mapof.it'
+      '/$search' ],
 
     );
 
