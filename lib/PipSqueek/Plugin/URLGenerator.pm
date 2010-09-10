@@ -11,7 +11,7 @@ sub plugin_initialize
         map { 'multi_' . $_ => 'generate_url' } qw{
             sw physics mw mathworld imdb wiki cpan perldoc fm freshmeat
             sourceforge sf google gimg search mbartist mbalbum mbtrack
-            lmgtfy bing map amazon
+            lmgtfy bing map amazon zillow
         }
     );
 }
@@ -93,6 +93,10 @@ sub generate_url
     'amazon' => 
     [ 'http://www.amazon.com',
        '/s/?url=search-alias%3Daps&field-keywords=$search' ],
+
+    'zillow' => 
+    [ 'http://www.zillow.com',
+      '/homes/$search' ],
 
     'map' => 
     [ 'http://maps.google.com',
