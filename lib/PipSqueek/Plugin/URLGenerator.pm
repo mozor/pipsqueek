@@ -8,11 +8,11 @@ sub plugin_initialize
     my $self = shift;
 
     $self->plugin_handlers(
-        map { "multi_$_" => 'generate_url' } qw(
+        map { 'multi_' . $_ => 'generate_url' } qw{
             sw physics mw mathworld imdb wiki cpan perldoc fm freshmeat
             sourceforge sf google gimg search mbartist mbalbum mbtrack
             lmgtfy bing map amazon
-        )
+        }
     );
 }
 
@@ -95,7 +95,7 @@ sub generate_url
        '/s/?url=search-alias%3Daps&field-keywords=$search' ],
 
     'map' => 
-    [ 'http://mapof.it'
+    [ 'http://mapof.it',
       '/$search' ],
 
     );
