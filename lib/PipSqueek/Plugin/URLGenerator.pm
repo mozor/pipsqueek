@@ -95,8 +95,8 @@ sub generate_url
        '/s/?url=search-alias%3Daps&field-keywords=$search' ],
 
     'map' => 
-    [ 'http://mapof.it',
-      '/$search' ],
+    [ 'http://maps.google.com',
+      '/maps?q=$search' ],
 
     );
 
