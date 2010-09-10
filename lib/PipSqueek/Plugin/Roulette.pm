@@ -103,8 +103,6 @@ sub public_roulette
     push( @$PLAYERS, $ruser->{'userid'} );
 
     my $bullet = shift @$CHAMBERS;
-    $bullet = 0 if $message->nick() eq 'Stu';
-    $bullet = 1 if $message->nick() eq 'zach';
 
     my $output = sprintf( '%s: chamber #%d of 6 => %s',
                   $message->nick(),
