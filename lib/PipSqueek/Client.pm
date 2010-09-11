@@ -87,6 +87,7 @@ sub new
         'default_ban_type'    => '4',
         'pipsqueek_version'    => 
             'PipSqueek v5: http://pipsqueek.net/',
+        'allow_flooding' => 0,
 	'disabled_plugins' => '',
     };
 
@@ -108,8 +109,12 @@ sub new
     # (I would much rather just use the session ID, but oh well)
     $self->IRC_CLIENT_ALIAS( $$ + rand(5000) . time() );
 
-    POE::Component::IRC->spawn( alias => $self->IRC_CLIENT_ALIAS() )
+    my $instance = POE::Component::IRC->spawn( alias => $self->IRC_CLIENT_ALIAS() )
         or die "Failed to create P::C::I object: $!";
+
+    if ($config->allow_flooding() == 1) {
+        $instance->{flood} = 0;
+    }
 
     # create the client session and store the session ID
     $self->SESSION_ID( $self->_create_session()->ID() );
