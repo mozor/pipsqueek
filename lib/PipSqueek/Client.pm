@@ -92,6 +92,7 @@ sub new
     };
 
     $config->load_config( undef, $c_data );
+    $config->load_config( '/etc/pipsqueek.conf' );
 
     $self->CONFIG( $config );
 
@@ -109,12 +110,12 @@ sub new
     # (I would much rather just use the session ID, but oh well)
     $self->IRC_CLIENT_ALIAS( $$ + rand(5000) . time() );
 
-    my $instance = POE::Component::IRC->spawn( alias => $self->IRC_CLIENT_ALIAS() )
+    POE::Component::IRC->spawn( 
+        alias => $self->IRC_CLIENT_ALIAS(),
+        flood => $config->allow_flooding(),
+    )
         or die "Failed to create P::C::I object: $!";
 
-    if ($config->allow_flooding() == 1) {
-        $instance->{flood} = 0;
-    }
 
     # create the client session and store the session ID
     $self->SESSION_ID( $self->_create_session()->ID() );
