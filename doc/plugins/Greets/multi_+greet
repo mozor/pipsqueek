@@ -1,0 +1,3 @@
++greet <nick> [#chan] <greet>
+Add greet to nick on channel if given or on current channel if not.
+If you specify the channel first then the word after that will be taken as the nick.

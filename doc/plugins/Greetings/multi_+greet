@@ -1,2 +1,0 @@
-+greet <nick> [chan] <greet>
-Add greet to nick on chan if given or on current chan.
