@@ -13,6 +13,9 @@ sub config_initialize {
 
   # This value is much more useful in seconds.
   $self->plugin_configuration('time_to_remember' => $time_to_remember*60);
+
+  # Set this to the level at which someone can delete any greeting.
+  $self->plugin_configuration('delete_level' => 100);
 }
 
 sub plugin_initialize {
@@ -133,6 +136,13 @@ sub delete_greet {
     exit;
   }
 
+  my $level = 0; # User with a high enough level to delete anything
+  my $user  = $self->search_or_create_user($message);
+
+  if($user->{cmd_level} >= $self->config()->delete_level()) {
+    $level = 1;
+  }
+
   my $dbh = $self->dbi()->dbh();
   my $sth = $dbh->prepare("
     DELETE FROM
@@ -140,9 +150,9 @@ sub delete_greet {
     WHERE
       id=?
     AND
-      (user=?
+      ((user=? OR added_by=?)
     OR
-      added_by=?)
+      $level)
   ");
 
   my $result = $sth->execute($id, $message->nick(), $message->nick());
