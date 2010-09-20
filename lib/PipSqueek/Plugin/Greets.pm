@@ -60,7 +60,7 @@ sub greet {
 
   my $greeting = '';
   while(my $greet = $sth->fetchrow_hashref()) {
-    $greeting .= "Greet ".$greet->{id}." from ".$greet->{added_by}.": ".$greet->{greet}."  ";
+    $greeting .= $greet->{greet}." (".$greet->{id}.")  ";
   }
 
   if($greeting ne '') {
