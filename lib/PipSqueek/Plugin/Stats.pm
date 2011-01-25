@@ -218,6 +218,11 @@ sub multi_stats
         $value ||= 0;
         $value = sprintf("%.2f",$value);
         $value =~ s/\.00$//;
+
+        $value = reverse $value;
+        $value =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+        $value = reverse $value;
+
         $output =~ s/\?/$value/;
     }
 
