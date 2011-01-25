@@ -269,8 +269,13 @@ sub multi_top10
         my $user = $self->select_user( { 'id' => $row->{'userid'} } );
         my $name = $user->{'username'};
 
-        my $str = sprintf("%s (%.2f)", $name, $row->{$category});
-           $str =~ s/\.00\b//g;
+        my $value = $row->{$category};
+        $value =~ s/\.00\b//g;
+        $value = reverse $value;
+        $value =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+        $value = reverse $value;
+
+        my $str = sprintf("%s (%.2f)", $name, $value);
 
         push(@top10, $str);
     }
