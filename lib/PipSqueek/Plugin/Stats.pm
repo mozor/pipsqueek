@@ -270,12 +270,12 @@ sub multi_top10
         my $name = $user->{'username'};
 
         my $value = $row->{$category};
-        $value =~ s/\.00\b//g;
         $value = reverse $value;
         $value =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
         $value = reverse $value;
 
         my $str = sprintf("%s (%.2f)", $name, $value);
+        $str =~ s/\.00\b//g;
 
         push(@top10, $str);
     }
