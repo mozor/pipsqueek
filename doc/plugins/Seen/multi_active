@@ -1,0 +1,5 @@
+active <username>
+
+Returns how long ago the bot last saw 'username' actually speaking,
+and what 'username' said. Does not include parts, joins, etc.
+

@@ -3,13 +3,22 @@ use base qw(PipSqueek::Plugin);
 use strict;
 use integer;
 
-sub plugin_initialize
-{
-    my $self = shift;
+sub plugin_initialize {
+  my $self = shift;
 
-    $self->plugin_handlers([
-        'multi_seen',
-    ]);
+  $self->plugin_handlers([
+    'multi_seen',
+    'multi_active',
+    'irc_public'
+  ]);
+
+  my $schema = [
+    ['id', 'INTEGER PRIMARY KEY'], # This is a user_id
+    ['last_seen_really', 'TIMESTAMP'],
+    ['last_seen_really_data', 'VARCHAR'],
+  ];
+
+  $self->dbi()->install_schema('seen', $schema);
 }
 
 
@@ -65,6 +74,92 @@ sub multi_seen
         "I saw $username $elapsed ago, $user->{'seen_data'}" );
 
     return 1;
+}
+
+
+sub multi_active {
+  my ($self, $message) = @_;
+  my $username = $message->command_input();
+
+  $username =~ s/\s+$//;
+
+  unless(defined($username)) {
+    $self->respond($message, "Use !help active");
+    return;
+  }
+
+  if(lc($username) eq lc($self->config()->current_nickname())) {
+    $self->respond($message, "You found me!");
+    return;
+  }
+
+  my $user = $self->search_user($username);
+
+  unless($user) {
+    $self->respond($message, "Sorry, I don't seem to know that user.");
+    return;
+  }
+
+
+  my $sender = $self->search_or_create_user($message);
+
+  if(lc($username) eq lc($sender->{'username'})
+  || lc($username) eq lc($sender->{'nickname'})) {
+    $self->respond($message, "Peekaboo! I found you!");
+    return;
+  }
+
+  unless($user->{'last_seen'}) {
+    $self->respond($message, "When I know, you'll know.");
+
+    return;
+  }
+
+  my $row = $self->dbi()->select_record(
+    'seen',
+    { 'id' => $user->{id} }
+  );
+
+  my $elapsed = $self->format_elapsed_time($row->{'last_seen_really'}, time());
+
+  $self->respond($message, "I saw $username $elapsed ago, $row->{'last_seen_really_data'}");
+
+  return 1;
+}
+
+
+sub irc_public {
+  my ($self, $message) = @_;
+  my $msg = $message->message();
+
+  my $user = $self->search_user($message->nick());
+
+  my $row = $self->dbi()->select_record(
+    'seen',
+    {
+      'id' => $user->{id},
+    }
+  );
+
+  if($row) {
+    $self->dbi()->update_record(
+      'seen',
+      {
+        'id' => $user->{id},
+        'last_seen_really' => time(),
+        'last_seen_really_data' => $msg
+      }
+    );
+  } else {
+    $self->dbi()->create_record(
+      'seen',
+      {
+        'id' => $user->{id},
+        'last_seen_really' => time(),
+        'last_seen_really_data' => $msg
+      }
+    );
+  }
 }
 
 
