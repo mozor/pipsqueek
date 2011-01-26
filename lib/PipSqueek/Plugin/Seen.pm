@@ -109,16 +109,16 @@ sub multi_active {
     return;
   }
 
-  unless($user->{'last_seen'}) {
-    $self->respond($message, "When I know, you'll know.");
-
-    return;
-  }
-
   my $row = $self->dbi()->select_record(
     'seen',
     { 'id' => $user->{id} }
   );
+
+  unless($row->{'last_seen_really'}) {
+    $self->respond($message, "When I know, you'll know.");
+
+    return;
+  }
 
   my $elapsed = $self->format_elapsed_time($row->{'last_seen_really'}, time());
 
