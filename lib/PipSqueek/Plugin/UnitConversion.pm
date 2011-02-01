@@ -1,7 +1,7 @@
 package PipSqueek::Plugin::UnitConversion;
 use base qw(PipSqueek::Plugin);
 
-use Math::Units qw(convert);
+use Physics::Unit ':ALL';
 
 sub plugin_initialize
 {
@@ -42,9 +42,16 @@ sub multi_convert
     }
 
     eval {
-        my $final = convert( $amount, $from, $to );
+        local *Foo::carp = sub { $self->respond($message, @_); };
+        #\&Foo::croak();
+        my $u_from = GetUnit($from);
+        my $u_to = GetUnit($to);
+        my $c = $u_from->convert($u_to);
+        my $final = $amount * $c;
         $session_heap->{'last_math_result'} = $final;
-        $self->respond( $message, "$amount $from = $final $to" );
+        my $u_from_name = $u_from->name();
+        my $u_to_name = $u_to->name();
+        $self->respond( $message, "$amount $u_from_name = $final $u_to_name" );
     };
 
     if( $@ )
