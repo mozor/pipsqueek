@@ -33,7 +33,7 @@ sub woot_checker {
         my ($url) = $content =~ /\/WantOne.aspx(.+?)\"/gis;
 
 
-        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://www.woot.com/WantOne.aspx$url\n");
+        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://www.woot.com/");
 }
 
 
@@ -52,7 +52,7 @@ sub wine_checker {
         my ($url) = $content =~ /\/WantOne.aspx(.+?)\"/gis;
 
 
-        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://wine.woot.com/WantOne.aspx$url\n");
+        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://wine.woot.com/");
 
 
 
@@ -73,7 +73,7 @@ sub shirt_checker {
         my ($url) = $content =~ /\/WantOne.aspx(.+?)\"/gis;
 
 
-        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://shirt.woot.com/WantOne.aspx$url\n");
+        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://shirt.woot.com/");
 
 
 }
@@ -93,7 +93,7 @@ sub sellout_checker {
         my ($url) = $content =~ /sellout.woot.com\/(.+?)\" alt/gis;
 
 
-        return $self->respond( $message, "$name - $price - http://sellout.woot.com/$url\n");
+        return $self->respond( $message, "$name - $price - http://sellout.woot.com/");
 
 
 }
@@ -113,7 +113,7 @@ sub kids_checker {
         my ($url) = $content =~ /\/WantOne.aspx(.+?)\"/gis;
 
 
-        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://kids.woot.com/WantOne.aspx$url\n");
+        return $self->respond( $message, "$name - \$$price +\$5 Shipping - http://kids.woot.com/");
 
 
 }
