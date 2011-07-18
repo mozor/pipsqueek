@@ -68,7 +68,7 @@ sub multi_money
         return;
     }
 
-    my $url  = 'http://www.xe.com/ucc/convert.cgi' .
+    my $url  = 'http://www.xe.com/ucc/convert/' .
            "?Amount=$amount&From=$from&To=$to" .
            '&Header=PipSqueek&Footer=PipSqueek';
 
