@@ -87,7 +87,7 @@ sub multi_money
     my $results = $response->content();
 
     # get the exchange rate and do the math ourselves
-	    $results =~ 's/\&nbsp;/\s/g';
+       $results =~ s/\Snbsp\S/\s/g;
     my ($factor) = $results =~ m/1 $from = ([\d\.\,]+) $to/i;
     $factor =~ s/,//g;
 
