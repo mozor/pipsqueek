@@ -68,7 +68,7 @@ sub multi_money
         return;
     }
 
-    my $url  = 'http://www.xe.com/ucc/convert/' .
+    my $url  = 'http://www.xe.com/ucc/convert.cgi' .
            "?Amount=$amount&From=$from&To=$to" .
            '&Header=PipSqueek&Footer=PipSqueek';
 
@@ -87,7 +87,6 @@ sub multi_money
     my $results = $response->content();
 
     # get the exchange rate and do the math ourselves
-       $results =~ s/\Snbsp\S/\s/g;
     my ($factor) = $results =~ m/1 $from = ([\d\.\,]+) $to/i;
     $factor =~ s/,//g;
 
