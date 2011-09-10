@@ -29,6 +29,7 @@ sub plugin_initialize
         # these are our public interface
         'multi_stats',
         'multi_top10',
+		'multi_bottom10',
         'multi_rank',
 
         # when a user merges we need to merge their stats
@@ -47,7 +48,7 @@ sub plugin_initialize
     my %CATEGORIES = 
     map{ ($_,1) } qw( 
         chars words lines cpl wpl actions 
-        smiles modes topics kicked kicks
+        smiles modes topics kicked kicks stars ponies
     );
 
 
@@ -168,8 +169,6 @@ sub _do_stats
         $stats->{'lines'} += 1;
     }
 
-    $stats->{'lines'} ||= 1;
-
     $stats->{'cpl'} = $stats->{'chars'} / $stats->{'lines'};
     $stats->{'wpl'} = $stats->{'words'} / $stats->{'lines'};
 
@@ -208,21 +207,16 @@ sub multi_stats
 
     my $output = "$user->{'username'}: ? chars, ? words, ".
     "? lines, ? cpl, ? wpl, ? actions, ? smiles, kicked ? lusers, ".
-    "been kicked ? times, set ? modes, changed the topic ? times.";
+    "been kicked ? times, set ? modes, changed the topic ? times, ? gold stars, ? ponies.";
 
     my @values = map { $stats->{$_} } 
-    qw(chars words lines cpl wpl actions smiles kicks kicked modes topics);
+    qw(chars words lines cpl wpl actions smiles kicks kicked modes topics stars ponies);
 
     foreach my $value ( @values )
     {
         $value ||= 0;
         $value = sprintf("%.2f",$value);
         $value =~ s/\.00$//;
-
-        $value = reverse $value;
-        $value =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
-        $value = reverse $value;
-
         $output =~ s/\?/$value/;
     }
 
@@ -241,6 +235,34 @@ sub multi_top10
         $self->fah_top10($message);
         return;
     }
+	
+	if( $category eq 'levels' )
+	{
+		my $t_cat = 'cmd_level';
+		my $dbh = $self->dbi()->dbh();
+		my $sth = $dbh->prepare( 
+			"SELECT * FROM users ORDER BY $t_cat DESC LIMIT 10"
+			  );
+		   $sth->execute();
+
+		my @top10;
+
+		while( my $row = $sth->fetchrow_hashref('NAME_lc') )
+		{
+			my $user = $self->select_user( { 'id' => $row->{'userid'} } );
+			my $name = $user->{'username'};
+
+			my $str = sprintf("%s (%.2f)", $name, $row->{$t_cat});
+			   $str =~ s/\.00\b//g;
+
+			push(@top10, $str);
+		}
+
+		local $" = ', ';
+		$self->respond( $message, "Top10 ('$category'): @top10!" );
+		return;
+	}
+		
     
     if( $category =~ /^quotes?$/ )
     {
@@ -269,19 +291,85 @@ sub multi_top10
         my $user = $self->select_user( { 'id' => $row->{'userid'} } );
         my $name = $user->{'username'};
 
-        my $value = sprintf("%.2f", $row->{$category});
-        $value =~ s/\.00$//;
-        $value = reverse $value;
-        $value =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
-        $value = reverse $value;
-
-        my $str = sprintf("%s (%s)", $name, $value);
+        my $str = sprintf("%s (%.2f)", $name, $row->{$category});
+           $str =~ s/\.00\b//g;
 
         push(@top10, $str);
     }
 
     local $" = ', ';
     $self->respond( $message, "Top10 ('$category'): @top10!" );
+    return;
+}
+
+sub multi_bottom10
+{
+    my ($self,$message) = @_;
+    my $category = $message->command_input() || 'chars';
+	
+	if( $category eq 'levels' )
+	{
+		my $t_cat = 'cmd_level';
+		my $dbh = $self->dbi()->dbh();
+		my $sth = $dbh->prepare( 
+			"SELECT * FROM users ORDER BY $t_cat ASC LIMIT 10"
+			  );
+		   $sth->execute();
+
+		my @top10;
+
+		while( my $row = $sth->fetchrow_hashref('NAME_lc') )
+		{
+			my $user = $self->select_user( { 'id' => $row->{'userid'} } );
+			my $name = $user->{'username'};
+
+			my $str = sprintf("%s (%.2f)", $name, $row->{$t_cat});
+			   $str =~ s/\.00\b//g;
+
+			push(@top10, $str);
+		}
+
+		local $" = ', ';
+		$self->respond( $message, "Bottom10 ('$category'): @top10!" );
+		return;
+	}
+		
+    
+    if( $category =~ /^quotes?$/ )
+    {
+        my $mode = $message->event() =~ /^private_/ ? 'private' : 'public';
+        my $event = $mode . "_top10quotes";
+        $self->client()->yield( $event, @{$message->raw()} );
+        return;
+    }
+    
+    unless( exists $self->{'CATEGORIES'}->{$category} )
+    {
+        $self->respond( $message, "Unknown category" );
+        return;
+    }
+
+    my $dbh = $self->dbi()->dbh();
+    my $sth = $dbh->prepare( 
+        "SELECT * FROM stats ORDER BY $category ASC LIMIT 10"
+          );
+       $sth->execute();
+
+    my @top10;
+
+    while( my $row = $sth->fetchrow_hashref('NAME_lc') )
+    {
+        my $user = $self->select_user( { 'id' => $row->{'userid'} } );
+        my $name = $user->{'username'};
+
+        my $str = sprintf("%s (%.2f)", $name, $row->{$category});
+           $str =~ s/\.00\b//g;
+
+        push(@top10, $str);
+    }
+
+    local $" = ', ';
+    $self->respond( $message, "Bottom 10 ('$category'): @top10!" );
     return;
 }
 

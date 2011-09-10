@@ -1,0 +1,4 @@
+blackjack stats [<user>]
+
+Returns the overall stats for the blackjack module, or if 'user' is specified, then the blackjack stats for that particular user
+

@@ -8,11 +8,24 @@ sub plugin_initialize
     my $self = shift;
 
     $self->plugin_handlers(
-        map { 'multi_' . $_ => 'generate_url' } qw{
-            sw physics mw mathworld imdb wiki cpan perldoc fm freshmeat
-            sourceforge sf google gimg search mbartist mbalbum mbtrack
-            lmgtfy bing map amazon zillow
-        }
+                'multi_sw'          => 'generate_url',
+                'multi_physics'     => 'generate_url',
+                'multi_mw'          => 'generate_url',
+                'multi_mathworld'   => 'generate_url',
+                'multi_imdb'        => 'generate_url',
+                'multi_wiki'        => 'generate_url',
+        'multi_cpan'        => 'generate_url',
+        'multi_perldoc'     => 'generate_url',
+        'multi_fm'          => 'generate_url',
+        'multi_freshmeat'   => 'generate_url',
+        'multi_sourceforge' => 'generate_url',
+        'multi_sf'          => 'generate_url',
+        'multi_google'      => 'generate_url',
+        'multi_gimg'        => 'generate_url',
+        'multi_search'      => 'generate_url',
+        'multi_mbartist'    => 'generate_url',
+        'multi_mbalbum'     => 'generate_url',
+        'multi_mbtrack'     => 'generate_url',
     );
 }
 
@@ -26,7 +39,7 @@ sub generate_url
     [ 'http://search.cpan.org', '/search?mode=module&query=$search' ],
 
     'google'    => 
-    [ 'http://www.google.com', '/search?q=$search' ],
+    [ 'http://lmgtfy.com', '/?q=$search' ],
 
     'search'    =>
     [ 'http://www.google.com', '/search?q=$search' ],
@@ -81,26 +94,6 @@ sub generate_url
     'mbtrack'    =>
     [ 'http://musicbrainz.org',
       '/newsearch.html?limit=25&table=track&search=$search' ],
-
-    'lmgtfy'	=>
-    [ 'http://lmgtfy.com',
-      '/?q=$search' ],
-
-    'bing' => 
-    [ 'http://www.bing.com',
-       '/search?q=$search' ],
-
-    'amazon' => 
-    [ 'http://www.amazon.com',
-       '/s/?url=search-alias%3Daps&field-keywords=$search' ],
-
-    'zillow' => 
-    [ 'http://www.zillow.com',
-      '/homes/$search' ],
-
-    'map' => 
-    [ 'http://maps.google.com',
-      '/maps?q=$search' ],
 
     );
 

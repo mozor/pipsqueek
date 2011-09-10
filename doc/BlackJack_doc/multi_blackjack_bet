@@ -1,0 +1,4 @@
+blackjack [bet] <amount>
+
+Instructs the blackjack dealer that you would like to begin a new hand with your bet of 'amount' dollars.  You can also omit the word 'bet' and just use "blackjack <amount>" as a shortcut.
+

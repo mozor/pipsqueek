@@ -35,7 +35,8 @@ sub multi_8ball
     my ($self,$message) = @_;
     my $thing = $message->command_input();
 
-    srand time;
+	# srand doesn't appear to work with ActivePerl
+	# srand time;
     $self->respond($message, @{$self->{'yn'}}[rand @{$self->{'yn'}}]);
 }
 

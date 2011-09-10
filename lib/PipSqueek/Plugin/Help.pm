@@ -68,12 +68,14 @@ sub multi_help
             $scope = "multi"; $help = $HELP->{"multi_$event"};
         }
 
-        $self->client()->privmsg( $message->nick(), 
+        #$self->client()->privmsg( $message->nick(), 
+		$self->client()->notice( $message->nick(), 
             "Usage: $help->{'usage'}" );
 
         foreach my $line ( @{$help->{'help'}} )
         {
-            $self->client()->privmsg( $message->nick(), "$line" );
+            #$self->client()->privmsg( $message->nick(), "$line" );
+			$self->client()->notice( $message->nick(), "$line" );
         }
 
         return;
@@ -82,7 +84,8 @@ sub multi_help
     {
         if( defined($event) && $event ne "" )
         {
-            return $self->client()->privmsg( $message->nick(),
+            #return $self->client()->privmsg( $message->nick(),
+			return $self->client()->notice( $message->nick(),
                 "Unknown event '$event'" );
         }
         else
@@ -97,11 +100,14 @@ sub multi_help
                     grep( /^public_/,  @commands );
 
             local $"=', ';
-            $self->client()->privmsg( $message->nick(), 
+            #$self->client()->privmsg( $message->nick(), 
+			$self->client()->notice( $message->nick(), 
                 "Multi Commands: @multi" ) if @multi;
-            $self->client()->privmsg( $message->nick(), 
+            #$self->client()->privmsg( $message->nick(), 
+			$self->client()->notice( $message->nick(),  
                 "Public Commands: @public" ) if @public;
-            $self->client()->privmsg( $message->nick(), 
+            #$self->client()->privmsg( $message->nick(), 
+			$self->client()->notice( $message->nick(), 
                 "Private Commands: @private" ) if @private;
 
             return;

@@ -10,7 +10,7 @@ sub plugin_initialize
     $self->plugin_handlers([
         'public_roulette',
         'private_roulette',
-
+		'public_roulettereload',
         'pipsqueek_mergeuser',
     ]);
 
@@ -112,7 +112,7 @@ sub public_roulette
     
     unless( $bullet || @$CHAMBERS )
     {
-        $output .= " ... wtf?!";
+        $output .= " ... you lucky bastard?!";
     }
 
     if( $bullet || (@$CHAMBERS == 0) )
@@ -129,7 +129,13 @@ sub public_roulette
         }
 
         $ruser->{'games'}++;
-        $ruser->{'bangs'}++ if $bullet;
+
+        if ($bullet) {
+            $ruser->{'bangs'}++;
+        }
+        else {
+            $ruser->{'clicks'}++;
+        }
     }
     else
     {
@@ -138,7 +144,10 @@ sub public_roulette
 
     $self->update_roulette_user( $ruser );
 
+    #$self->client()->kick( $message->channel(), $message->nick(), $output ) if $bullet;
+	#$self->client()->kick( $message->channel(), $message->nick(), "Dead people should stay dead." ) if $bullet;
     $self->respond( $message, $output );
+#	$self->respond( $message, "^_^: chamber #1 of 6 => +click+" );
     $self->roulette_reload( $message ) if $bullet || !@$CHAMBERS;
 
     return;
@@ -152,7 +161,7 @@ sub roulette_reload
     my @CHAMBERS = ( 0, 0, 0, 0, 0, 0 );
     @CHAMBERS[rand @CHAMBERS] = 1;
 
-    if( time % 23 == 0 ) {
+    if( time % 17 == 0 ) {
         @CHAMBERS = ( 0, 0, 0, 0, 0, 0 );
     }
 
@@ -180,16 +189,17 @@ sub roulette_stats_global
 
     my ($games,$shots,$players) = $dbh->selectrow_array($sql);
 
-
-    my $l_sql = 'SELECT u.username, (cast(r.clicks as real)/(cast(r.clicks as real)+cast(r.bangs as real)))*100.00 ' .
+    my $l_sql = 'SELECT u.username, (cast(r.clicks as real)/(cast(r.clicks as real)+cast(r.bangs as real)))*100.000 ' .
              'as percent FROM roulette r, users u ' .
-             'WHERE u.id=r.userid AND r.games > 5 ' .
+             'WHERE u.id=r.userid AND r.games > 9 ' .
+			 'AND (r.clicks + r.bangs) > 0 ' .
              'ORDER BY percent DESC LIMIT 1';
     my (@luckiest) = $dbh->selectrow_array($l_sql);
     
-    my $u_sql = 'SELECT u.username, (cast(r.clicks as real)/(cast(r.clicks as real)+cast(r.bangs as real)))*100.00 ' .
+    my $u_sql = 'SELECT u.username, (cast(r.clicks as real)/(cast(r.clicks as real)+cast(r.bangs as real)))*100.000 ' .
              'as percent FROM roulette r, users u ' .
-             'WHERE u.id=r.userid AND r.games > 5 ' .
+             'WHERE u.id=r.userid AND r.games > 9 ' .
+		' AND u.id != 74 ' .
              'ORDER BY percent ASC LIMIT 1';
     my (@unluckiest) = $dbh->selectrow_array($u_sql);
 
@@ -218,16 +228,16 @@ sub roulette_stats_user
         return;
     }
 
-    my $sql = 'SELECT games, clicks, bangs FROM roulette WHERE userid=?';
+    my $sql = 'SELECT games, clicks, bangs, (cast(clicks as real)/(cast(clicks as real)+cast(bangs as real)))*100.000 FROM roulette WHERE userid=?';
     my $sth = $self->dbi()->dbh()->prepare( $sql );
        $sth->execute( $ruser->{'id'} );
 
-    my ($games,$clicks,$bangs) = $sth->fetchrow_array();
+    my ($games,$clicks,$bangs, $ust) = $sth->fetchrow_array();
 
     my $output = sprintf(
         '%s has played %d game%s, won %d and lost %d.  ' .
         '%s pulled the trigger %d time%s and found the chamber empty ' .
-        'on %d occasion%s.',
+        'on %d occasion%s. Stats: %.2f%% clicks.',
 
         $ruser->{'username'}, $games, 
         ($games == 1 ? "" : 's'),
@@ -236,6 +246,7 @@ sub roulette_stats_user
         (($clicks+$bangs) == 1 ? "" : 's'),
         $clicks,
         ($clicks == 1 ? "" : 's'),
+		$ust,
         );
 
     $self->respond( $message, $output );
@@ -264,4 +275,3 @@ sub pipsqueek_mergeuser
 
 
 __END__
-

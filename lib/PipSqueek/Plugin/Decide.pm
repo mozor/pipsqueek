@@ -59,7 +59,7 @@ sub decide
 
     # More than one choice
     if (scalar @choices > 1) {
-        srand time;
+        # srand time;
         my $rv = @choices[rand @choices] . '.';
         if (defined $who) {
             $rv = "$who should $rv";
@@ -74,7 +74,7 @@ sub decide
     # One choice
     } elsif (scalar @choices) {
         my @opts = ('Yes.', 'No.');
-        srand time;
+        # srand time;
         return @opts[rand @opts];
     # No choices
     } else {
@@ -103,7 +103,7 @@ sub irc_public
         } elsif (lc($who) eq lc($botnick) || lc($who) eq 'you') {
             my @opts = ("HAH! I'll do whatever I want.",
                 "That's my choice, and none of your business.");
-            srand time;
+            # srand time;
             $decision = @opts[rand @opts];
         } else {
             $decision = $self->decide($2, $who);
