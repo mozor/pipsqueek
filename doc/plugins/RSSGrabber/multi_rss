@@ -1,0 +1,4 @@
+rss <URL or tag for built-in feed> <optional number of stories>
+
+Use "!rss feeds" to get a list of available tags for built-in feeds.
+See also: !+rss and !-rss

@@ -1,0 +1,6 @@
+ban <user> [#channel] [ban_type]
+
+Sets a ban on 'user' for '#channel', according to 'ban_type'.
+If '#channel' is omitted, uses the default channel.
+The 'ban_type' can be one of: 1,2,3,4,5,6, or 7.
+

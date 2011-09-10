@@ -1,0 +1,6 @@
+stats [<username>]
+
+Returns the stats for 'username'. If 'username' is omitted, uses the caller's username.
+
+
+

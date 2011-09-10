@@ -1,0 +1,2 @@
+!show_timer [destinations]
+Show bot timers. Without destinations show all bot timers. Destinations may be channels or nicks.

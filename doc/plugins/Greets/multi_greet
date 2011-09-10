@@ -1,0 +1,5 @@
+greet(Greetings): To set, remove or show greets
+Use +greet <nick> [#chan] <greet> | -greet <id>
+Show greetings to users joining channels monitored by the bot.
+Each user can have some greet messages on each bot monitoring channel.
+After greeting once the bot won't greet the same user again for 30 minutes.

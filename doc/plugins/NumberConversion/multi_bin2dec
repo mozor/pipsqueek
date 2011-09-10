@@ -1,0 +1,4 @@
+multi_bin2int <input | _>
+
+Converts 'input' or the value stored in '_' from an binary to decimal.
+

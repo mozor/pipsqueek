@@ -1,0 +1,4 @@
+part [#channel]
+
+Tells the bot to leave '#channel' (or the default channel).
+

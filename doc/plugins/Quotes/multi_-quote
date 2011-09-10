@@ -1,0 +1,4 @@
+-quote <id>
+
+Deletes the quote referenced by 'id' from the database.
+

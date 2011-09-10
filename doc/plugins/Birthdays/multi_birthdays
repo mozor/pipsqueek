@@ -1,0 +1,5 @@
+birthdays [<month>]
+
+Returns the birthdays for the current month, or the 'month' specified.
+Please note that 'month' must be the full name (ie, "December" not "Dec")
+

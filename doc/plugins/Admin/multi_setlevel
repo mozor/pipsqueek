@@ -1,0 +1,4 @@
+setlevel <user> <level>
+
+Sets the access level for 'user' to 'level'
+

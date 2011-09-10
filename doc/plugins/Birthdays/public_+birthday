@@ -1,0 +1,4 @@
++birthday <name> <date>
+
+Inserts a birthday record for 'name' (no spaces).  The 'date' can be in many formats, but the best to use is "Month Day, Year" (eg: June 19, 1982)
+

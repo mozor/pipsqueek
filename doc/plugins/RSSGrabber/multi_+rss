@@ -1,0 +1,3 @@
++rss <tag> <URL>
+
+Add a built-in RSS feed which can be called with "!rss tag"

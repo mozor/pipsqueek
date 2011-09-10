@@ -1,0 +1,2 @@
+!bash.org [number]
+if number not defined then gives random quote from http://bash.org otherwise gives quote defined by number.

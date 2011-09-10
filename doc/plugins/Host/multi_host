@@ -1,0 +1,4 @@
+host <ip | hostname>
+
+Attempts to resolve 'hostname' to an IP address, or vice versa.
+

@@ -1,0 +1,2 @@
+!del_timer <id>
+Delete timers for defined id. You can see the ids using !show_timer

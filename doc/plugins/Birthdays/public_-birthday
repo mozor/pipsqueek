@@ -1,0 +1,4 @@
+-birthday <id | name>
+
+Removes the birthday associated with 'id' or 'name'
+

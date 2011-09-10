@@ -1,0 +1,4 @@
+currency <partial country name>
+
+Attempts to locate the country you're searching for and return the code you need to pass to the exchange function.
+

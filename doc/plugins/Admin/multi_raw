@@ -1,0 +1,4 @@
+raw <rawcode>
+
+Sends 'rawcode' to the server as is, use carefully!
+

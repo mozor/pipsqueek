@@ -1,0 +1,5 @@
+blackjack <command>
+
+Valid commands are: bet, hit, double, stand, reset, status, bank, stats.
+Use !help blackjack <command> to get more information about any command
+

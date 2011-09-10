@@ -1,0 +1,6 @@
++quote <really good quote>
+
+Adds the input as a quote in the database, returns a success message and the
+new quote ID.
+
+
