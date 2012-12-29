@@ -10,10 +10,7 @@ PipSqueek was created to be a sort of 'channel pet' for IRC channels. This means
 See the file [INSTALL](https://github.com/mozor/pipsqueek/blob/master/doc/INSTALL) for help on installation and configuration
 
 ## Author ##
-The original PipSqueek is written and maintained by [Shaun Guth](https://github.com/l8nite).
-
-## Fork ##
-This fork is maintained by [The Mozor Network](https://www.github.com/mozor/).
+The original PipSqueek is written by [Shaun Guth](https://github.com/l8nite). This fork is maintained by [The Mozor Network](https://www.github.com/mozor/).
 
 ## Copyright ##
 Copyright 2000-2008 Shaun Guth; Distributed under the GPL v2. See the file [LICENSE](https://github.com/mozor/pipsqueek/blob/master/doc/LICENSE) for more details.
