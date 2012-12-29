@@ -17,6 +17,9 @@
 # that the bot will connect to ('server_address'), and the channel the bot 
 # should join after it connects ('server_channel')
 
+# Enable/disable next sessions
+enable_jabber_session = "0";
+
 # The irc server that the bot will connect to when it starts.
 # You can use an IP address or hostname here
 server_address  = "irc.idlemonkeys.net";
@@ -32,7 +35,7 @@ server_password = "";
 server_channel = "#test";
 
 # What nickname the bot should assume
-identity_nickname = "DevSqueek";
+identity_nickname = "PipSqueek";
 
 # The ident string that the bot should present to the server when connecting
 # eg:  pips@foo.host.com
@@ -51,9 +54,6 @@ local_address = "";
 # have the bot select a random valid one)
 local_port = ""
 
-# If PipSqueek connects to an IRC network behind a firewall, this HTTP proxy
-# will allow PipSqueek to access the Internet for plugins like Weather, etc.
-plugin_proxy = "";
 
 # [ Interface ]
 # These options define the interface between plugins and users
@@ -62,7 +62,7 @@ plugin_proxy = "";
 # it is a command.  eg: !quote
 # If you don't want the bot to respond to these commands, just comment the
 # next line out, or set it to an empty string
-public_command_prefix = "@";
+public_command_prefix = "!";
 
 # The bot can try and answer commands when it is specifically addressed too
 # eg: PipSqueek: quote
@@ -109,6 +109,6 @@ default_ban_type = "4";
 
 # A space-separated list of plugins to disable.  Note this completely prevents
 # the plugin from initializing, so renabling plugins will require the bot to
-# # be restarted, not just rehashed.
-# # disabled_plugins = "Slap Woot";
+# be restarted, not just rehashed.
+# disabled_plugins = "Slap Woot";
 disabled_plugins = "";
