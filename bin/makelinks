@@ -1,0 +1,49 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use DirHandle;
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
+
+use Pod::Usage;
+
+sub main
+{
+    my $conf_path   = "$Bin/../etc/plugins/";
+    my $plugin_path = "$Bin/../lib/PipSqueek/Plugin/";
+
+    my $d_conf = DirHandle->new($plugin_path);
+    if( defined $d_conf )
+    {
+        while( defined( $_ = $d_conf->read ) )
+        {
+            if( $_ =~ /\.conf$/ )
+            {
+                if( -d $conf_path )
+                {
+                    symlink( $plugin_path.$_, $conf_path.$_) or die "Unable to symlink $plugin_path"."$_!\n";
+                }
+            }
+        }
+        undef $d_conf;
+    }
+
+    return 0;
+}
+
+
+exit( &main(@ARGV) );
+
+
+__END__
+
+=head1 NAME
+makelinks - script to make symlinks between the plugins directory and etc
+
+=head1 DESCRIPTION
+
+B<PipSqueek> is a perl IRC bot with many features.  See http://pipsqueek.net/
+
+=cut
+
