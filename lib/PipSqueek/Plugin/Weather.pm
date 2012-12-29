@@ -12,8 +12,16 @@ sub plugin_initialize
   $self->plugin_handlers({
       'multi_weather'    => 'weather',
       'multi_w'          => 'weather',
+      'multi_wc'	 => 'credit',
   });
 }
+ 
+sub credit
+{
+  my ($self, $message) = @_;
+  return $self->respond($message, "This plugin is using WUNDERGROUND and was written by bagel.");
+ 
+} 
  
 sub weather
 {
@@ -21,8 +29,8 @@ sub weather
   my $cmd = $message->command();
   my $url;
  
-  # this could probably be better served pulled from a config. :)
-  my $wwkey = 'OH_NO_YOU_DONT_BOYO';
+  # TODO this could probably be better served pulled from a config. :)
+  my $wwkey = 'APIKEYHERE';
  
   my $input = $message->command_input();
   # quick n nastay url encoding
@@ -62,7 +70,8 @@ sub weather
     return $self->respond($message, "GENERIC ERROR MESSAGE OH F-");
   }
  
-  my $output = sprintf("It is now %sF in %s, %s. The weather is %s and the wind is %s.\n", $o_t_f, $o_city, $o_state, $o_t_weather, $o_t_wind);
+  my $converted_nasty_F_to_C = ($o_t_f - 32) * 5 / 9; 
+  my $output = sprintf("It is now %s\x{B0}F (%.1f\x{B0}C) in %s, %s. The weather is %s and the wind is %s.\n", $o_t_f, $converted_nasty_F_to_C, $o_city, $o_state, $o_t_weather, $o_t_wind);
  
   return $self->respond($message, $output);
 }
