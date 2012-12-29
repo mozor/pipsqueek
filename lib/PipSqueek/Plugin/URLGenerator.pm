@@ -26,6 +26,9 @@ sub plugin_initialize
         'multi_mbartist'    => 'generate_url',
         'multi_mbalbum'     => 'generate_url',
         'multi_mbtrack'     => 'generate_url',
+        'multi_amazon'      => 'generate_url',
+        'multi_lmgtfy'      => 'generate_url',
+        'multi_newegg'      => 'generate_url',
     );
 }
 
@@ -39,7 +42,7 @@ sub generate_url
     [ 'http://search.cpan.org', '/search?mode=module&query=$search' ],
 
     'google'    => 
-    [ 'http://lmgtfy.com', '/?q=$search' ],
+    [ 'http://www.google.com', '/search?q=$search' ],
 
     'search'    =>
     [ 'http://www.google.com', '/search?q=$search' ],
@@ -94,6 +97,16 @@ sub generate_url
     'mbtrack'    =>
     [ 'http://musicbrainz.org',
       '/newsearch.html?limit=25&table=track&search=$search' ],
+      
+      
+    'amazon'     =>
+    [ 'http://www.amazon.com','/exec/obidos/external-search/?field-keywords=$search&mode=blended' ],
+    
+    'lmgtfy'     =>
+    [ 'http://letmegooglethatforyou.com','/?q=$search' ],
+    
+    'newegg'     =>
+    [ 'http://www.newegg.com','/Product/ProductList.aspx?Submit=ENE&DEPA=0&Order=BESTMATCH&Description=$search&x=0&y=0' ],
 
     );
 
