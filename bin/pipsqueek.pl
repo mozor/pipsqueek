@@ -19,7 +19,7 @@ sub main
     my @dirs = &parse_command_line();
 
     # create our dating profile so sexy programs know where to find us
-    my $pidfile = catfile( catdir( $Bin, '../' ), '/var/pipsqueek.pid' );
+    my $pidfile = catfile( catdir( $Bin, '../' ), 'etc/var/pipsqueek.pid' );
     open( my $pfh, '>', $pidfile )
         or die "Unable to write pidfile: $!\n";
     print $pfh $$;
