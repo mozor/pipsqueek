@@ -12,7 +12,7 @@ sub plugin_initialize
   $self->plugin_handlers({
       'multi_weather'    => 'weather',
       'multi_w'          => 'weather',
-      'multi_wc'	 => 'credit',
+      'multi_wc'	     => 'credit',
   });
 }
  
@@ -51,9 +51,10 @@ sub weather
  
   my $decoded_json = decode_json( $results );
  
-  my $o_tz    = $decoded_json->{'location'}->{'tz_short'};
-  my $o_city  = $decoded_json->{'location'}->{'city'};
-  my $o_state = $decoded_json->{'location'}->{'state'};
+  my $o_tz        = $decoded_json->{'location'}->{'tz_short'};
+  my $o_city      = $decoded_json->{'location'}->{'city'};
+  my $o_state     = $decoded_json->{'location'}->{'state'};
+  my $o_country   = $decoded_json->{'location'}->{'country_name'};
  
   my $o_t_feels_c = $decoded_json->{'current_observation'}->{'feelslike_c'};
   my $o_t_feels_f = $decoded_json->{'current_observation'}->{'feelslike_f'};
@@ -66,13 +67,33 @@ sub weather
   # I thumb my nose and proper error correction
   # Tryin' to catch me codin' dirty ..
  
-  if( $o_tz eq '', $o_city eq '', $o_state eq '' ) {
+  if( $o_tz eq '', $o_city eq '', ( $o_state eq '' and $o_country eq '' ) ) {
     return $self->respond($message, "GENERIC ERROR MESSAGE OH F-");
   }
  
-  my $converted_nasty_F_to_C = ($o_t_f - 32) * 5 / 9; 
-  my $output = sprintf("It is now %s\x{B0}F (%.1f\x{B0}C) in %s, %s. The weather is %s and the wind is %s.\n", $o_t_f, $converted_nasty_F_to_C, $o_city, $o_state, $o_t_weather, $o_t_wind);
- 
+  my $output = "";
+  
+  if( $o_country ne '' and $o_state eq '' ) {
+    my $output = sprintf("It is now %s\x{B0}F (%.1f\x{B0}C) in %s, %s. The weather is %s and the wind is %s.\n",
+                         $o_t_f,
+                         $o_t_c,
+                         $o_city,
+                         $o_state,
+                         $o_t_weather,
+                         $o_t_wind
+                         );
+  } else {
+    my $output = sprintf("It is now %s\x{B0}F (%.1f\x{B0}C) in %s, %s %s. The weather is %s and the wind is %s.\n",
+                         $o_t_f,
+                         $o_t_c,
+                         $o_city,
+                         $o_state,
+                         $o_country,
+                         $o_t_weather,
+                         $o_t_wind
+                         );
+  }
+   
   return $self->respond($message, $output);
 }
  
