@@ -10,7 +10,7 @@ if [ -f /etc/debian_version ] || [ -f /etc/ubuntu_version ]; then
         apt-get install --quiet curl;
         apt-get install --quiet cpan;
         curl -L http://cpanmin.us | perl - App::cpanminus
-elif [ -f /etc/centos_release ] || [ -f /etc/redhat_release ]; then
+elif [ -f /etc/centos-release ] || [ -f /etc/redhat-release ]; then
         yum install -y --quiet cpan.
         yum groupinstall -y --quiet "Development Tools";
         curl -L http://cpanmin.us | perl - App::cpanminus
