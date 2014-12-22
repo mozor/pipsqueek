@@ -52,15 +52,15 @@ case "$1" in
             ;;
 
         restart)
-			stop_firewall
-            start_firewall
+	    stop_pipsqueek
+            start_pipsqueek
             ;;
         status)
-			status_check
+	    status_check
             ;;			
-	    heartbeat)
-			heartbeat
-	        ;;	
+	heartbeat)
+	    heartbeat
+	    ;;	
         *)
             echo $"Usage: $0 {start|stop|restart|status}"
             exit 1
