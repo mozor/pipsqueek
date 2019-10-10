@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  pipsqueek:
+    restart: always 
+    image: fouts/pipsqueek
+    container_name: pipsqueek
+    volumes:
+      - /data/pipsqueek/etc:/data/pipsqueek/etc
+      - /data/pipsqueek/client:/data/pipsqueek/client

@@ -1,0 +1,74 @@
+---
+kind: pipeline
+name: linux
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: dryrun
+  pull: always
+  image: plugins/docker
+  settings:
+    dryrun: true
+    dockerfile: Dockerfile
+    password:
+      from_secret: docker_password
+    repo: fouts/pipsqueek
+    username:
+      from_secret: docker_username
+    purge: true
+  when:
+    event:
+    - pull_request
+
+- name: publish
+  image: plugins/docker
+  settings:
+    dockerfile: Dockerfile
+    password:
+      from_secret: docker_password
+    repo: fouts/pipsqueek
+    username:
+      from_secret: docker_username
+    auto_tag: true
+    purge: true    
+  when:
+    exclude:
+    - pull_request
+
+trigger:
+  ref:
+  - refs/heads/master
+  - "refs/tags/**"
+  - "refs/pull/**"
+
+---
+kind: pipeline
+name: notify
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: slack
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: slack_webhook
+    channel: dev
+  when:
+    status: [ success, failure ]
+
+trigger:
+  ref:
+  - refs/heads/master
+  - "refs/tags/**"
+  - "refs/pull/**"
+
+depends_on:
+  - linux
+
+...
